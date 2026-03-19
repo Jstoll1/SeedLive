@@ -152,6 +152,22 @@ GAME CARD — THEME VARS
 .card.coinflip{ –c:#059669; –cg:rgba(5,150,105,0.1);  –ct:rgba(5,150,105,0.07); }
 .card.dog     { –c:#d97706; –cg:rgba(217,119,6,0.1);  –ct:rgba(217,119,6,0.07); }
 .card.bigdog  { –c:#dc2626; –cg:rgba(220,38,38,0.1);  –ct:rgba(220,38,38,0.07); }
+.card.chalk   .card-topline { background:#2563eb; }
+.card.coinflip .card-topline { background:#059669; }
+.card.dog     .card-topline { background:#d97706; }
+.card.bigdog  .card-topline { background:#dc2626; }
+.card.chalk   .win-box { border-color:#2563eb; box-shadow:0 0 16px rgba(37,99,235,0.1); }
+.card.coinflip .win-box { border-color:#059669; box-shadow:0 0 16px rgba(5,150,105,0.1); }
+.card.dog     .win-box { border-color:#d97706; box-shadow:0 0 16px rgba(217,119,6,0.1); }
+.card.bigdog  .win-box { border-color:#dc2626; box-shadow:0 0 16px rgba(220,38,38,0.1); }
+.card.chalk   .win-pct { color:#2563eb; }
+.card.coinflip .win-pct { color:#059669; }
+.card.dog     .win-pct { color:#d97706; }
+.card.bigdog  .win-pct { color:#dc2626; }
+.card.chalk   .win-lbl { color:#2563eb; }
+.card.coinflip .win-lbl { color:#059669; }
+.card.dog     .win-lbl { color:#d97706; }
+.card.bigdog  .win-lbl { color:#dc2626; }
 
 .card {
 border-radius: 12px;
@@ -163,8 +179,8 @@ background: #070d1a;
 
 .card-topline {
 height: 2px;
-background: var(–c);
-opacity: 0.7;
+background: #888;
+opacity: 0.7; /* overridden by card-specific rules */
 }
 
 .card-meta {
@@ -264,16 +280,16 @@ WIN BOX — with live delta
 .win-box {
 flex-shrink: 0;
 background: rgba(0,0,0,0.45);
-border: 1.5px solid var(–c);
+border: 1.5px solid #444;
 border-radius: 8px;
 padding: 10px 13px 8px;
 text-align: center;
 min-width: 66px;
-box-shadow: 0 0 16px var(–cg);
+
 position: relative;
 }
 .win-pct {
-color: var(–c);
+color: #888;
 font-size: 22px;
 font-weight: 900;
 letter-spacing: -0.5px;
@@ -287,7 +303,7 @@ line-height: 0;
 opacity: 0.75;
 }
 .win-lbl {
-color: var(–c);
+color: #888;
 font-size: 7.5px;
 font-weight: 800;
 text-transform: uppercase;
