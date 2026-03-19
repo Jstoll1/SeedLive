@@ -1134,27 +1134,8 @@ var LIVE_MATCH = {
 };
 
 function updateWinDelta(card, livePct) {
-  var basePct = parseInt(card.dataset.basePct, 10);
-  var delta   = Math.round(livePct - basePct);
-
-  /* Update the main % number to the live value */
   var pctEl = card.querySelector('.win-pct');
   if (pctEl) pctEl.innerHTML = livePct + '<span class="win-sym">%</span>';
-
-  /* Show delta chip as color-coded movement indicator */
-  var chip = card.querySelector('.win-delta');
-  if (!chip) return;
-  chip.style.display = 'block';
-  if (delta > 0) {
-    chip.className = 'win-delta up';
-    chip.textContent = String.fromCharCode(9650) + delta + '%';
-  } else if (delta < 0) {
-    chip.className = 'win-delta down';
-    chip.textContent = String.fromCharCode(9660) + Math.abs(delta) + '%';
-  } else {
-    chip.className = 'win-delta flat';
-    chip.textContent = '- 0%';
-  }
 }
 
 function restoreStaticPct(card) {
