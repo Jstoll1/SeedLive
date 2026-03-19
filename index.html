@@ -1,178 +1,1150 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SeedMoney Live</title>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Team Curt — Round 1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
 body {
-  margin:0;
-  font-family:-apple-system,system-ui;
-  background:#0b1220;
-  color:white;
-  padding:16px;
+  background: #03060c;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  padding: 12px;
+  width: 100%;
+  max-width: 430px;
+  margin: 0 auto;
+  -webkit-font-smoothing: antialiased;
 }
 
-h1 {margin:0;}
-.sub {color:#9ca3af;margin-bottom:16px;}
-
-.summary {
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:10px;
-  margin-bottom:16px;
+/* ═══════════════════════════════
+   HEADER
+═══════════════════════════════ */
+.header {
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 10px;
+  background: #070d1a;
+  border: 1px solid rgba(255,255,255,0.07);
 }
+.header-accent {
+  height: 3px;
+  background: linear-gradient(90deg, #2563eb, #7c3aed, #db2777);
+}
+.header-body {
+  padding: 14px 16px 15px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto;
+  column-gap: 14px;
+  row-gap: 5px;
+  align-items: baseline;
+}
+.h-title {
+  grid-column: 1; grid-row: 1;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  line-height: 1;
+}
+.h-sub {
+  grid-column: 1; grid-row: 2;
+  color: #3d5070;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.h-amount {
+  grid-column: 2; grid-row: 1;
+  color: #f0b429;
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: -0.8px;
+  text-align: right;
+  line-height: 1;
+}
+.h-meta {
+  grid-column: 2; grid-row: 2;
+  color: #3d5070;
+  font-size: 10.5px;
+  font-weight: 500;
+  white-space: nowrap;
+  text-align: right;
+}
+.h-meta b { color: #5a7099; font-weight: 700; }
 
+/* ═══════════════════════════════
+   STATS ROW
+═══════════════════════════════ */
+.stats-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+}
 .stat {
-  background:#111827;
-  padding:12px;
-  border-radius:12px;
+  flex: 1;
+  background: #070d1a;
+  border: 1px solid rgba(255,255,255,0.055);
+  border-radius: 10px;
+  padding: 9px 8px;
+  text-align: center;
+}
+.stat-n {
+  color: #fff;
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.stat-l {
+  color: #2d3e58;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
 }
 
-.stat small {color:#9ca3af;}
-.stat div {font-size:20px;font-weight:bold;}
-
-.games {display:flex;flex-direction:column;gap:12px;}
-
-.game {
-  background:#111827;
-  border-radius:14px;
-  padding:14px;
+/* ═══════════════════════════════
+   DAY HEADER
+═══════════════════════════════ */
+.day-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 6px 0 8px;
+}
+.day-line { flex: 1; height: 1px; background: #0e1928; }
+.day-label {
+  font-size: 10px;
+  font-weight: 800;
+  color: #2d3e58;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
 }
 
-.game.live {border:2px solid #ef4444;}
+/* ═══════════════════════════════
+   BOTH NOTE
+═══════════════════════════════ */
+.both-note {
+  background: #0e0920;
+  border: 1px solid rgba(124,58,237,0.2);
+  border-left: 3px solid #7c3aed;
+  border-radius: 10px;
+  padding: 9px 12px;
+  margin-bottom: 7px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.bn-icon { font-size: 12px; flex-shrink: 0; padding-top: 1px; }
+.bn-text { color: #8b7ab8; font-size: 11px; font-weight: 500; line-height: 1.5; }
+.bn-text strong { color: #b39ddb; font-weight: 700; }
 
-.badge {
-  padding:4px 8px;
-  border-radius:999px;
-  font-size:12px;
-  font-weight:bold;
+/* ═══════════════════════════════
+   GAME CARD — THEME VARS
+═══════════════════════════════ */
+.card.chalk   { --c:#2563eb; --cg:rgba(37,99,235,0.1);  --ct:rgba(37,99,235,0.07); }
+.card.coinflip{ --c:#059669; --cg:rgba(5,150,105,0.1);  --ct:rgba(5,150,105,0.07); }
+.card.dog     { --c:#d97706; --cg:rgba(217,119,6,0.1);  --ct:rgba(217,119,6,0.07); }
+.card.bigdog  { --c:#dc2626; --cg:rgba(220,38,38,0.1);  --ct:rgba(220,38,38,0.07); }
+
+.card {
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 7px;
+  border: 1px solid rgba(255,255,255,0.055);
+  background: #070d1a;
 }
 
-.live {background:#ef4444;}
-.final {background:#374151;}
-.upcoming {background:#2563eb;}
-
-.row {
-  display:flex;
-  justify-content:space-between;
-  margin-top:8px;
+/* top accent line per card */
+.card-topline {
+  height: 2px;
+  background: var(--c);
+  opacity: 0.7;
 }
 
-.team {font-weight:bold;}
-.score {font-size:22px;}
+/* META BAR — time / channel / location */
+.card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 14px;
+  background: rgba(0,0,0,0.25);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.meta-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.meta-piece {
+  color: #3d5070;
+  font-size: 10px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.meta-piece.time { color: #5a7099; }
+.meta-divider { color: #141f30; font-size: 10px; }
+.meta-paid {
+  font-size: 10px;
+  font-weight: 800;
+  color: #c99a20;
+  letter-spacing: 0.2px;
+}
 
-.owned {color:#fbbf24;font-size:12px;}
+/* CARD BODY */
+.card-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 14px 12px;
+  gap: 10px;
+}
+
+.card-info { flex: 1; min-width: 0; }
+
+.badge-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+.region-badge {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.07);
+  color: #3d5070;
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+.upset-badge {
+  background: rgba(124,58,237,0.12);
+  border: 1px solid rgba(124,58,237,0.3);
+  color: #a78bfa;
+  font-size: 9px;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 4px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.team-name {
+  font-size: 19px;
+  font-weight: 900;
+  color: #f0f4ff;
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+  margin-bottom: 3px;
+}
+.team-seed {
+  color: #2d3e58;
+  font-size: 14px;
+  font-weight: 800;
+  margin-right: 3px;
+}
+.matchup {
+  font-size: 11px;
+  font-weight: 500;
+  color: #2d3e58;
+}
+.matchup span { color: #3d5070; font-weight: 700; }
+
+/* WIN BOX — rectangle scoreboard style */
+.win-box {
+  flex-shrink: 0;
+  background: rgba(0,0,0,0.45);
+  border: 1.5px solid var(--c);
+  border-radius: 8px;
+  padding: 10px 13px 8px;
+  text-align: center;
+  min-width: 66px;
+  box-shadow: 0 0 16px var(--cg);
+}
+.win-pct {
+  color: var(--c);
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  line-height: 1;
+}
+.win-sym {
+  font-size: 11px;
+  font-weight: 800;
+  vertical-align: super;
+  line-height: 0;
+  opacity: 0.75;
+}
+.win-lbl {
+  color: var(--c);
+  font-size: 7.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  opacity: 0.5;
+  margin-top: 4px;
+}
+
+/* ═══════════════════════════════
+   MILESTONE STRIP
+═══════════════════════════════ */
+.milestones {
+  border-top: 1px solid rgba(255,255,255,0.04);
+  display: flex;
+}
+.ms {
+  flex: 1;
+  padding: 7px 4px 7px;
+  text-align: center;
+  position: relative;
+}
+.ms + .ms {
+  border-left: 1px solid rgba(255,255,255,0.04);
+}
+.ms.active   { background: rgba(255,255,255,0.02); }
+.ms.breakeven{ background: rgba(5,150,105,0.08); }
+.ms.locked   { opacity: 0.22; }
+
+.ms-l {
+  font-size: 7.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #1e2e44;
+  margin-bottom: 4px;
+}
+.ms.active    .ms-l { color: #3d5070; }
+.ms.breakeven .ms-l { color: #34d399; }
+
+.ms-v {
+  font-size: 10px;
+  font-weight: 800;
+  color: #1e2e44;
+  line-height: 1;
+}
+.ms.active    .ms-v { color: #c99a20; }
+.ms.breakeven .ms-v { color: #10b981; }
+.ms.locked    .ms-v { color: #ffffff; }
+
+.ms-be {
+  font-size: 7px;
+  color: #10b981;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  margin-top: 3px;
+}
+
+/* ═══════════════════════════════
+   LEGEND
+═══════════════════════════════ */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  padding: 10px 14px;
+  background: #070d1a;
+  border: 1px solid rgba(255,255,255,0.055);
+  border-radius: 10px;
+  margin-top: 12px;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  color: #3d5070;
+  font-weight: 500;
+}
+.legend-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+/* ═══════════════════════════════
+   FOOTER
+═══════════════════════════════ */
+.footer {
+  text-align: center;
+  color: #1e2e44;
+  font-size: 9.5px;
+  line-height: 1.7;
+  margin-top: 10px;
+}
+
+.spread {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 4px;
+  margin-left: 6px;
+  letter-spacing: 0.2px;
+}
+.spread.fav,
+.spread.dog  { color: #5a7099; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); }
+
+/* ═══════════════════════════════
+   SCENARIO CALCULATOR
+═══════════════════════════════ */
+.scenario-wrap {
+  border-radius: 12px;
+  overflow: hidden;
+  margin-top: 14px;
+  border: 1px solid rgba(124,58,237,0.28);
+  background: #070d1a;
+}
+.sc-header {
+  background: linear-gradient(135deg, rgba(124,58,237,0.18), rgba(37,99,235,0.08));
+  border-bottom: 1px solid rgba(124,58,237,0.18);
+  padding: 11px 14px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+.sc-title { font-size: 13px; font-weight: 900; color: #c4b5fd; letter-spacing: -0.3px; flex-shrink: 0; }
+.sc-sub   { font-size: 10px; font-weight: 500; color: #3d3060; }
+.sc-controls {
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.sc-field { display: flex; flex-direction: column; gap: 5px; }
+.sc-label { font-size: 9px; font-weight: 800; letter-spacing: 1.2px; color: #2d3e58; text-transform: uppercase; }
+.sc-select {
+  background: rgba(0,0,0,0.45);
+  border: 1px solid rgba(124,58,237,0.3);
+  border-radius: 8px;
+  color: #c4b5fd;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 9px 12px;
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  font-family: inherit;
+  cursor: pointer;
+}
+.sc-select:focus { outline: none; border-color: rgba(124,58,237,0.6); }
+.sc-pills { display: flex; gap: 4px; }
+.sc-pill {
+  flex: 1;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 6px;
+  color: #2d3e58;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 7px 2px;
+  cursor: pointer;
+  text-align: center;
+  font-family: inherit;
+  letter-spacing: 0.2px;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+.sc-pill.active {
+  background: rgba(124,58,237,0.22);
+  border-color: rgba(124,58,237,0.55);
+  color: #c4b5fd;
+}
+.sc-result { padding: 12px 14px 14px; }
+.sc-ms-rows { margin-bottom: 10px; }
+.sc-ms-row {
+  display: flex;
+  align-items: center;
+  padding: 5px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  gap: 8px;
+}
+.sc-ms-row:last-child { border-bottom: none; }
+.sc-ms-icon  { font-size: 10px; width: 14px; text-align: center; flex-shrink: 0; color: #1e2e44; }
+.sc-ms-label { flex: 1; font-size: 11px; font-weight: 600; color: #1e2e44; }
+.sc-ms-amt   { font-size: 12px; font-weight: 800; color: #1e2e44; }
+.sc-ms-row.earned .sc-ms-icon  { color: #34d399; }
+.sc-ms-row.earned .sc-ms-label { color: #7d9abf; }
+.sc-ms-row.earned .sc-ms-amt   { color: #f0b429; }
+.sc-ms-row.target .sc-ms-icon  { color: #c4b5fd; }
+.sc-ms-row.target .sc-ms-label { color: #c4b5fd; font-weight: 800; }
+.sc-ms-row.target .sc-ms-amt   { color: #c4b5fd; font-weight: 900; font-size: 13px; }
+.sc-ms-row.locked .sc-ms-icon  { color: #1a2535; }
+.sc-ms-row.locked .sc-ms-label { color: #1a2535; }
+.sc-ms-row.locked .sc-ms-amt   { color: #1a2535; }
+.sc-totals {
+  background: rgba(0,0,0,0.3);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+}
+.sc-total-row { display: flex; justify-content: space-between; align-items: baseline; padding: 3px 0; }
+.sc-total-lbl { font-size: 10.5px; font-weight: 600; color: #3d5070; text-transform: uppercase; letter-spacing: 0.3px; }
+.sc-total-val { font-size: 13px; font-weight: 900; color: #fff; }
+.sc-total-val.neg { color: #ef4444; }
+.sc-total-val.pos { color: #10b981; }
+.sc-divider { height: 1px; background: rgba(255,255,255,0.06); margin: 5px 0; }
+.sc-note {
+  background: rgba(124,58,237,0.07);
+  border: 1px solid rgba(124,58,237,0.18);
+  border-left: 3px solid rgba(124,58,237,0.5);
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin-top: 6px;
+}
+.sc-note-title { font-size: 9px; font-weight: 800; color: #6d28d9; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 3px; }
+.sc-note-body  { font-size: 10.5px; font-weight: 500; color: #8b7ab8; line-height: 1.5; }
+.sc-empty { text-align: center; padding: 22px 16px; color: #2d3e58; font-size: 11px; font-weight: 600; line-height: 1.6; }
+
 </style>
 </head>
-
 <body>
 
-<h1>Team Curt — Round 1</h1>
-<div class="sub" id="updated">Last updated: --</div>
-
-<div class="summary">
-  <div class="stat"><small>Teams Owned</small><div>12</div></div>
-  <div class="stat"><small>Games Today</small><div id="gamesToday">--</div></div>
-  <div class="stat"><small>Live</small><div id="liveCount">--</div></div>
-  <div class="stat"><small>Final</small><div id="finalCount">--</div></div>
+<!-- HEADER -->
+<div class="header">
+  <div class="header-accent"></div>
+  <div class="header-body">
+    <div class="h-title">🏀 Team Curt</div>
+    <div class="h-amount">$6,450</div>
+    <div class="h-sub">2026 March Madness Calcutta — Round 1</div>
+    <div class="h-meta"><b>24%</b> of $27,160 pot</div>
+  </div>
 </div>
 
-<div class="games" id="games"></div>
+<!-- STATS -->
+<div class="stats-row">
+  <div class="stat"><div class="stat-n">12</div><div class="stat-l">Teams</div></div>
+  <div class="stat"><div class="stat-n">5</div><div class="stat-l">Thu Games</div></div>
+  <div class="stat"><div class="stat-n">7</div><div class="stat-l">Fri Games</div></div>
+  <div class="stat"><div class="stat-n" style="color:#10b981">$6,450</div><div class="stat-l">Break Even</div></div>
+</div>
 
-<script>
+<!-- ──────── THURSDAY ──────── -->
+<div class="day-header">
+  <div class="day-line"></div>
+  <div class="day-label">Thursday · March 19</div>
+  <div class="day-line"></div>
+</div>
 
-const owned = ["MSU","NDSU","DUKE","VCU"];
+<div class="both-note">
+  <div class="bn-icon">⚡</div>
+  <div class="bn-text"><strong>You own BOTH teams at 4:05 PM</strong> — Michigan St. vs N. Dakota St. on TNT in Buffalo. One advances no matter what.</div>
+</div>
 
-async function loadGames() {
-
-  try {
-    // 👉 replace with your worker later
-    const res = await fetch("https://YOUR-WORKER.workers.dev/live-games");
-    const data = await res.json();
-    render(data);
-
-  } catch {
-    // fallback demo
-    render([
-      {
-        Status:"InProgress",
-        Period:"2H",
-        AwayTeam:"NDSU",
-        AwayTeamName:"North Dakota State",
-        AwayTeamScore:58,
-        HomeTeam:"MSU",
-        HomeTeamName:"Michigan State",
-        HomeTeamScore:66
-      },
-      {
-        Status:"Final",
-        AwayTeam:"GCU",
-        AwayTeamName:"Grand Canyon",
-        AwayTeamScore:71,
-        HomeTeam:"DUKE",
-        HomeTeamName:"Duke",
-        HomeTeamScore:77
-      },
-      {
-        Status:"Scheduled",
-        DateTime:"2026-03-19T19:25:00",
-        AwayTeam:"VCU",
-        AwayTeamName:"VCU",
-        HomeTeam:"ISU",
-        HomeTeamName:"Iowa State"
-      }
-    ]);
-  }
-}
-
-function badge(s){
-  if(s==="InProgress") return '<span class="badge live">LIVE</span>';
-  if(s==="Final") return '<span class="badge final">FINAL</span>';
-  return '<span class="badge upcoming">UPCOMING</span>';
-}
-
-function render(games){
-
-  document.getElementById("games").innerHTML = games.map(g=>`
-    <div class="game ${g.Status==="InProgress"?"live":""}">
-      ${badge(g.Status)}
-
-      <div class="row">
-        <div>
-          <div class="team">${g.AwayTeamName}</div>
-          ${owned.includes(g.AwayTeam)?'<div class="owned">Owned</div>':''}
-        </div>
-        <div class="score">${g.AwayTeamScore ?? "-"}</div>
+<!-- N. DAKOTA ST -->
+<div class="card bigdog">
+  <div class="card-topline"></div>
+  <div class="card-meta">
+    <div class="meta-left">
+      <span class="meta-piece time">4:05 PM</span>
+      <span class="meta-divider">·</span>
+      <span class="meta-piece">TNT</span>
+      <span class="meta-divider">·</span>
+      <span class="meta-piece">Buffalo</span>
+    </div>
+    <span class="meta-paid">Paid $100</span>
+  </div>
+  <div class="card-body">
+    <div class="card-info">
+      <div class="badge-row">
+        <span class="region-badge">#14 East</span>
+        <span class="upset-badge">Upset?</span>
       </div>
+      <div class="team-name"><span class="team-seed">#14</span>N. Dakota St.</div>
+      <div class="matchup">vs <span>(3) Michigan St.</span><span class="spread dog">+16.5</span></div>
+    </div>
+    <div class="win-box">
+      <div class="win-pct">6<span class="win-sym">%</span></div>
+      <div class="win-lbl">Win Rd1</div>
+    </div>
+  </div>
+  <div class="milestones">
+    <div class="ms breakeven"><div class="ms-l">R1</div><div class="ms-v">~$679</div><div class="ms-be">Even</div></div>
+    <div class="ms active"><div class="ms-l">S16</div><div class="ms-v">~$625</div></div>
+    <div class="ms locked"><div class="ms-l">E8</div><div class="ms-v">$0</div></div>
+    <div class="ms active"><div class="ms-l">F4</div><div class="ms-v">$1,901</div></div>
+    <div class="ms active"><div class="ms-l">Finals</div><div class="ms-v">$1,086</div></div>
+    <div class="ms active"><div class="ms-l">Champ</div><div class="ms-v">$2,444</div></div>
+  </div>
+</div>
 
-      <div class="row">
-        <div>
-          <div class="team">${g.HomeTeamName}</div>
-          ${owned.includes(g.HomeTeam)?'<div class="owned">Owned</div>':''}
-        </div>
-        <div class="score">${g.HomeTeamScore ?? "-"}</div>
+<!-- MICHIGAN ST -->
+<div class="card chalk">
+  <div class="card-topline"></div>
+  <div class="card-meta">
+    <div class="meta-left">
+      <span class="meta-piece time">4:05 PM</span>
+      <span class="meta-divider">·</span>
+      <span class="meta-piece">TNT</span>
+      <span class="meta-divider">·</span>
+      <span class="meta-piece">Buffalo</span>
+    </div>
+    <span class="meta-paid">Paid $475</span>
+  </div>
+  <div class="card-body">
+    <div class="card-info">
+      <div class="badge-row"><span class="region-badge">#3 East</span></div>
+      <div class="team-name"><span class="team-seed">#3</span>Michigan St.</div>
+      <div class="matchup">vs <span>(14) N. Dakota St.</span><span class="spread fav">-16.5</span></div>
+    </div>
+    <div class="win-box">
+      <div class="win-pct">94<span class="win-sym">%</span></div>
+      <div class="win-lbl">Win Rd1</div>
+    </div>
+  </div>
+  <div class="milestones">
+    <div class="ms locked"><div class="ms-l">R1</div><div class="ms-v">$0</div></div>
+    <div class="ms locked"><div class="ms-l">S16</div><div class="ms-v">$0</div></div>
+    <div class="ms active"><div class="ms-l">E8</div><div class="ms-v">$340</div></div>
+    <div class="ms breakeven"><div class="ms-l">F4</div><div class="ms-v">$1,901</div><div class="ms-be">Even</div></div>
+    <div class="ms active"><div class="ms-l">Finals</div><div class="ms-v">$1,086</div></div>
+    <div class="ms active"><div class="ms-l">Champ</div><div class="ms-v">$2,444</div></div>
+  </div>
+</div>
+
+<!-- VCU -->
+<div class="card coinflip">
+  <div class="card-topline"></div>
+  <div class="card-meta">
+    <div class="meta-left">
+      <span class="meta-piece time">6:50 PM</span>
+      <span class="meta-divider">·</span>
+      <span class="meta-piece">TNT</span>
+      <span class="meta-divider">·</span>
+      <span class="meta-piece">Greenville</span>
+    </div>
+    <span class="meta-paid">Paid $170</span>
+  </div>
+  <div class="card-body">
+    <div class="card-info">
+      <div class="badge-row"><span class="region-badge">#11 South</span></div>
+      <div class="team-name"><span class="team-seed">#11</span>VCU</div>
+      <div class="matchup">vs <span>(6) UNC</span><span class="spread dog">+2.5</span></div>
+    </div>
+    <div class="win-box">
+      <div class="win-pct">43<span class="win-sym">%</span></div>
+      <div class="win-lbl">Win Rd1</div>
+    </div>
+  </div>
+  <div class="milestones">
+    <div class="ms breakeven"><div class="ms-l">R1</div><div class="ms-v">~$679</div><div class="ms-be">Even</div></div>
+    <div class="ms active"><div class="ms-l">S16</div><div class="ms-v">~$625</div></div>
+    <div class="ms locked"><div class="ms-l">E8</div><div class="ms-v">$0</div></div>
+    <div class="ms active"><div class="ms-l">F4</div><div class="ms-v">$1,901</div></div>
+    <div class="ms active"><div class="ms-l">Finals</div><div class="ms-v">$1,086</div></div>
+    <div class="ms active"><div class="ms-l">Champ</div><div class="ms-v">$2,444</div></div>
+  </div>
+</div>
+
+<!-- GEORGIA -->
+<div class="card coinflip">
+  <div class="card-topline"></div>
+  <div class="card-meta">
+    <div class="meta-left">
+      <span class="meta-piece time">9:45 PM</span>
+      <span class="meta-divider">·</span>
+      <span class="meta-piece">CBS</span>
+      <span class="meta-divider">·</span>
+      <span class="meta-piece">Buffalo</span>
+    </div>
+    <span class="meta-paid">Paid $220</span>
+  </div>
+  <div class="card-body">
+    <div class="card-info">
+      <div class="badge-row"><span class="region-badge">#8 MW</span></div>
+      <div class="team-name"><span class="team-seed">#8</span>Georgia</div>
+      <div class="matchup">vs <span>(9) Saint Louis</span><span class="spread fav">-2</span></div>
+    </div>
+    <div class="win-box">
+      <div class="win-pct">60<span class="win-sym">%</span></div>
+      <div class="win-lbl">Win Rd1</div>
+    </div>
+  </div>
+  <div class="milestones">
+    <div class="ms breakeven"><div class="ms-l">R1</div><div class="ms-v">~$679</div><div class="ms-be">Even</div></div>
+    <div class="ms active"><div class="ms-l">S16</div><div class="ms-v">~$625</div></div>
+    <div class="ms locked"><div class="ms-l">E8</div><div class="ms-v">$0</div></div>
+    <div class="ms active"><div class="ms-l">F4</div><div class="ms-v">$1,901</div></div>
+    <div class="ms active"><div class="ms-l">Finals</div><div class="ms-v">$1,086</div></div>
+    <div class="ms active"><div class="ms-l">Champ</div><div class="ms-v">$2,444</div></div>
+  </div>
+</div>
+
+<!-- KENNESAW ST -->
+<div class="card bigdog">
+  <div class="card-topline"></div>
+  <div class="card-meta">
+    <div class="meta-left">
+      <span class="meta-piece time">10:00 PM</span>
+      <span class="meta-divider">·</span>
+      <span class="meta-piece">TBS</span>
+      <span class="meta-divider">·</span>
+      <span class="meta-piece">Portland</span>
+    </div>
+    <span class="meta-paid">Paid $180</span>
+  </div>
+  <div class="card-body">
+    <div class="card-info">
+      <div class="badge-row">
+        <span class="region-badge">#14 West</span>
+        <span class="upset-badge">Upset?</span>
       </div>
+      <div class="team-name"><span class="team-seed">#14</span>Kennesaw St.</div>
+      <div class="matchup">vs <span>(3) Gonzaga</span><span class="spread dog">+18.5</span></div>
+    </div>
+    <div class="win-box">
+      <div class="win-pct">7<span class="win-sym">%</span></div>
+      <div class="win-lbl">Win Rd1</div>
+    </div>
+  </div>
+  <div class="milestones">
+    <div class="ms breakeven"><div class="ms-l">R1</div><div class="ms-v">~$679</div><div class="ms-be">Even</div></div>
+    <div class="ms active"><div class="ms-l">S16</div><div class="ms-v">~$625</div></div>
+    <div class="ms locked"><div class="ms-l">E8</div><div class="ms-v">$0</div></div>
+    <div class="ms active"><div class="ms-l">F4</div><div class="ms-v">$1,901</div></div>
+    <div class="ms active"><div class="ms-l">Finals</div><div class="ms-v">$1,086</div></div>
+    <div class="ms active"><div class="ms-l">Champ</div><div class="ms-v">$2,444</div></div>
+  </div>
+</div>
 
-      <div style="margin-top:8px;color:#9ca3af;font-size:12px;">
-        ${g.Status==="InProgress" ? g.Period :
-          g.Status==="Scheduled" ? new Date(g.DateTime).toLocaleTimeString([], {hour:"numeric",minute:"2-digit"}) :
-          ""}
+
+
+<!-- ──────── FRIDAY ──────── -->
+<div class="day-header" style="margin-top:8px">
+  <div class="day-line"></div>
+  <div class="day-label">Friday · March 20</div>
+  <div class="day-line"></div>
+</div>
+
+<!-- HOFSTRA -->
+<div class="card bigdog">
+  <div class="card-topline"></div>
+  <div class="card-meta">
+    <div class="meta-left">
+      <span class="meta-piece time">3:15 PM</span>
+      <span class="meta-divider">·</span>
+      <span class="meta-piece">truTV</span>
+      <span class="meta-divider">·</span>
+      <span class="meta-piece">Tampa</span>
+    </div>
+    <span class="meta-paid">Paid $140</span>
+  </div>
+  <div class="card-body">
+    <div class="card-info">
+      <div class="badge-row">
+        <span class="region-badge">#13 MW</span>
+        <span class="upset-badge">Upset?</span>
+      </div>
+      <div class="team-name"><span class="team-seed">#13</span>Hofstra</div>
+      <div class="matchup">vs <span>(4) Alabama</span><span class="spread dog">+11.5</span></div>
+    </div>
+    <div class="win-box">
+      <div class="win-pct">15<span class="win-sym">%</span></div>
+      <div class="win-lbl">Win Rd1</div>
+    </div>
+  </div>
+  <div class="milestones">
+    <div class="ms breakeven"><div class="ms-l">R1</div><div class="ms-v">~$679</div><div class="ms-be">Even</div></div>
+    <div class="ms active"><div class="ms-l">S16</div><div class="ms-v">~$625</div></div>
+    <div class="ms locked"><div class="ms-l">E8</div><div class="ms-v">$0</div></div>
+    <div class="ms active"><div class="ms-l">F4</div><div class="ms-v">$1,901</div></div>
+    <div class="ms active"><div class="ms-l">Finals</div><div class="ms-v">$1,086</div></div>
+    <div class="ms active"><div class="ms-l">Champ</div><div class="ms-v">$2,444</div></div>
+  </div>
+</div>
+
+<!-- AKRON -->
+<div class="card dog">
+  <div class="card-topline"></div>
+  <div class="card-meta">
+    <div class="meta-left">
+      <span class="meta-piece time">12:40 PM</span>
+      <span class="meta-divider">·</span>
+      <span class="meta-piece">truTV</span>
+      <span class="meta-divider">·</span>
+      <span class="meta-piece">Tampa</span>
+    </div>
+    <span class="meta-paid">Paid $280</span>
+  </div>
+  <div class="card-body">
+    <div class="card-info">
+      <div class="badge-row"><span class="region-badge">#12 MW</span></div>
+      <div class="team-name"><span class="team-seed">#12</span>Akron</div>
+      <div class="matchup">vs <span>(5) Texas Tech</span><span class="spread dog">+8.5</span></div>
+    </div>
+    <div class="win-box">
+      <div class="win-pct">27<span class="win-sym">%</span></div>
+      <div class="win-lbl">Win Rd1</div>
+    </div>
+  </div>
+  <div class="milestones">
+    <div class="ms breakeven"><div class="ms-l">R1</div><div class="ms-v">~$679</div><div class="ms-be">Even</div></div>
+    <div class="ms active"><div class="ms-l">S16</div><div class="ms-v">~$625</div></div>
+    <div class="ms locked"><div class="ms-l">E8</div><div class="ms-v">$0</div></div>
+    <div class="ms active"><div class="ms-l">F4</div><div class="ms-v">$1,901</div></div>
+    <div class="ms active"><div class="ms-l">Finals</div><div class="ms-v">$1,086</div></div>
+    <div class="ms active"><div class="ms-l">Champ</div><div class="ms-v">$2,444</div></div>
+  </div>
+</div>
+
+<!-- ARIZONA -->
+<div class="card chalk">
+  <div class="card-topline"></div>
+  <div class="card-meta">
+    <div class="meta-left">
+      <span class="meta-piece time">1:35 PM</span>
+      <span class="meta-divider">·</span>
+      <span class="meta-piece">TNT</span>
+      <span class="meta-divider">·</span>
+      <span class="meta-piece">San Diego</span>
+    </div>
+    <span class="meta-paid">Paid $2,625</span>
+  </div>
+  <div class="card-body">
+    <div class="card-info">
+      <div class="badge-row"><span class="region-badge">#1 West</span></div>
+      <div class="team-name"><span class="team-seed">#1</span>Arizona</div>
+      <div class="matchup">vs <span>(16) Long Island</span><span class="spread fav">-30.5</span></div>
+    </div>
+    <div class="win-box">
+      <div class="win-pct">99<span class="win-sym">%</span></div>
+      <div class="win-lbl">Win Rd1</div>
+    </div>
+  </div>
+  <div class="milestones">
+    <div class="ms locked"><div class="ms-l">R1</div><div class="ms-v">$0</div></div>
+    <div class="ms locked"><div class="ms-l">S16</div><div class="ms-v">$0</div></div>
+    <div class="ms active"><div class="ms-l">E8</div><div class="ms-v">$340</div></div>
+    <div class="ms active"><div class="ms-l">F4</div><div class="ms-v">$1,901</div></div>
+    <div class="ms breakeven"><div class="ms-l">Finals</div><div class="ms-v">$1,086</div><div class="ms-be">Even</div></div>
+    <div class="ms active"><div class="ms-l">Champ</div><div class="ms-v">$2,444</div></div>
+  </div>
+</div>
+
+<!-- VIRGINIA -->
+<div class="card chalk">
+  <div class="card-topline"></div>
+  <div class="card-meta">
+    <div class="meta-left">
+      <span class="meta-piece time">1:50 PM</span>
+      <span class="meta-divider">·</span>
+      <span class="meta-piece">TBS</span>
+      <span class="meta-divider">·</span>
+      <span class="meta-piece">Philadelphia</span>
+    </div>
+    <span class="meta-paid">Paid $375</span>
+  </div>
+  <div class="card-body">
+    <div class="card-info">
+      <div class="badge-row"><span class="region-badge">#3 MW</span></div>
+      <div class="team-name"><span class="team-seed">#3</span>Virginia</div>
+      <div class="matchup">vs <span>(14) Wright State</span><span class="spread fav">-17.5</span></div>
+    </div>
+    <div class="win-box">
+      <div class="win-pct">95<span class="win-sym">%</span></div>
+      <div class="win-lbl">Win Rd1</div>
+    </div>
+  </div>
+  <div class="milestones">
+    <div class="ms locked"><div class="ms-l">R1</div><div class="ms-v">$0</div></div>
+    <div class="ms locked"><div class="ms-l">S16</div><div class="ms-v">$0</div></div>
+    <div class="ms active"><div class="ms-l">E8</div><div class="ms-v">$340</div></div>
+    <div class="ms breakeven"><div class="ms-l">F4</div><div class="ms-v">$1,901</div><div class="ms-be">Even</div></div>
+    <div class="ms active"><div class="ms-l">Finals</div><div class="ms-v">$1,086</div></div>
+    <div class="ms active"><div class="ms-l">Champ</div><div class="ms-v">$2,444</div></div>
+  </div>
+</div>
+
+<!-- UCF -->
+<div class="card coinflip">
+  <div class="card-topline"></div>
+  <div class="card-meta">
+    <div class="meta-left">
+      <span class="meta-piece time">7:25 PM</span>
+      <span class="meta-divider">·</span>
+      <span class="meta-piece">TBS</span>
+      <span class="meta-divider">·</span>
+      <span class="meta-piece">Philadelphia</span>
+    </div>
+    <span class="meta-paid">Paid $115</span>
+  </div>
+  <div class="card-body">
+    <div class="card-info">
+      <div class="badge-row"><span class="region-badge">#10 East</span></div>
+      <div class="team-name"><span class="team-seed">#10</span>UCF</div>
+      <div class="matchup">vs <span>(7) UCLA</span><span class="spread dog">+5.5</span></div>
+    </div>
+    <div class="win-box">
+      <div class="win-pct">35<span class="win-sym">%</span></div>
+      <div class="win-lbl">Win Rd1</div>
+    </div>
+  </div>
+  <div class="milestones">
+    <div class="ms breakeven"><div class="ms-l">R1</div><div class="ms-v">~$679</div><div class="ms-be">Even</div></div>
+    <div class="ms active"><div class="ms-l">S16</div><div class="ms-v">~$625</div></div>
+    <div class="ms locked"><div class="ms-l">E8</div><div class="ms-v">$0</div></div>
+    <div class="ms active"><div class="ms-l">F4</div><div class="ms-v">$1,901</div></div>
+    <div class="ms active"><div class="ms-l">Finals</div><div class="ms-v">$1,086</div></div>
+    <div class="ms active"><div class="ms-l">Champ</div><div class="ms-v">$2,444</div></div>
+  </div>
+</div>
+
+<!-- FLORIDA -->
+<div class="card chalk">
+  <div class="card-topline"></div>
+  <div class="card-meta">
+    <div class="meta-left">
+      <span class="meta-piece time">9:25 PM</span>
+      <span class="meta-divider">·</span>
+      <span class="meta-piece">TNT</span>
+      <span class="meta-divider">·</span>
+      <span class="meta-piece">Tampa</span>
+    </div>
+    <span class="meta-paid">Paid $1,550</span>
+  </div>
+  <div class="card-body">
+    <div class="card-info">
+      <div class="badge-row"><span class="region-badge">#1 South</span></div>
+      <div class="team-name"><span class="team-seed">#1</span>Florida</div>
+      <div class="matchup">vs <span>(16) Prairie View A&M</span><span class="spread fav">-35.5</span></div>
+    </div>
+    <div class="win-box">
+      <div class="win-pct">99<span class="win-sym">%</span></div>
+      <div class="win-lbl">Win Rd1</div>
+    </div>
+  </div>
+  <div class="milestones">
+    <div class="ms locked"><div class="ms-l">R1</div><div class="ms-v">$0</div></div>
+    <div class="ms locked"><div class="ms-l">S16</div><div class="ms-v">$0</div></div>
+    <div class="ms active"><div class="ms-l">E8</div><div class="ms-v">$340</div></div>
+    <div class="ms breakeven"><div class="ms-l">F4</div><div class="ms-v">$1,901</div><div class="ms-be">Even</div></div>
+    <div class="ms active"><div class="ms-l">Finals</div><div class="ms-v">$1,086</div></div>
+    <div class="ms active"><div class="ms-l">Champ</div><div class="ms-v">$2,444</div></div>
+  </div>
+</div>
+
+<!-- MISSOURI -->
+<div class="card coinflip">
+  <div class="card-topline"></div>
+  <div class="card-meta">
+    <div class="meta-left">
+      <span class="meta-piece time">10:10 PM</span>
+      <span class="meta-divider">·</span>
+      <span class="meta-piece">truTV</span>
+      <span class="meta-divider">·</span>
+      <span class="meta-piece">St. Louis</span>
+    </div>
+    <span class="meta-paid">Paid $220</span>
+  </div>
+  <div class="card-body">
+    <div class="card-info">
+      <div class="badge-row"><span class="region-badge">#10 West</span></div>
+      <div class="team-name"><span class="team-seed">#10</span>Missouri</div>
+      <div class="matchup">vs <span>(7) Miami (FL)</span><span class="spread dog">+2.5</span></div>
+    </div>
+    <div class="win-box">
+      <div class="win-pct">45<span class="win-sym">%</span></div>
+      <div class="win-lbl">Win Rd1</div>
+    </div>
+  </div>
+  <div class="milestones">
+    <div class="ms breakeven"><div class="ms-l">R1</div><div class="ms-v">~$679</div><div class="ms-be">Even</div></div>
+    <div class="ms active"><div class="ms-l">S16</div><div class="ms-v">~$625</div></div>
+    <div class="ms locked"><div class="ms-l">E8</div><div class="ms-v">$0</div></div>
+    <div class="ms active"><div class="ms-l">F4</div><div class="ms-v">$1,901</div></div>
+    <div class="ms active"><div class="ms-l">Finals</div><div class="ms-v">$1,086</div></div>
+    <div class="ms active"><div class="ms-l">Champ</div><div class="ms-v">$2,444</div></div>
+  </div>
+</div>
+
+<!-- SCENARIO MODEL -->
+<div class="scenario-wrap">
+  <div class="sc-header">
+    <div class="sc-title">🔮 What-If Calculator</div>
+    <div class="sc-sub">Model any team's payout path</div>
+  </div>
+  <div class="sc-controls">
+    <div class="sc-field">
+      <div class="sc-label">Team</div>
+      <select id="sc-team" class="sc-select" onchange="scCalc()">
+        <option value="">— pick a team —</option>
+        <option value="ndsu">N. Dakota St. (#14 · $100)</option>
+        <option value="msu">Michigan St. (#3 · $475)</option>
+        <option value="vcu">VCU (#11 · $170)</option>
+        <option value="georgia">Georgia (#8 · $220)</option>
+        <option value="kennesaw">Kennesaw St. (#14 · $180)</option>
+        <option value="hofstra">Hofstra (#13 · $140)</option>
+        <option value="akron">Akron (#12 · $280)</option>
+        <option value="arizona">Arizona (#1 · $2,625)</option>
+        <option value="virginia">Virginia (#3 · $375)</option>
+        <option value="ucf">UCF (#10 · $115)</option>
+        <option value="florida">Florida (#1 · $1,550)</option>
+        <option value="missouri">Missouri (#10 · $220)</option>
+      </select>
+    </div>
+    <div class="sc-field">
+      <div class="sc-label">Advances To</div>
+      <div class="sc-pills">
+        <button class="sc-pill" data-r="R1" onclick="scPick(this)">R1</button>
+        <button class="sc-pill" data-r="S16" onclick="scPick(this)">S16</button>
+        <button class="sc-pill" data-r="E8" onclick="scPick(this)">E8</button>
+        <button class="sc-pill active" data-r="F4" onclick="scPick(this)">F4</button>
+        <button class="sc-pill" data-r="Finals" onclick="scPick(this)">Final</button>
+        <button class="sc-pill" data-r="Champ" onclick="scPick(this)">Champ</button>
       </div>
     </div>
-  `).join("");
+  </div>
+  <div id="sc-result" class="sc-result">
+    <div class="sc-empty">Pick a team above<br>to run the scenario</div>
+  </div>
+</div>
 
-  document.getElementById("gamesToday").textContent = games.length;
-  document.getElementById("liveCount").textContent = games.filter(g=>g.Status==="InProgress").length;
-  document.getElementById("finalCount").textContent = games.filter(g=>g.Status==="Final").length;
+<!-- LEGEND -->
+<div class="legend">
+  <div class="legend-item"><div class="legend-swatch" style="background:#2563eb"></div>Heavy Fav</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#059669"></div>Coin Flip</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#d97706"></div>Underdog</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#dc2626"></div>Big Dog</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#7c3aed"></div>Own Both</div>
+</div>
 
-  document.getElementById("updated").textContent =
-    "Last updated: " + new Date().toLocaleTimeString();
+<div class="footer">
+  Win% = Vegas implied probability · Prizes confirmed from Calcutta spreadsheet<br>
+  *S16 pot splits among all #4–16 seeds that advance · E8 pot = #1–3 seeds only
+</div>
+
+
+<script>
+var scRound = 'F4';
+
+var SC_T = {
+  ndsu:     {n:'N. Dakota St.', s:14, paid:100,  top3:false, upset:true,  par:'msu'},
+  msu:      {n:'Michigan St.',  s:3,  paid:475,  top3:true,  upset:false, par:'ndsu'},
+  vcu:      {n:'VCU',           s:11, paid:170,  top3:false, upset:false, par:null},
+  georgia:  {n:'Georgia',       s:8,  paid:220,  top3:false, upset:false, par:null},
+  kennesaw: {n:'Kennesaw St.',  s:14, paid:180,  top3:false, upset:true,  par:null},
+  hofstra:  {n:'Hofstra',       s:13, paid:140,  top3:false, upset:true,  par:null},
+  akron:    {n:'Akron',         s:12, paid:280,  top3:false, upset:false, par:null},
+  arizona:  {n:'Arizona',       s:1,  paid:2625, top3:true,  upset:false, par:null},
+  virginia: {n:'Virginia',      s:3,  paid:375,  top3:true,  upset:false, par:null},
+  ucf:      {n:'UCF',           s:10, paid:115,  top3:false, upset:false, par:null},
+  florida:  {n:'Florida',       s:1,  paid:1550, top3:true,  upset:false, par:null},
+  missouri: {n:'Missouri',      s:10, paid:220,  top3:false, upset:false, par:null}
+};
+
+var SC_R  = ['R1','S16','E8','F4','Finals','Champ'];
+var SC_RL = {R1:'Round 1 Win', S16:'Sweet 16', E8:'Elite 8', F4:'Final Four', Finals:'Champ. Game', Champ:'Champion 🏆'};
+
+function scPick(el) {
+  document.querySelectorAll('.sc-pill').forEach(function(p){ p.classList.remove('active'); });
+  el.classList.add('active');
+  scRound = el.dataset.r;
+  scCalc();
 }
 
-loadGames();
-setInterval(loadGames,30000);
+function scCalc() {
+  var tid = document.getElementById('sc-team').value;
+  var res = document.getElementById('sc-result');
+  if (!tid) {
+    res.innerHTML = '<div class="sc-empty">Pick a team above<br>to run the scenario</div>';
+    return;
+  }
 
+  var t  = SC_T[tid];
+  var ti = SC_R.indexOf(scRound);
+
+  /* incremental payout per milestone */
+  var P = t.top3
+    ? {R1:0, S16:0, E8:340, F4:1901, Finals:1086, Champ:2444}
+    : {R1:679, S16:625, E8:0, F4:1901, Finals:1086, Champ:2444};
+  var approxSet = t.top3 ? {} : {R1:true, S16:true};
+
+  /* build milestone rows */
+  var total = 0, rows = '';
+  for (var i = 0; i <= ti; i++) {
+    var r      = SC_R[i];
+    var amt    = P[r];
+    var isTgt  = (i === ti);
+    var locked = (amt === 0);
+    var approx = !!approxSet[r];
+    total += amt;
+
+    var cls  = isTgt ? 'target' : locked ? 'locked' : 'earned';
+    var icon = isTgt ? '◉' : locked ? '—' : '✓';
+    var disp = locked ? '$0' : ((approx ? '~' : '') + '$' + amt.toLocaleString());
+    var pfx  = (amt > 0) ? '+' : '';
+
+    rows += '<div class="sc-ms-row ' + cls + '">'
+          + '<div class="sc-ms-icon">' + icon + '</div>'
+          + '<div class="sc-ms-label">' + SC_RL[r] + '</div>'
+          + '<div class="sc-ms-amt">' + pfx + disp + '</div>'
+          + '</div>';
+  }
+
+  /* summary math */
+  var net    = total - t.paid;
+  var roi    = Math.round((net / t.paid) * 100);
+  var profit = (net >= 0);
+
+  var hasApprox = false;
+  for (var j = 0; j <= ti; j++) {
+    if (approxSet[SC_R[j]] && P[SC_R[j]] > 0) { hasApprox = true; break; }
+  }
+  var ap = hasApprox ? '~' : '';
+
+  var netDisp = (profit ? '+' : '\u2212') + ap + '$' + Math.abs(net).toLocaleString();
+  var roiDisp = (profit ? '+' : '') + roi.toLocaleString() + '%';
+
+  /* notes */
+  var notes = '';
+
+  /* top-3 seeds: explain R1/S16 not paid */
+  if (t.top3 && ti < SC_R.indexOf('E8')) {
+    notes += '<div class="sc-note">'
+           + '<div class="sc-note-title">ℹ️ Payout Structure</div>'
+           + '<div class="sc-note-body">As a #' + t.s + ' seed, ' + t.n + ' is not eligible for R1 or S16 payouts — first collection happens at Elite 8.</div>'
+           + '</div>';
+  }
+
+  /* upset side pot */
+  if (t.upset) {
+    notes += '<div class="sc-note">'
+           + '<div class="sc-note-title">⚡ Side Pot Upside</div>'
+           + '<div class="sc-note-body">' + t.n + ' winning R1 makes them a strong candidate for the Biggest Upset pot (~$1,086 — not included above)</div>'
+           + '</div>';
+  }
+
+  /* owned-both note */
+  if (t.par) {
+    var p2 = SC_T[t.par];
+    notes += '<div class="sc-note" style="margin-top:6px">'
+           + '<div class="sc-note-title">🔄 Paired Game</div>'
+           + '<div class="sc-note-body">You own both teams in this matchup. If ' + t.n + ' advances, ' + p2.n + ' is out in R1.</div>'
+           + '</div>';
+  }
+
+  res.innerHTML =
+      '<div class="sc-ms-rows">' + rows + '</div>'
+    + '<div class="sc-totals">'
+    + '<div class="sc-total-row"><div class="sc-total-lbl">Total Collected</div><div class="sc-total-val">' + ap + '$' + total.toLocaleString() + '</div></div>'
+    + '<div class="sc-total-row"><div class="sc-total-lbl">Paid in Calcutta</div><div class="sc-total-val neg">\u2212$' + t.paid.toLocaleString() + '</div></div>'
+    + '<div class="sc-divider"></div>'
+    + '<div class="sc-total-row"><div class="sc-total-lbl">Net Return</div><div class="sc-total-val ' + (profit ? 'pos' : 'neg') + '">' + netDisp + '</div></div>'
+    + '<div class="sc-total-row"><div class="sc-total-lbl">ROI</div><div class="sc-total-val ' + (profit ? 'pos' : 'neg') + '">' + roiDisp + '</div></div>'
+    + '</div>'
+    + notes;
+}
 </script>
 
 </body>
