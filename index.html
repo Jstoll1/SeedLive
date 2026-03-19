@@ -5,366 +5,760 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SeedMoney Live</title>
   <style>
-    :root {
-      --bg: #0b1220;
-      --panel: #111827;
-      --panel-2: #1f2937;
-      --text: #f8fafc;
-      --muted: #94a3b8;
-      --green: #22c55e;
-      --red: #ef4444;
-      --yellow: #f59e0b;
-      --blue: #60a5fa;
-      --border: rgba(255,255,255,0.08);
+    :root{
+      --bg:#0b1220;
+      --panel:#111827;
+      --panel2:#1f2937;
+      --text:#f8fafc;
+      --muted:#94a3b8;
+      --border:rgba(255,255,255,.08);
+      --green:#22c55e;
+      --red:#ef4444;
+      --yellow:#f59e0b;
+      --blue:#60a5fa;
     }
 
-    * { box-sizing: border-box; }
+    *{box-sizing:border-box}
 
-    body {
-      margin: 0;
-      padding: 20px;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-      background: linear-gradient(180deg, #08101d, #0f172a);
-      color: var(--text);
+    body{
+      margin:0;
+      padding:16px;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+      background:linear-gradient(180deg,#08101d,#0f172a);
+      color:var(--text);
     }
 
-    .wrap {
-      max-width: 1200px;
-      margin: 0 auto;
+    .wrap{
+      max-width:1280px;
+      margin:0 auto;
     }
 
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 16px;
-      margin-bottom: 18px;
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-bottom:16px;
+      flex-wrap:wrap;
     }
 
-    .title {
-      margin: 0 0 6px 0;
-      font-size: 30px;
-      font-weight: 900;
-      letter-spacing: -0.02em;
+    .title{
+      font-size:32px;
+      font-weight:900;
+      margin:0;
     }
 
-    .sub {
-      color: var(--muted);
-      font-size: 14px;
+    .sub{
+      color:var(--muted);
+      font-size:14px;
+      margin-top:4px;
     }
 
-    .header-right {
-      text-align: right;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      align-items: flex-end;
+    .actions{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
     }
 
-    .button {
-      appearance: none;
-      border: 1px solid var(--border);
-      background: var(--panel-2);
-      color: var(--text);
-      border-radius: 10px;
-      padding: 10px 14px;
-      font-weight: 800;
-      cursor: pointer;
+    .btn{
+      appearance:none;
+      border:1px solid var(--border);
+      background:var(--panel2);
+      color:var(--text);
+      border-radius:10px;
+      padding:10px 14px;
+      font-weight:800;
+      cursor:pointer;
     }
 
-    .button:hover {
-      filter: brightness(1.08);
+    .stamp{
+      color:var(--muted);
+      font-size:13px;
     }
 
-    .stamp {
-      color: var(--muted);
-      font-size: 13px;
+    .hero{
+      display:grid;
+      grid-template-columns:2fr 1fr;
+      gap:14px;
+      margin-bottom:16px;
     }
 
-    .summary {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 12px;
-      margin-bottom: 16px;
+    .card,
+    .hero-card,
+    .summary-card,
+    .team-card,
+    .whatif-card{
+      background:rgba(17,24,39,.94);
+      border:1px solid var(--border);
+      border-radius:16px;
     }
 
-    .summary-card {
-      background: rgba(17,24,39,0.92);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 14px;
+    .hero-card{
+      padding:18px;
     }
 
-    .summary-label {
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      margin-bottom: 8px;
+    .eyebrow{
+      color:var(--muted);
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      margin-bottom:6px;
     }
 
-    .summary-value {
-      font-size: 24px;
-      font-weight: 900;
-      line-height: 1;
+    .hero-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
     }
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(265px, 1fr));
-      gap: 14px;
+    .hero-stat{
+      padding:14px;
+      border:1px solid var(--border);
+      border-radius:14px;
+      background:rgba(255,255,255,.03);
     }
 
-    .card {
-      background: rgba(17,24,39,0.92);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 14px;
-      min-height: 196px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+    .hero-value{
+      font-size:28px;
+      font-weight:900;
+      line-height:1;
     }
 
-    .topline {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 10px;
-      margin-bottom: 10px;
+    .pills{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:14px;
     }
 
-    .seed {
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 800;
-      margin-bottom: 4px;
+    .pill{
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.03);
+      border-radius:999px;
+      padding:8px 12px;
+      font-size:13px;
+      font-weight:800;
     }
 
-    .team {
-      font-size: 20px;
-      font-weight: 900;
-      line-height: 1.08;
+    .summary{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:12px;
+      margin-bottom:16px;
     }
 
-    .badge {
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      padding: 6px 10px;
-      font-size: 12px;
-      font-weight: 900;
-      white-space: nowrap;
+    .summary-card{
+      padding:14px;
     }
 
-    .badge.pre { color: var(--blue); background: rgba(96,165,250,0.10); }
-    .badge.live { color: #fde68a; background: rgba(245,158,11,0.12); }
-    .badge.final { color: #bbf7d0; background: rgba(34,197,94,0.12); }
-    .badge.off { color: #fecaca; background: rgba(239,68,68,0.12); }
-
-    .score-row {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      gap: 10px;
-      align-items: center;
-      margin-bottom: 12px;
+    .summary-value{
+      font-size:24px;
+      font-weight:900;
+      line-height:1;
     }
 
-    .score-box {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 10px;
+    .alert,
+    .error{
+      display:none;
+      padding:12px 14px;
+      border-radius:12px;
+      font-weight:800;
+      margin-bottom:14px;
     }
 
-    .score-label {
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 800;
-      margin-bottom: 4px;
+    .alert{
+      border:1px solid rgba(245,158,11,.25);
+      background:rgba(245,158,11,.10);
+      color:#fde68a;
     }
 
-    .score {
-      font-size: 28px;
-      font-weight: 900;
-      line-height: 1;
+    .error{
+      border:1px solid rgba(239,68,68,.25);
+      background:rgba(239,68,68,.10);
+      color:#fecaca;
     }
 
-    .vs {
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 900;
+    .section-head{
+      padding:14px 16px;
+      margin-bottom:12px;
     }
 
-    .bottom {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      gap: 12px;
+    .section-title{
+      margin:0;
+      font-size:20px;
+      font-weight:900;
     }
 
-    .prob-wrap {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(285px,1fr));
+      gap:14px;
+      margin-bottom:16px;
     }
 
-    .prob {
-      font-size: 34px;
-      font-weight: 900;
-      line-height: 1;
-      transition: color 0.2s ease;
+    .team-card{
+      padding:14px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
     }
 
-    .prob-label {
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 800;
+    .team-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:10px;
     }
 
-    .prob.up { color: var(--green); }
-    .prob.down { color: var(--red); }
-    .prob.flat { color: var(--text); }
-
-    .detail {
-      text-align: right;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.35;
+    .seedline{
+      color:var(--muted);
+      font-size:13px;
+      font-weight:800;
     }
 
-    .error {
-      display: none;
-      margin-bottom: 14px;
-      background: rgba(239,68,68,0.12);
-      color: #fecaca;
-      border: 1px solid rgba(239,68,68,0.25);
-      border-radius: 12px;
-      padding: 12px 14px;
+    .team-name{
+      font-size:24px;
+      font-weight:900;
+      line-height:1.05;
+      margin-top:2px;
     }
 
-    .note {
-      margin-top: 18px;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.5;
+    .badge{
+      border:1px solid var(--border);
+      border-radius:999px;
+      padding:6px 10px;
+      font-size:12px;
+      font-weight:900;
+      white-space:nowrap;
     }
 
-    @media (max-width: 820px) {
-      .summary {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
+    .badge.pre{color:var(--blue);background:rgba(96,165,250,.10)}
+    .badge.live{color:#fde68a;background:rgba(245,158,11,.12)}
+    .badge.final{color:#bbf7d0;background:rgba(34,197,94,.12)}
+    .badge.off{color:#fecaca;background:rgba(239,68,68,.12)}
+
+    .meta-row{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      color:var(--muted);
+      font-size:12px;
+      font-weight:800;
     }
 
-    @media (max-width: 640px) {
-      body { padding: 14px; }
+    .matchup{
+      padding:10px 12px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.03);
+      border-radius:12px;
+    }
 
-      .header {
-        flex-direction: column;
-        align-items: stretch;
-      }
+    .matchup-top{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:center;
+      margin-bottom:8px;
+    }
 
-      .header-right {
-        align-items: flex-start;
-        text-align: left;
-      }
+    .matchup-line{
+      font-size:14px;
+      font-weight:800;
+    }
 
-      .title { font-size: 26px; }
-      .prob { font-size: 30px; }
-      .score { font-size: 24px; }
-      .team { font-size: 18px; }
-      .summary { grid-template-columns: 1fr 1fr; }
+    .live-line{
+      min-height:16px;
+      font-size:12px;
+      font-weight:900;
+      color:var(--yellow);
+      letter-spacing:.04em;
+      text-transform:uppercase;
+    }
+
+    .scoreline{
+      display:grid;
+      grid-template-columns:1fr auto 1fr;
+      gap:8px;
+      align-items:center;
+    }
+
+    .scorebox{
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:8px 10px;
+      background:rgba(255,255,255,.02);
+    }
+
+    .scorebox .label{
+      color:var(--muted);
+      font-size:11px;
+      font-weight:800;
+      margin-bottom:4px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .scorebox .score{
+      font-size:26px;
+      font-weight:900;
+      line-height:1;
+    }
+
+    .vs{
+      color:var(--muted);
+      font-size:11px;
+      font-weight:900;
+    }
+
+    .prob-row{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-end;
+      gap:10px;
+    }
+
+    .prob-wrap{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+    }
+
+    .prob{
+      font-size:38px;
+      font-weight:900;
+      line-height:1;
+    }
+
+    .prob-sub{
+      color:var(--muted);
+      font-size:12px;
+      font-weight:800;
+    }
+
+    .prob.up{color:var(--green)}
+    .prob.down{color:var(--red)}
+    .prob.flat{color:var(--text)}
+
+    .paid{
+      text-align:right;
+    }
+
+    .paid .amount{
+      font-size:20px;
+      font-weight:900;
+      line-height:1;
+    }
+
+    .paid .label{
+      color:var(--muted);
+      font-size:12px;
+      font-weight:800;
+      margin-top:4px;
+    }
+
+    .breakdown{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:8px;
+    }
+
+    .cell{
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:8px 10px;
+      background:rgba(255,255,255,.02);
+      min-height:56px;
+    }
+
+    .cell-label{
+      color:var(--muted);
+      font-size:11px;
+      font-weight:800;
+      margin-bottom:5px;
+    }
+
+    .cell-value{
+      font-size:18px;
+      font-weight:900;
+      line-height:1;
+    }
+
+    .whatif-card{
+      padding:16px;
+      margin-top:8px;
+    }
+
+    .whatif-grid{
+      display:grid;
+      grid-template-columns:1.4fr 1fr;
+      gap:14px;
+      margin-top:12px;
+    }
+
+    .field{
+      margin-bottom:12px;
+    }
+
+    label{
+      display:block;
+      color:var(--muted);
+      font-size:12px;
+      font-weight:800;
+      margin-bottom:6px;
+    }
+
+    select{
+      width:100%;
+      padding:12px;
+      border-radius:10px;
+      border:1px solid var(--border);
+      background:var(--panel2);
+      color:var(--text);
+      font-size:14px;
+      font-weight:700;
+    }
+
+    .whatif-result{
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:14px;
+      background:rgba(255,255,255,.02);
+      min-height:100%;
+    }
+
+    .foot{
+      margin-top:14px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.45;
+    }
+
+    @media (max-width:960px){
+      .hero{grid-template-columns:1fr}
+      .summary{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .whatif-grid{grid-template-columns:1fr}
+    }
+
+    @media (max-width:640px){
+      body{padding:12px}
+      .title{font-size:28px}
+      .summary{grid-template-columns:1fr 1fr}
+      .prob{font-size:34px}
+      .hero-grid{grid-template-columns:1fr 1fr}
     }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="header">
+    <div class="topbar">
       <div>
-        <h1 class="title">SeedMoney Live</h1>
-        <div class="sub">Live scoring + dynamic win probability</div>
+        <h1 class="title">Team Curt — Round 1</h1>
+        <div class="sub">Live scoring + live probability</div>
       </div>
-      <div class="header-right">
-        <button class="button" id="refreshBtn">Refresh now</button>
+      <div class="actions">
+        <button class="btn" id="refreshBtn">Refresh now</button>
         <div class="stamp" id="lastUpdated">Waiting for first update…</div>
       </div>
     </div>
 
-    <div class="error" id="errorBox"></div>
+    <div class="hero">
+      <div class="hero-card">
+        <div class="eyebrow">March Madness Calcutta</div>
+        <div style="font-size:18px;font-weight:900;">Full team breakdown with live scoring</div>
+        <div class="pills">
+          <div class="pill" id="potPill">Pot: $27,160</div>
+          <div class="pill" id="breakEvenPill">Break even: $6,450</div>
+          <div class="pill" id="sharePill">Owned share: 24%</div>
+        </div>
+      </div>
 
-    <div class="summary">
-      <div class="summary-card">
-        <div class="summary-label">Teams</div>
-        <div class="summary-value" id="summaryTeams">0</div>
-      </div>
-      <div class="summary-card">
-        <div class="summary-label">Live</div>
-        <div class="summary-value" id="summaryLive">0</div>
-      </div>
-      <div class="summary-card">
-        <div class="summary-label">Winners</div>
-        <div class="summary-value" id="summaryWinners">0</div>
-      </div>
-      <div class="summary-card">
-        <div class="summary-label">Avg Win %</div>
-        <div class="summary-value" id="summaryAvgProb">0%</div>
+      <div class="hero-grid">
+        <div class="hero-stat">
+          <div class="eyebrow">Teams</div>
+          <div class="hero-value" id="summaryTeamsHero">12</div>
+        </div>
+        <div class="hero-stat">
+          <div class="eyebrow">Live Games</div>
+          <div class="hero-value" id="summaryLiveHero">0</div>
+        </div>
+        <div class="hero-stat">
+          <div class="eyebrow">Thursday</div>
+          <div class="hero-value" id="summaryThuHero">5</div>
+        </div>
+        <div class="hero-stat">
+          <div class="eyebrow">Friday</div>
+          <div class="hero-value" id="summaryFriHero">7</div>
+        </div>
       </div>
     </div>
 
-    <div class="grid" id="cards"></div>
+    <div class="error" id="errorBox"></div>
+    <div class="alert" id="ownBothAlert"></div>
 
-    <div class="note">
-      Edit the <strong>MY_TEAMS</strong> array only. Pregame uses your baseline probability. Live games update the probability from score margin + time remaining. Finals lock to 100% or 0%.
+    <div class="summary">
+      <div class="summary-card">
+        <div class="eyebrow">Live Games</div>
+        <div class="summary-value" id="summaryLive">0</div>
+      </div>
+      <div class="summary-card">
+        <div class="eyebrow">Final Winners</div>
+        <div class="summary-value" id="summaryWinners">0</div>
+      </div>
+      <div class="summary-card">
+        <div class="eyebrow">Avg Win %</div>
+        <div class="summary-value" id="summaryAvgProb">0%</div>
+      </div>
+      <div class="summary-card">
+        <div class="eyebrow">Live Expected R1</div>
+        <div class="summary-value" id="summaryLiveEV">$0</div>
+      </div>
+    </div>
+
+    <div class="card section-head">
+      <h2 class="section-title">Thursday</h2>
+    </div>
+    <div class="grid" id="thursdayGrid"></div>
+
+    <div class="card section-head">
+      <h2 class="section-title">Friday</h2>
+    </div>
+    <div class="grid" id="fridayGrid"></div>
+
+    <div class="whatif-card">
+      <div class="eyebrow">What-If Calculator</div>
+      <div style="font-size:22px;font-weight:900;">Model payout path</div>
+
+      <div class="whatif-grid">
+        <div>
+          <div class="field">
+            <label for="whatifTeam">Team</label>
+            <select id="whatifTeam"></select>
+          </div>
+          <div class="field">
+            <label for="whatifAdvance">Advances To</label>
+            <select id="whatifAdvance">
+              <option value="">— pick a round —</option>
+              <option value="r1">R1</option>
+              <option value="s16">S16</option>
+              <option value="e8">E8</option>
+              <option value="f4">F4</option>
+              <option value="finals">Final</option>
+              <option value="champ">Champ</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="whatif-result" id="whatifResult">
+          Pick a team above<br />to run the scenario
+        </div>
+      </div>
+    </div>
+
+    <div class="foot">
+      Edit only the TEAMS array if you want to change teams, payouts, or pregame probabilities.
     </div>
   </div>
 
   <script>
-    /*
-      ==========================================================
-      EDIT THIS SECTION
-      ==========================================================
-      Use ESPN team names when possible.
-      pregameProb is decimal:
-      0.94 = 94%
-    */
-    const MY_TEAMS = [
-      { team: "Duke Blue Devils", short: "Duke", seed: 1, pregameProb: 0.94 },
-      { team: "Michigan State Spartans", short: "Michigan St.", seed: 2, pregameProb: 0.60 },
-      { team: "VCU Rams", short: "VCU", seed: 11, pregameProb: 0.43 },
-      { team: "North Dakota State Bison", short: "NDSU", seed: 14, pregameProb: 0.06 }
-    ];
-
     const SCOREBOARD_URL = "https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/scoreboard";
 
-    /*
-      ==========================================================
-      HELPERS
-      ==========================================================
-    */
-    function clamp(value, min, max) {
-      return Math.max(min, Math.min(max, value));
-    }
+    const APP = {
+      teamName: "Team Curt",
+      pot: 27160,
+      ownedSharePct: 0.24,
+      breakEven: 6450
+    };
 
-    function probToLogit(prob) {
-      const p = clamp(prob, 0.001, 0.999);
-      return Math.log(p / (1 - p));
-    }
+    const TEAMS = [
+      {
+        id: "ndsu",
+        day: "thu",
+        tip: "Thu · 4:05 PM",
+        paid: 100,
+        regionLine: "#14 East Upset?",
+        displayName: "#14 N. Dakota St.",
+        whatIfName: "N. Dakota St.",
+        seed: 14,
+        matchupDisplay: "vs (3) Michigan St.",
+        spreadDisplay: "+16.5",
+        pregameProb: 0.06,
+        payouts: { r1: 679, s16: 625, e8: 0, f4: 1901, finals: 1086, champ: 2444 },
+        espnAliases: ["North Dakota State Bison", "North Dakota State", "N. Dakota St.", "NDSU"]
+      },
+      {
+        id: "msu",
+        day: "thu",
+        tip: "Thu · 4:05 PM",
+        paid: 475,
+        regionLine: "#3 East",
+        displayName: "#3 Michigan St.",
+        whatIfName: "Michigan St.",
+        seed: 3,
+        matchupDisplay: "vs (14) N. Dakota St.",
+        spreadDisplay: "-16.5",
+        pregameProb: 0.94,
+        payouts: { r1: 0, s16: 0, e8: 340, f4: 1901, finals: 1086, champ: 2444 },
+        espnAliases: ["Michigan State Spartans", "Michigan State", "Michigan St."]
+      },
+      {
+        id: "vcu",
+        day: "thu",
+        tip: "Thu · 6:50 PM",
+        paid: 170,
+        regionLine: "#11 South",
+        displayName: "#11 VCU",
+        whatIfName: "VCU",
+        seed: 11,
+        matchupDisplay: "vs (6) UNC",
+        spreadDisplay: "+2.5",
+        pregameProb: 0.43,
+        payouts: { r1: 679, s16: 625, e8: 0, f4: 1901, finals: 1086, champ: 2444 },
+        espnAliases: ["VCU Rams", "VCU"]
+      },
+      {
+        id: "uga",
+        day: "thu",
+        tip: "Thu · 9:45 PM",
+        paid: 220,
+        regionLine: "#8 MW",
+        displayName: "#8 Georgia",
+        whatIfName: "Georgia",
+        seed: 8,
+        matchupDisplay: "vs (9) Saint Louis",
+        spreadDisplay: "-2",
+        pregameProb: 0.60,
+        payouts: { r1: 679, s16: 625, e8: 0, f4: 1901, finals: 1086, champ: 2444 },
+        espnAliases: ["Georgia Bulldogs", "Georgia"]
+      },
+      {
+        id: "kennesaw",
+        day: "thu",
+        tip: "Thu · 10:00 PM",
+        paid: 180,
+        regionLine: "#14 West Upset?",
+        displayName: "#14 Kennesaw St.",
+        whatIfName: "Kennesaw St.",
+        seed: 14,
+        matchupDisplay: "vs (3) Gonzaga",
+        spreadDisplay: "+18.5",
+        pregameProb: 0.07,
+        payouts: { r1: 679, s16: 625, e8: 0, f4: 1901, finals: 1086, champ: 2444 },
+        espnAliases: ["Kennesaw State Owls", "Kennesaw State", "Kennesaw St."]
+      },
+      {
+        id: "hofstra",
+        day: "fri",
+        tip: "Fri · 3:15 PM",
+        paid: 140,
+        regionLine: "#13 MW Upset?",
+        displayName: "#13 Hofstra",
+        whatIfName: "Hofstra",
+        seed: 13,
+        matchupDisplay: "vs (4) Alabama",
+        spreadDisplay: "+11.5",
+        pregameProb: 0.15,
+        payouts: { r1: 679, s16: 625, e8: 0, f4: 1901, finals: 1086, champ: 2444 },
+        espnAliases: ["Hofstra Pride", "Hofstra"]
+      },
+      {
+        id: "akron",
+        day: "fri",
+        tip: "Fri · 12:40 PM",
+        paid: 280,
+        regionLine: "#12 MW",
+        displayName: "#12 Akron",
+        whatIfName: "Akron",
+        seed: 12,
+        matchupDisplay: "vs (5) Texas Tech",
+        spreadDisplay: "+8.5",
+        pregameProb: 0.27,
+        payouts: { r1: 679, s16: 625, e8: 0, f4: 1901, finals: 1086, champ: 2444 },
+        espnAliases: ["Akron Zips", "Akron"]
+      },
+      {
+        id: "arizona",
+        day: "fri",
+        tip: "Fri · 1:35 PM",
+        paid: 2625,
+        regionLine: "#1 West",
+        displayName: "#1 Arizona",
+        whatIfName: "Arizona",
+        seed: 1,
+        matchupDisplay: "vs (16) Long Island",
+        spreadDisplay: "-30.5",
+        pregameProb: 0.99,
+        payouts: { r1: 0, s16: 0, e8: 340, f4: 1901, finals: 1086, champ: 2444 },
+        espnAliases: ["Arizona Wildcats", "Arizona"]
+      },
+      {
+        id: "virginia",
+        day: "fri",
+        tip: "Fri · 1:50 PM",
+        paid: 375,
+        regionLine: "#3 MW",
+        displayName: "#3 Virginia",
+        whatIfName: "Virginia",
+        seed: 3,
+        matchupDisplay: "vs (14) Wright State",
+        spreadDisplay: "-17.5",
+        pregameProb: 0.95,
+        payouts: { r1: 0, s16: 0, e8: 340, f4: 1901, finals: 1086, champ: 2444 },
+        espnAliases: ["Virginia Cavaliers", "Virginia"]
+      },
+      {
+        id: "ucf",
+        day: "fri",
+        tip: "Fri · 7:25 PM",
+        paid: 115,
+        regionLine: "#10 East",
+        displayName: "#10 UCF",
+        whatIfName: "UCF",
+        seed: 10,
+        matchupDisplay: "vs (7) UCLA",
+        spreadDisplay: "+5.5",
+        pregameProb: 0.35,
+        payouts: { r1: 679, s16: 625, e8: 0, f4: 1901, finals: 1086, champ: 2444 },
+        espnAliases: ["UCF Knights", "UCF"]
+      },
+      {
+        id: "florida",
+        day: "fri",
+        tip: "Fri · 9:25 PM",
+        paid: 1550,
+        regionLine: "#1 South",
+        displayName: "#1 Florida",
+        whatIfName: "Florida",
+        seed: 1,
+        matchupDisplay: "vs (16) Prairie View A&M",
+        spreadDisplay: "-35.5",
+        pregameProb: 0.99,
+        payouts: { r1: 0, s16: 0, e8: 340, f4: 1901, finals: 1086, champ: 2444 },
+        espnAliases: ["Florida Gators", "Florida"]
+      },
+      {
+        id: "mizzou",
+        day: "fri",
+        tip: "Fri · 10:10 PM",
+        paid: 220,
+        regionLine: "#10 West",
+        displayName: "#10 Missouri",
+        whatIfName: "Missouri",
+        seed: 10,
+        matchupDisplay: "vs (7) Miami (FL)",
+        spreadDisplay: "+2.5",
+        pregameProb: 0.45,
+        payouts: { r1: 679, s16: 625, e8: 0, f4: 1901, finals: 1086, champ: 2444 },
+        espnAliases: ["Missouri Tigers", "Missouri", "Mizzou"]
+      }
+    ];
 
-    function logitToProb(logitValue) {
-      return 1 / (1 + Math.exp(-logitValue));
-    }
+    const fmtMoney = (n) => `$${Math.round(n).toLocaleString()}`;
 
-    function pct(prob) {
-      return `${Math.round(prob * 100)}%`;
-    }
-
-    function safeNum(value) {
-      const n = Number(value);
-      return Number.isFinite(n) ? n : 0;
-    }
-
-    function normalize(str) {
-      return String(str || "")
+    function normalize(s) {
+      return String(s || "")
         .toLowerCase()
         .replace(/&/g, "and")
         .replace(/\./g, "")
@@ -373,23 +767,50 @@
         .trim();
     }
 
-    function parseClockToSeconds(displayClock) {
-      if (!displayClock || typeof displayClock !== "string") return 0;
-      const [m, s] = displayClock.split(":").map(Number);
-      if (Number.isNaN(m) || Number.isNaN(s)) return 0;
-      return (m * 60) + s;
+    function matchesAlias(candidate, aliases) {
+      const c = normalize(candidate);
+      return aliases.some(a => {
+        const x = normalize(a);
+        return c === x || c.includes(x) || x.includes(c);
+      });
     }
 
-    // College basketball regulation: 40 minutes = 2400 sec
+    function clamp(v, min, max) {
+      return Math.max(min, Math.min(max, v));
+    }
+
+    function probToLogit(p) {
+      const x = clamp(p, 0.001, 0.999);
+      return Math.log(x / (1 - x));
+    }
+
+    function logitToProb(x) {
+      return 1 / (1 + Math.exp(-x));
+    }
+
+    function parseClockToSeconds(displayClock) {
+      if (!displayClock || typeof displayClock !== "string") return 0;
+      const parts = displayClock.split(":").map(Number);
+      if (parts.length !== 2 || parts.some(Number.isNaN)) return 0;
+      return (parts[0] * 60) + parts[1];
+    }
+
     function calcSecondsRemaining(period, displayClock) {
       const clockSeconds = parseClockToSeconds(displayClock);
-
       if (!period || period <= 0) return 2400;
       if (period === 1) return 1200 + clockSeconds;
       if (period === 2) return clockSeconds;
-
-      // OT: treat as very late/high leverage
       return clockSeconds;
+    }
+
+    function calcLiveWinProb({ pregameProb, teamScore, oppScore, secondsRemaining, totalGameSeconds = 2400, possession = 0 }) {
+      const scoreDiff = teamScore - oppScore;
+      const elapsedPct = 1 - (secondsRemaining / totalGameSeconds);
+      const scoreWeight = 0.05 + (elapsedPct * 0.55);
+      const possWeight = 0.04 + (elapsedPct * 0.22);
+      const baseLogit = probToLogit(pregameProb);
+      const liveLogit = baseLogit + (scoreDiff * scoreWeight) + (possession * possWeight);
+      return clamp(logitToProb(liveLogit), 0.001, 0.999);
     }
 
     function statusToSimple(statusName) {
@@ -406,13 +827,6 @@
       return "OFF";
     }
 
-    function badgeClass(simpleStatus) {
-      if (simpleStatus === "live") return "badge live";
-      if (simpleStatus === "final") return "badge final";
-      if (simpleStatus === "scheduled") return "badge pre";
-      return "badge off";
-    }
-
     function getPeriodText(period) {
       if (period === 1) return "1H";
       if (period === 2) return "2H";
@@ -420,122 +834,147 @@
       return "";
     }
 
-    /*
-      ==========================================================
-      LIVE WIN PROBABILITY
-      ==========================================================
-      This is a lightweight approximation:
-      - starts from pregame probability
-      - score margin matters more later
-      - optional possession bump if ESPN exposes it
-    */
-    function calcLiveWinProb({
-      pregameProb,
-      teamScore,
-      oppScore,
-      secondsRemaining,
-      totalGameSeconds = 2400,
-      possession = 0
-    }) {
-      const scoreDiff = teamScore - oppScore;
-      const elapsedPct = 1 - (secondsRemaining / totalGameSeconds);
-
-      const scoreWeight = 0.05 + (elapsedPct * 0.55);
-      const possWeight = 0.04 + (elapsedPct * 0.22);
-
-      const baseLogit = probToLogit(pregameProb);
-      const liveLogit =
-        baseLogit +
-        (scoreDiff * scoreWeight) +
-        (possession * possWeight);
-
-      return clamp(logitToProb(liveLogit), 0.001, 0.999);
+    function safeNum(v) {
+      const n = Number(v);
+      return Number.isFinite(n) ? n : 0;
     }
 
-    /*
-      ==========================================================
-      TEAM ALIASES
-      ==========================================================
-    */
-    const TEAM_ROWS = MY_TEAMS.map(team => ({
-      ...team,
-      aliases: [
-        team.team,
-        team.short,
-        team.team.replace("State", "St."),
-        team.team.replace("St.", "State"),
-        team.team.replace("North", "N."),
-        team.team.replace("Saint", "St."),
-        team.team.replace("St.", "Saint")
-      ].filter(Boolean)
-    }));
+    function renderCards() {
+      const thursdayGrid = document.getElementById("thursdayGrid");
+      const fridayGrid = document.getElementById("fridayGrid");
 
-    /*
-      ==========================================================
-      INITIAL RENDER
-      ==========================================================
-    */
-    const cardsEl = document.getElementById("cards");
-    const errorBox = document.getElementById("errorBox");
-    const lastUpdatedEl = document.getElementById("lastUpdated");
+      const makeCard = (t) => `
+        <div class="team-card" id="card-${t.id}">
+          <div class="team-head">
+            <div>
+              <div class="seedline">${t.regionLine}</div>
+              <div class="team-name">${t.displayName}</div>
+            </div>
+            <div class="badge pre" id="badge-${t.id}">PRE</div>
+          </div>
 
-    function renderInitialCards() {
-      cardsEl.innerHTML = TEAM_ROWS.map((team, idx) => `
-        <div class="card" id="card-${idx}">
-          <div>
-            <div class="topline">
-              <div>
-                <div class="seed">#${team.seed ?? ""} seed</div>
-                <div class="team">${team.short || team.team}</div>
-              </div>
-              <div class="${badgeClass("scheduled")}" id="badge-${idx}">${badgeText("scheduled")}</div>
+          <div class="meta-row">
+            <div>${t.tip}</div>
+            <div>Paid ${fmtMoney(t.paid)}</div>
+          </div>
+
+          <div class="matchup">
+            <div class="matchup-top">
+              <div class="matchup-line">${t.matchupDisplay} ${t.spreadDisplay}</div>
+              <div class="live-line" id="liveLine-${t.id}"></div>
             </div>
 
-            <div class="score-row">
-              <div class="score-box">
-                <div class="score-label">Your team</div>
-                <div class="score" id="yourScore-${idx}">--</div>
+            <div class="scoreline">
+              <div class="scorebox">
+                <div class="label">Your team</div>
+                <div class="score" id="yourScore-${t.id}">--</div>
               </div>
-
               <div class="vs">VS</div>
-
-              <div class="score-box">
-                <div class="score-label" id="oppName-${idx}">Opponent</div>
-                <div class="score" id="oppScore-${idx}">--</div>
+              <div class="scorebox">
+                <div class="label" id="oppLabel-${t.id}">Opponent</div>
+                <div class="score" id="oppScore-${t.id}">--</div>
               </div>
             </div>
           </div>
 
-          <div class="bottom">
+          <div class="prob-row">
             <div class="prob-wrap">
-              <div class="prob flat" id="prob-${idx}">${pct(team.pregameProb)}</div>
-              <div class="prob-label" id="probLabel-${idx}">Win Rd1</div>
+              <div class="prob flat" id="prob-${t.id}">${Math.round(t.pregameProb * 100)}%</div>
+              <div class="prob-sub" id="probSub-${t.id}">Win Rd1</div>
             </div>
+            <div class="paid">
+              <div class="amount">${fmtMoney(t.paid)}</div>
+              <div class="label">Paid</div>
+            </div>
+          </div>
 
-            <div class="detail" id="detail-${idx}">
-              Waiting for matchup<br />
-              Pregame baseline
+          <div class="breakdown">
+            <div class="cell">
+              <div class="cell-label">R1</div>
+              <div class="cell-value">${fmtMoney(t.payouts.r1)}</div>
+            </div>
+            <div class="cell">
+              <div class="cell-label">S16</div>
+              <div class="cell-value">${fmtMoney(t.payouts.s16)}</div>
+            </div>
+            <div class="cell">
+              <div class="cell-label">E8</div>
+              <div class="cell-value">${fmtMoney(t.payouts.e8)}</div>
+            </div>
+            <div class="cell">
+              <div class="cell-label">F4</div>
+              <div class="cell-value">${fmtMoney(t.payouts.f4)}</div>
+            </div>
+            <div class="cell">
+              <div class="cell-label">Finals</div>
+              <div class="cell-value">${fmtMoney(t.payouts.finals)}</div>
+            </div>
+            <div class="cell">
+              <div class="cell-label">Champ</div>
+              <div class="cell-value">${fmtMoney(t.payouts.champ)}</div>
             </div>
           </div>
         </div>
-      `).join("");
+      `;
 
-      document.getElementById("summaryTeams").textContent = TEAM_ROWS.length;
+      thursdayGrid.innerHTML = TEAMS.filter(t => t.day === "thu").map(makeCard).join("");
+      fridayGrid.innerHTML = TEAMS.filter(t => t.day === "fri").map(makeCard).join("");
+
+      document.getElementById("summaryTeamsHero").textContent = TEAMS.length;
+      document.getElementById("summaryThuHero").textContent = TEAMS.filter(t => t.day === "thu").length;
+      document.getElementById("summaryFriHero").textContent = TEAMS.filter(t => t.day === "fri").length;
+      document.getElementById("potPill").textContent = `Pot: ${fmtMoney(APP.pot)}`;
+      document.getElementById("breakEvenPill").textContent = `Break even: ${fmtMoney(APP.breakEven)}`;
+      document.getElementById("sharePill").textContent = `Owned share: ${Math.round(APP.ownedSharePct * 100)}%`;
     }
 
-    renderInitialCards();
+    function setupWhatIf() {
+      const teamSel = document.getElementById("whatifTeam");
+      teamSel.innerHTML = `<option value="">— pick a team —</option>` + TEAMS.map(t =>
+        `<option value="${t.id}">${t.whatIfName} (#${t.seed} · ${fmtMoney(t.paid)})</option>`
+      ).join("");
 
-    /*
-      ==========================================================
-      ESPN FETCH + PARSE
-      ==========================================================
-    */
-    async function fetchScoreboard() {
-      const response = await fetch(SCOREBOARD_URL, { cache: "no-store" });
-      if (!response.ok) {
-        throw new Error(`Scoreboard fetch failed (${response.status})`);
+      teamSel.addEventListener("change", updateWhatIf);
+      document.getElementById("whatifAdvance").addEventListener("change", updateWhatIf);
+    }
+
+    function updateWhatIf() {
+      const teamId = document.getElementById("whatifTeam").value;
+      const advance = document.getElementById("whatifAdvance").value;
+      const box = document.getElementById("whatifResult");
+
+      if (!teamId) {
+        box.innerHTML = `Pick a team above<br />to run the scenario`;
+        return;
       }
-      return response.json();
+
+      const t = TEAMS.find(x => x.id === teamId);
+      if (!t) return;
+
+      if (!advance) {
+        box.innerHTML = `
+          <div style="font-size:22px;font-weight:900;margin-bottom:8px">${t.whatIfName}</div>
+          <div style="color:var(--muted);font-size:13px">Choose a round above to see the payout path.</div>
+        `;
+        return;
+      }
+
+      const map = {
+        r1: { label: "Wins Round 1", amount: t.payouts.r1 },
+        s16: { label: "Advances to Sweet 16", amount: t.payouts.s16 },
+        e8: { label: "Advances to Elite 8", amount: t.payouts.e8 },
+        f4: { label: "Advances to Final 4", amount: t.payouts.f4 },
+        finals: { label: "Advances to Final", amount: t.payouts.finals },
+        champ: { label: "Wins Championship", amount: t.payouts.champ }
+      };
+
+      const sel = map[advance];
+      box.innerHTML = `
+        <div style="font-size:22px;font-weight:900;margin-bottom:6px">${t.whatIfName}</div>
+        <div style="color:var(--muted);font-size:13px;margin-bottom:12px">${sel.label}</div>
+        <div style="font-size:34px;font-weight:900;line-height:1">${fmtMoney(sel.amount)}</div>
+        <div style="color:var(--muted);font-size:12px;font-weight:800;margin-top:8px">Paid ${fmtMoney(t.paid)} · Pregame ${Math.round(t.pregameProb * 100)}%</div>
+      `;
     }
 
     function parseEvent(event) {
@@ -547,21 +986,15 @@
       const away = competitors.find(c => c.homeAway === "away");
       if (!home || !away) return null;
 
-      const simpleStatus = statusToSimple(event?.status?.type?.name || "");
+      const status = statusToSimple(event?.status?.type?.name || "");
       const situation = comp.situation || null;
 
       let possessionTeamId = null;
-      if (situation?.possession) {
-        possessionTeamId = String(situation.possession);
-      } else if (situation?.lastPlay?.team?.id) {
-        possessionTeamId = String(situation.lastPlay.team.id);
-      }
+      if (situation?.possession) possessionTeamId = String(situation.possession);
+      else if (situation?.lastPlay?.team?.id) possessionTeamId = String(situation.lastPlay.team.id);
 
       return {
-        id: String(event.id || ""),
-        date: event.date || "",
-        status: simpleStatus,
-        rawStatus: event?.status?.type?.name || "",
+        status,
         clock: event?.status?.displayClock || "",
         period: safeNum(event?.status?.period),
         possessionTeamId,
@@ -580,192 +1013,167 @@
       };
     }
 
-    function teamMatchesName(candidateName, aliases) {
-      const candidate = normalize(candidateName);
-      return aliases.some(alias => {
-        const a = normalize(alias);
-        return candidate === a || candidate.includes(a) || a.includes(candidate);
-      });
-    }
-
-    function findEventForTeam(teamRow, events) {
+    function findEventForTeam(team, events) {
       for (const ev of events) {
         if (!ev) continue;
-
-        const homeMatch =
-          teamMatchesName(ev.home.name, teamRow.aliases) ||
-          teamMatchesName(ev.home.short, teamRow.aliases);
-
-        const awayMatch =
-          teamMatchesName(ev.away.name, teamRow.aliases) ||
-          teamMatchesName(ev.away.short, teamRow.aliases);
-
-        if (homeMatch || awayMatch) {
-          return {
-            event: ev,
-            isHome: homeMatch
-          };
-        }
+        const homeMatch = matchesAlias(ev.home.name, team.espnAliases) || matchesAlias(ev.home.short, team.espnAliases);
+        const awayMatch = matchesAlias(ev.away.name, team.espnAliases) || matchesAlias(ev.away.short, team.espnAliases);
+        if (homeMatch || awayMatch) return { event: ev, isHome: homeMatch };
       }
       return null;
     }
 
-    /*
-      ==========================================================
-      UI UPDATE
-      ==========================================================
-    */
-    function updateCard(idx, found) {
-      const badgeEl = document.getElementById(`badge-${idx}`);
-      const yourScoreEl = document.getElementById(`yourScore-${idx}`);
-      const oppNameEl = document.getElementById(`oppName-${idx}`);
-      const oppScoreEl = document.getElementById(`oppScore-${idx}`);
-      const probEl = document.getElementById(`prob-${idx}`);
-      const probLabelEl = document.getElementById(`probLabel-${idx}`);
-      const detailEl = document.getElementById(`detail-${idx}`);
+    function updateCard(team, found) {
+      const badge = document.getElementById(`badge-${team.id}`);
+      const yourScore = document.getElementById(`yourScore-${team.id}`);
+      const oppScore = document.getElementById(`oppScore-${team.id}`);
+      const oppLabel = document.getElementById(`oppLabel-${team.id}`);
+      const liveLine = document.getElementById(`liveLine-${team.id}`);
+      const prob = document.getElementById(`prob-${team.id}`);
+      const probSub = document.getElementById(`probSub-${team.id}`);
 
-      const teamRow = TEAM_ROWS[idx];
-      const pre = teamRow.pregameProb;
+      let currentProb = team.pregameProb;
+      let liveExpectedR1 = currentProb * team.payouts.r1;
+      let status = "scheduled";
+      let winner = false;
 
       if (!found) {
-        badgeEl.className = badgeClass("other");
-        badgeEl.textContent = badgeText("other");
-        yourScoreEl.textContent = "--";
-        oppNameEl.textContent = "Opponent";
-        oppScoreEl.textContent = "--";
-        probEl.textContent = pct(pre);
-        probEl.className = "prob flat";
-        probLabelEl.textContent = "Win Rd1";
-        detailEl.innerHTML = `No matchup found<br />Pregame baseline`;
-
-        return { status: "other", prob: pre, winner: false };
+        badge.className = "badge off";
+        badge.textContent = "OFF";
+        yourScore.textContent = "--";
+        oppScore.textContent = "--";
+        oppLabel.textContent = "Opponent";
+        liveLine.textContent = "";
+        prob.textContent = `${Math.round(team.pregameProb * 100)}%`;
+        prob.className = "prob flat";
+        probSub.textContent = "Win Rd1";
+        return { status: "other", prob: currentProb, winner: false, liveExpectedR1 };
       }
 
       const { event, isHome } = found;
-      const yourTeam = isHome ? event.home : event.away;
-      const oppTeam = isHome ? event.away : event.home;
+      const teamSide = isHome ? event.home : event.away;
+      const oppSide = isHome ? event.away : event.home;
+      status = event.status;
 
-      badgeEl.className = badgeClass(event.status);
-      badgeEl.textContent = badgeText(event.status);
-      oppNameEl.textContent = oppTeam.short || oppTeam.name;
+      badge.className = `badge ${status === "scheduled" ? "pre" : status === "live" ? "live" : status === "final" ? "final" : "off"}`;
+      badge.textContent = badgeText(status);
+      oppLabel.textContent = oppSide.short || oppSide.name;
 
-      let liveProb = pre;
-      let detailTop = "";
-      let detailBottom = "";
-      let winner = false;
-
-      if (event.status === "scheduled") {
-        yourScoreEl.textContent = "--";
-        oppScoreEl.textContent = "--";
-        probLabelEl.textContent = "Win Rd1";
-
-        detailTop = event.date
-          ? new Date(event.date).toLocaleString([], {
-              month: "short",
-              day: "numeric",
-              hour: "numeric",
-              minute: "2-digit"
-            })
-          : "Scheduled";
-
-        detailBottom = `vs ${oppTeam.short || oppTeam.name}`;
-      } else if (event.status === "live") {
-        yourScoreEl.textContent = String(yourTeam.score);
-        oppScoreEl.textContent = String(oppTeam.score);
+      if (status === "scheduled") {
+        yourScore.textContent = "--";
+        oppScore.textContent = "--";
+        liveLine.textContent = "";
+        currentProb = team.pregameProb;
+        probSub.textContent = "Win Rd1";
+      } else if (status === "live") {
+        yourScore.textContent = String(teamSide.score);
+        oppScore.textContent = String(oppSide.score);
 
         const secondsRemaining = calcSecondsRemaining(event.period, event.clock);
-
         let possession = 0;
         if (event.possessionTeamId) {
-          if (event.possessionTeamId === yourTeam.id) possession = 1;
-          else if (event.possessionTeamId === oppTeam.id) possession = -1;
+          if (event.possessionTeamId === teamSide.id) possession = 1;
+          else if (event.possessionTeamId === oppSide.id) possession = -1;
         }
 
-        liveProb = calcLiveWinProb({
-          pregameProb: pre,
-          teamScore: yourTeam.score,
-          oppScore: oppTeam.score,
+        currentProb = calcLiveWinProb({
+          pregameProb: team.pregameProb,
+          teamScore: teamSide.score,
+          oppScore: oppSide.score,
           secondsRemaining,
           possession
         });
 
-        probLabelEl.textContent = "Live win %";
-        detailTop = `${getPeriodText(event.period)} · ${event.clock || ""}`;
-        detailBottom = `${yourTeam.score}-${oppTeam.score} vs ${oppTeam.short || oppTeam.name}`;
-      } else if (event.status === "final") {
-        yourScoreEl.textContent = String(yourTeam.score);
-        oppScoreEl.textContent = String(oppTeam.score);
-
-        winner = yourTeam.score > oppTeam.score;
-        liveProb = winner ? 1 : 0;
-
-        probLabelEl.textContent = "Final result";
-        detailTop = "Final";
-        detailBottom = `${yourTeam.score}-${oppTeam.score} vs ${oppTeam.short || oppTeam.name}`;
+        liveLine.textContent = `${getPeriodText(event.period)} · ${event.clock}`;
+        probSub.textContent = "Live Win Rd1";
+      } else if (status === "final") {
+        yourScore.textContent = String(teamSide.score);
+        oppScore.textContent = String(oppSide.score);
+        winner = teamSide.score > oppSide.score;
+        currentProb = winner ? 1 : 0;
+        liveLine.textContent = "FINAL";
+        probSub.textContent = "Win Rd1";
       } else {
-        yourScoreEl.textContent = "--";
-        oppScoreEl.textContent = "--";
-        probLabelEl.textContent = "Win Rd1";
-        detailTop = "Unavailable";
-        detailBottom = `vs ${oppTeam.short || oppTeam.name}`;
+        yourScore.textContent = "--";
+        oppScore.textContent = "--";
+        liveLine.textContent = "";
+        currentProb = team.pregameProb;
+        probSub.textContent = "Win Rd1";
       }
 
-      probEl.textContent = pct(liveProb);
+      prob.textContent = `${Math.round(currentProb * 100)}%`;
+      if (currentProb > team.pregameProb + 0.03) prob.className = "prob up";
+      else if (currentProb < team.pregameProb - 0.03) prob.className = "prob down";
+      else prob.className = "prob flat";
 
-      if (liveProb > pre + 0.03) probEl.className = "prob up";
-      else if (liveProb < pre - 0.03) probEl.className = "prob down";
-      else probEl.className = "prob flat";
+      liveExpectedR1 = currentProb * team.payouts.r1;
+      return { status, prob: currentProb, winner, liveExpectedR1 };
+    }
 
-      detailEl.innerHTML = `${detailTop}<br />${detailBottom}`;
+    function updateOwnBothAlert(resultsById) {
+      const alert = document.getElementById("ownBothAlert");
+      const livePair = (resultsById.msu?.status === "live" || resultsById.ndsu?.status === "live");
 
-      return {
-        status: event.status,
-        prob: liveProb,
-        winner
-      };
+      alert.style.display = "block";
+      if (livePair) {
+        alert.textContent = "⚡ You own both teams live right now — Michigan St. vs N. Dakota St.";
+      } else {
+        alert.textContent = "⚡ You own both teams in Michigan St. vs N. Dakota St. One advances no matter what.";
+      }
     }
 
     function updateSummary(results) {
       const liveCount = results.filter(r => r.status === "live").length;
       const winners = results.filter(r => r.status === "final" && r.winner).length;
-      const avgProb = results.length
-        ? results.reduce((sum, r) => sum + r.prob, 0) / results.length
-        : 0;
+      const avgProb = results.length ? results.reduce((sum, r) => sum + r.prob, 0) / results.length : 0;
+      const liveEV = results.reduce((sum, r) => sum + r.liveExpectedR1, 0);
 
       document.getElementById("summaryLive").textContent = liveCount;
+      document.getElementById("summaryLiveHero").textContent = liveCount;
       document.getElementById("summaryWinners").textContent = winners;
-      document.getElementById("summaryAvgProb").textContent = pct(avgProb);
+      document.getElementById("summaryAvgProb").textContent = `${Math.round(avgProb * 100)}%`;
+      document.getElementById("summaryLiveEV").textContent = fmtMoney(liveEV);
     }
 
     async function refreshBoard() {
+      const errorBox = document.getElementById("errorBox");
+
       try {
         errorBox.style.display = "none";
 
-        const data = await fetchScoreboard();
+        const res = await fetch(SCOREBOARD_URL, { cache: "no-store" });
+        if (!res.ok) throw new Error(`Scoreboard fetch failed (${res.status})`);
+
+        const data = await res.json();
         const parsedEvents = (data.events || []).map(parseEvent).filter(Boolean);
 
-        const results = TEAM_ROWS.map((teamRow, idx) => {
-          const found = findEventForTeam(teamRow, parsedEvents);
-          return updateCard(idx, found);
-        });
+        const results = [];
+        const resultsById = {};
+
+        for (const team of TEAMS) {
+          const found = findEventForTeam(team, parsedEvents);
+          const result = updateCard(team, found);
+          results.push(result);
+          resultsById[team.id] = result;
+        }
 
         updateSummary(results);
+        updateOwnBothAlert(resultsById);
 
-        lastUpdatedEl.textContent = `Last updated ${new Date().toLocaleTimeString([], {
-          hour: "numeric",
-          minute: "2-digit",
-          second: "2-digit"
-        })}`;
-      } catch (error) {
-        errorBox.textContent = `Live update failed: ${error.message}`;
+        document.getElementById("lastUpdated").textContent =
+          `Last updated ${new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" })}`;
+      } catch (err) {
+        errorBox.textContent = `Live update failed: ${err.message}`;
         errorBox.style.display = "block";
       }
     }
 
-    document.getElementById("refreshBtn").addEventListener("click", refreshBoard);
-
+    renderCards();
+    setupWhatIf();
+    updateWhatIf();
     refreshBoard();
     setInterval(refreshBoard, 20000);
+    document.getElementById("refreshBtn").addEventListener("click", refreshBoard);
   </script>
 </body>
 </html>
