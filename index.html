@@ -478,6 +478,14 @@ function ownerNet(oid) {
   return ownerEarned(oid) - OWNERS[oid].paid;
 }
 
+/* S16 per-team projection — $6,246.80 split among alive seeds 4-16 still in the field.
+   At most 16 teams can advance to S16 (one per R32 bracket slot), so cap denominator at 16. */
+function computeS16PerTeam() {
+  var eligible = TEAMS.filter(function(t){ return t.seed >= 4 && t.status !== 'lost'; });
+  var projected = Math.min(eligible.length, 16);
+  return projected > 0 ? Math.ceil(POTS.s16 / projected) : 0;
+}
+
 /* ═══════════════════════════════════════════════════════
    ESPN LIVE DATA
 ═══════════════════════════════════════════════════════ */
@@ -850,10 +858,32 @@ function gameRowHtml(g) {
     return '<div class="gscore dimtxt"></div>';
   }
 
+  /* Earning potential badge — shows what an owner's team would earn by winning this game.
+     Only shown on live/upcoming games (not concluded).
+     • R32: seeds 4-16 → S16 prize (proj. split among alive eligible teams)
+     • R64: seeds 8-16 not yet confirmed → R1 prize */
+  function potentialBadge(t) {
+    if (isDone || !t.matched) return '';
+    var tm = t.matched;
+    if (g.round === 'R32' && tm.seed >= 4) {
+      var s16pp = computeS16PerTeam();
+      if (s16pp > 0) {
+        return '<span style="font-size:9px;font-weight:700;color:#818cf8;background:#0d0d20;border:1px solid #252545;padding:1px 5px;border-radius:3px;margin-left:4px">+$' + s16pp + ' S16</span>';
+      }
+    }
+    if (g.round === 'R64' && tm.r1eligible && !tm.wonR1) {
+      var r1pp = getR1PerTeam();
+      if (r1pp > 0) {
+        return '<span style="font-size:9px;font-weight:700;color:#4ade80;background:#0a2010;padding:1px 5px;border-radius:3px;margin-left:4px">+$' + r1pp + ' R1</span>';
+      }
+    }
+    return '';
+  }
+
   var row = '<div class="grow">' +
       glogoHtml(t1) +
       '<div class="gteam"><div class="' + nameCls(t1) + '">' + t1.espnName + '</div>' +
-        '<div style="display:flex;align-items:center">' + ownerTag(t1) + payoutBadge(t1) + '</div>' +
+        '<div style="display:flex;align-items:center;flex-wrap:wrap;gap:3px">' + ownerTag(t1) + payoutBadge(t1) + potentialBadge(t1) + '</div>' +
       '</div>' +
       scoreHtml(t1) +
       '<div class="gright">' + statusHtml + '</div>' +
@@ -861,7 +891,7 @@ function gameRowHtml(g) {
     '<div class="grow">' +
       glogoHtml(t2) +
       '<div class="gteam"><div class="' + nameCls(t2) + '">' + t2.espnName + '</div>' +
-        '<div style="display:flex;align-items:center">' + ownerTag(t2) + payoutBadge(t2) + '</div>' +
+        '<div style="display:flex;align-items:center;flex-wrap:wrap;gap:3px">' + ownerTag(t2) + payoutBadge(t2) + potentialBadge(t2) + '</div>' +
       '</div>' +
       scoreHtml(t2) +
       '<div class="gright"></div>' +
@@ -904,13 +934,22 @@ function concludedCardHtml(g) {
     loseTag = '<span style="font-size:9px;font-weight:600;color:' + lo.color + ';opacity:.45">' + lo.name + '</span>';
   }
 
+  /* S16 potential badge for R32 winner — they just locked in their S16 prize */
+  var s16EarnHtml = '';
+  if (g.round === 'R32' && winner.matched && winner.matched.seed >= 4) {
+    var s16pp2 = computeS16PerTeam();
+    if (s16pp2 > 0) {
+      s16EarnHtml = '<span style="font-size:9px;font-weight:700;color:#818cf8;background:#0d0d20;border:1px solid #252545;padding:1px 5px;border-radius:3px">+$' + s16pp2 + ' S16</span>';
+    }
+  }
+
   return '<div class="gconcl">' +
     /* Winner row */
     '<div class="gconcl-top">' +
       logoImg(winner, 'glogo-img') +
       '<div class="gconcl-info">' +
         '<div class="gconcl-name">' + winName + '</div>' +
-        '<div class="gconcl-tags">' + winTag + payoutHtml + '</div>' +
+        '<div class="gconcl-tags">' + winTag + payoutHtml + s16EarnHtml + '</div>' +
       '</div>' +
       '<div style="text-align:right">' +
         '<div class="gconcl-score">' + winner.score + '</div>' +
