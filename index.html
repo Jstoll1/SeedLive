@@ -2,224 +2,383 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Calcutta 2026</title>
 <style>
-/* ── RESET & BASE ───────────────────────────────────── */
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{background:#090910;color:#e4e4f0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{
+  background:#08080f;
+  color:#e2e2ef;
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-serif;
+  -webkit-font-smoothing:antialiased;
+  height:100%;
+  overflow:hidden;
+}
+
+/* ── LAYOUT ─────────────────────────────────────────── */
+#app{display:flex;flex-direction:column;height:100%;height:100dvh;max-width:430px;margin:0 auto;position:relative}
 
 /* ── HEADER ─────────────────────────────────────────── */
-.hdr{text-align:center;padding:32px 16px 20px}
-.hdr-eye{font-size:10px;letter-spacing:4px;color:#4a4a66;text-transform:uppercase;margin-bottom:6px}
-.hdr-title{font-size:40px;font-weight:800;color:#fff;letter-spacing:-1.5px;line-height:1}
-.hdr-year{font-size:15px;letter-spacing:9px;color:#e05252;font-weight:600;margin-top:7px}
-.live-pill{display:inline-flex;align-items:center;gap:7px;background:#160d0d;border:1.5px solid rgba(224,82,82,.45);border-radius:20px;padding:6px 14px;font-size:10px;font-weight:700;letter-spacing:1.8px;color:#e05252;margin-top:16px;text-transform:uppercase}
-.pill-dot{width:6px;height:6px;border-radius:50%;background:#e05252;animation:blink 1.4s ease-in-out infinite;flex-shrink:0}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+.hdr{
+  padding:env(safe-area-inset-top,12px) 16px 10px;
+  padding-top:max(env(safe-area-inset-top),16px);
+  background:#08080f;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
+  border-bottom:1px solid #13131e;
+}
+.hdr-title{font-size:17px;font-weight:700;letter-spacing:-.4px;color:#fff}
+.hdr-sub{font-size:11px;color:#3a3a55;margin-top:1px;letter-spacing:.3px}
+.live-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  background:#160d0d;border:1px solid rgba(224,82,82,.4);
+  border-radius:20px;padding:4px 10px;
+  font-size:10px;font-weight:700;letter-spacing:1.5px;color:#e05252;
+  text-transform:uppercase;white-space:nowrap;
+}
+.live-dot{width:5px;height:5px;border-radius:50%;background:#e05252;animation:pulse 1.4s ease-in-out infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
+@keyframes amber-pulse{0%,100%{opacity:1}50%{opacity:.3}}
 
-/* ── TABS ────────────────────────────────────────────── */
-.tabs-wrap{padding:4px 16px 20px;max-width:540px;margin:0 auto}
-.tabs{display:flex;background:#10101a;border-radius:11px;padding:3px;gap:2px}
-.tab{flex:1;padding:9px 4px;border:none;border-radius:8px;background:transparent;color:#4a4a66;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s}
-.tab.on{background:#1c1c2a;color:#e4e4f0;font-weight:600}
+/* ── SCROLL AREA ─────────────────────────────────────── */
+.scroll-area{
+  flex:1;overflow-y:auto;overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  padding:12px 12px 0;
+}
+
+/* ── BOTTOM NAV ──────────────────────────────────────── */
+.bottom-nav{
+  display:flex;flex-shrink:0;
+  background:#0c0c16;
+  border-top:1px solid #13131e;
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+.nav-btn{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:3px;padding:10px 4px 8px;
+  border:none;background:transparent;
+  color:#3a3a55;font-size:10px;font-weight:500;
+  cursor:pointer;transition:color .15s;
+  min-height:54px;
+}
+.nav-btn.on{color:#e2e2ef}
+.nav-btn.on .nav-icon{color:#f59e0b}
+.nav-icon{font-size:20px;line-height:1;transition:color .15s}
+.nav-label{font-size:10px;letter-spacing:.3px}
 
 /* ── PANELS ──────────────────────────────────────────── */
-.panel{display:none;padding:0 16px 52px;max-width:540px;margin:0 auto}
+.panel{display:none}
 .panel.on{display:block}
 
 /* ── SECTION LABEL ───────────────────────────────────── */
-.slabel{font-size:10px;font-weight:600;letter-spacing:2.5px;color:#4a4a66;text-transform:uppercase;margin:0 0 11px}
-.slabel.mt{margin-top:22px}
+.sec-label{
+  font-size:10px;font-weight:600;letter-spacing:2.5px;
+  color:#3a3a55;text-transform:uppercase;
+  margin:16px 0 8px;
+}
+.sec-label:first-child{margin-top:0}
 
-/* ── STANDINGS GRID ──────────────────────────────────── */
-.s-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
-.scard{background:#111119;border-radius:12px;padding:15px 14px 13px;position:relative;overflow:hidden}
-.scard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--oc)}
-.scard-rank{position:absolute;top:11px;right:12px;font-size:10px;color:#2e2e44;font-weight:700}
-.scard-netlabel{font-size:8px;font-weight:700;letter-spacing:2px;color:#3a3a55;text-transform:uppercase;margin-bottom:2px}
-.scard-net{font-size:24px;font-weight:800;line-height:1;color:#6a6a88}
-.scard-net.pos{color:#22c55e}
-.scard-name{font-size:13px;font-weight:600;margin-top:4px;color:#e4e4f0}
-.scard-stats{font-size:10px;color:#4a4a66;margin-top:6px;line-height:1.75}
-.scard-stats b{color:#7a7a96}
-/* Logo strip at bottom of standings cards */
-.scard-logos{display:flex;flex-wrap:wrap;gap:5px;margin-top:11px;padding-top:10px;border-top:1px solid #18182a}
-.scard-logo-wrap{display:flex;flex-direction:column;align-items:center;gap:2px;position:relative}
-.scard-logo-wrap img{width:22px;height:22px;border-radius:5px;object-fit:contain;background:#1a1a28}
-.scard-logo-fb{width:22px;height:22px;border-radius:5px;background:#1a1a28;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;color:#3a3a55}
-.scard-logo-earn{font-size:7px;font-weight:800;color:#4ade80;white-space:nowrap;line-height:1;letter-spacing:.2px}
-.scard-logo-live{position:absolute;top:-2px;right:-2px;width:6px;height:6px;border-radius:50%;background:#ef4444;animation:blink 1.2s ease-in-out infinite;flex-shrink:0}
+/* ══════════════════════════════════════════════════════
+   TEAMS TAB — grouped by owner
+══════════════════════════════════════════════════════ */
+.owner-list{display:flex;flex-direction:column;gap:10px;padding-bottom:16px}
 
-/* ── GAME ROWS ───────────────────────────────────────── */
-.gsec{margin-bottom:24px}
-.gsec-hdr{font-size:10px;font-weight:700;letter-spacing:2.5px;color:#4a4a66;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px}
-.gmatch-list{display:flex;flex-direction:column;gap:5px}
-.gcard{background:#111119;border-radius:12px;overflow:hidden;border:1px solid #1e1e30}
-.grow{display:grid;grid-template-columns:32px 1fr auto 72px;align-items:center;gap:10px;padding:10px 13px;border-bottom:1px solid #18182a}
-.grow:last-child{border-bottom:none}
-.glogo{width:32px;height:32px;border-radius:8px;background:#1a1a28;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#3a3a55;flex-shrink:0}
-.glogo-img{width:32px;height:32px;border-radius:8px;object-fit:contain;flex-shrink:0;background:#1a1a28}
-.gteam-name{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#d4d4e8}
-.gteam-name.elim{text-decoration:line-through;color:#2c2c40}
-.gotag{font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;display:inline-block;margin-top:3px;letter-spacing:.3px}
-.gscore{font-size:20px;font-weight:700;text-align:right;color:#d4d4e8}
-.gscore.winner{color:#22c55e}
-.gright{text-align:right;line-height:1.3}
-.glive{color:#22c55e;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:flex-end;gap:4px}
-.glive-dot{width:5px;height:5px;border-radius:50%;background:#22c55e;animation:blink 1.2s ease-in-out infinite;flex-shrink:0}
-.gtime-detail{font-size:10px;color:#4a4a66;text-align:right;margin-top:1px}
-.gfinal{font-size:10px;color:#4a4a66;font-weight:600;text-align:right}
-.gsched{font-size:11px;color:#5a5a78;font-weight:500;text-align:right}
-/* Concluded card — winner-centric layout */
-.gconcl{padding:11px 13px 10px}
-.gconcl-top{display:flex;align-items:center;gap:10px}
-.gconcl-info{flex:1;min-width:0}
-.gconcl-name{font-size:14px;font-weight:600;color:#22c55e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.gconcl-tags{display:flex;align-items:center;gap:5px;margin-top:3px;flex-wrap:wrap}
-.gconcl-score{font-size:26px;font-weight:800;color:#22c55e;line-height:1;white-space:nowrap}
-.gconcl-final{font-size:8px;font-weight:700;letter-spacing:1.5px;color:#3a3a55;text-transform:uppercase;margin-top:2px;text-align:right}
-.gconcl-def{display:flex;align-items:center;gap:6px;margin-top:8px;padding-top:8px;border-top:1px solid #18182a}
-.gconcl-def-logo{width:18px;height:18px;border-radius:4px;object-fit:contain;background:#1a1a28;flex-shrink:0}
-.gconcl-def-logo-fb{width:18px;height:18px;border-radius:4px;background:#1a1a28;display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:800;color:#3a3a55;flex-shrink:0}
-.gconcl-def-txt{font-size:11px;color:#3a3a55;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.gconcl-def-score{font-size:11px;color:#2c2c40;font-weight:600;white-space:nowrap}
-.dimtxt{color:#2c2c40}
+.ocard{
+  background:#111119;border-radius:14px;
+  overflow:hidden;border:1px solid #1a1a27;
+  position:relative;
+}
+.ocard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--oc)}
+.ocard.has-live{border-color:rgba(245,158,11,.3)}
 
-/* ── ROSTER COLUMNS ──────────────────────────────────── */
-.roster-scroll{display:flex;gap:8px;overflow-x:auto;padding-bottom:10px;scrollbar-width:thin;scrollbar-color:#2a2a3a transparent}
-.roster-scroll::-webkit-scrollbar{height:3px}
-.roster-scroll::-webkit-scrollbar-track{background:transparent}
-.roster-scroll::-webkit-scrollbar-thumb{background:#2a2a3a;border-radius:3px}
-.rcol{min-width:148px;background:#111119;border-radius:12px;overflow:hidden;flex-shrink:0}
-.rcol-hdr{padding:13px 12px 10px;text-align:center;border-bottom:1px solid #18182a;position:relative}
-.rcol-hdr::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--oc)}
-.rcol-name{font-size:14px;font-weight:700;color:var(--oc)}
-.rcol-sub{font-size:10px;color:#4a4a66;margin-top:3px;line-height:1.5}
-.rcol-earned{font-size:11px;font-weight:600;margin-top:2px}
-.trow{position:relative;display:flex;align-items:center;justify-content:center;padding:6px 10px;min-height:38px;border-bottom:1px solid #14141e}
-.trow:last-child{border-bottom:none}
-.tlogo{position:absolute;left:10px;width:28px;height:28px;border-radius:7px;object-fit:contain;background:#1a1a28}
-.tlogo-seed{position:absolute;left:10px;width:28px;height:28px;border-radius:7px;background:#1a1a28;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#34344a}
-.tseed{display:none}
-.tname{font-size:11px;line-height:1.25;color:#b0b0cc;text-align:center;padding:0 36px}
-.tseed-num{font-size:9px;font-weight:700;color:#3a3a55;margin-right:4px}
-.tname.alive{color:#c8c8e0}
-.tname.adv{color:#c8c8e0;font-weight:400}       /* advanced but no earnings yet — stays white */
-.tname.earning{color:#22c55e;font-weight:600}   /* won + actively earning money — green */
-.tname.live{color:#f59e0b}
-.tname.elim{text-decoration:line-through;color:#22223a;font-weight:400}
-.tbadge{position:absolute;right:10px;font-size:8px;padding:1px 5px;border-radius:3px;font-weight:700;letter-spacing:.3px}
-.tbadge.adv{background:#131320;color:#38385a}   /* dim neutral "ADV" for non-earning winners */
-.tbadge.live{background:#271a06;color:#f59e0b}
-.tbadge.elim{background:#16121e;color:#3a1a38}  /* very dark, almost invisible × */
-.tbadge.pending{background:#181826;color:#34344a}
-.tbadge.money{background:#0a2010;color:#4ade80;font-size:9px;padding:2px 6px;letter-spacing:.2px}
-.rcol-rank{width:16px;height:16px;border-radius:4px;background:var(--oc);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#000;flex-shrink:0;opacity:.9}
+/* owner header row */
+.ocard-hdr{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  padding:13px 14px 10px;
+}
+.ocard-left{}
+.ocard-name{font-size:17px;font-weight:800;color:var(--oc);line-height:1;letter-spacing:-.3px}
+.ocard-stats{font-size:11px;color:#3a3a55;margin-top:5px;line-height:1.7}
+.ocard-stats b{color:#5a5a7a}
+.ocard-right{text-align:right}
+.ocard-net{font-size:20px;font-weight:800;line-height:1;color:#3a3a55}
+.ocard-net.pos{color:#22c55e}
+.ocard-netlabel{font-size:8px;font-weight:600;letter-spacing:1.5px;color:#2a2a3a;text-transform:uppercase;margin-top:2px}
 
-/* ── PAYOUTS ─────────────────────────────────────────── */
-.prow{background:#111119;border-radius:11px;padding:14px;margin-bottom:8px}
-.prow-hdr{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
-.prow-left{flex:1;min-width:0}
-.prow-name{font-size:12px;font-weight:600;color:#c4c4dc}
-.prow-pct{font-size:10px;color:#4a4a66;margin-top:2px}
-.prow-amt{font-size:15px;font-weight:700;color:#f59e0b;white-space:nowrap}
-.prow-note{font-size:10px;color:#4a4a66;margin-top:6px;line-height:1.65}
-.prow-sep{height:1px;background:#18182a;margin:9px 0}
-.prow-winners{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
-.pwinner{display:inline-flex;align-items:center;gap:6px;background:#18182a;border-radius:6px;padding:5px 10px 5px 6px;font-size:11px}
-.pw-name{color:#c4c4dc}
-.pw-amt{color:#22c55e;font-weight:700;font-size:11px;margin-left:2px}
-.pw-owner{font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px}
-.pw-amt{color:#22c55e;font-weight:600;font-size:11px}
-.prow-tbd{font-size:10px;color:#2e2e44;font-style:italic;margin-top:7px}
-.prow-special{font-size:10px;color:#7a7a96;margin-top:6px;line-height:1.6;background:#14141e;border-radius:6px;padding:8px 10px}
+/* team chips grid — 3 per row */
+.ocard-teams{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1px;
+  background:#16161f;
+  border-top:1px solid #16161f;
+}
+.tchip{
+  background:#111119;
+  display:flex;align-items:center;gap:8px;
+  padding:9px 10px;
+  position:relative;
+}
+.tchip.live{background:#130f07}
+.tchip.earned{background:#0c130c}
+.tchip.lost{background:#0e0e14;opacity:.4}
 
-/* ── OWNER DETAIL VIEW ───────────────────────────────── */
-.od-back{display:flex;align-items:center;gap:6px;background:none;border:none;color:#4a4a66;font-size:11px;font-weight:600;letter-spacing:.5px;cursor:pointer;padding:0 0 16px;text-transform:uppercase;letter-spacing:1.5px}
-.od-back:hover{color:#8a8aaa}
-.od-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px}
-.od-name{font-size:26px;font-weight:800;line-height:1;color:var(--oc)}
-.od-paid{font-size:11px;color:#4a4a66;margin-top:4px}
-.od-net{font-size:22px;font-weight:800;text-align:right;line-height:1}
-.od-net.pos{color:#22c55e}
-.od-net.neg{color:#6a6a88}
-.od-netlabel{font-size:8px;font-weight:700;letter-spacing:2px;color:#3a3a55;text-transform:uppercase;text-align:right;margin-top:2px}
-.od-stats{display:flex;gap:0;margin:14px 0 20px;background:#111119;border-radius:10px;overflow:hidden;border:1px solid #1e1e30}
-.od-stat{flex:1;text-align:center;padding:10px 4px;border-right:1px solid #1e1e30}
-.od-stat:last-child{border-right:none}
-.od-stat-n{font-size:18px;font-weight:800;color:#e4e4f0;line-height:1}
-.od-stat-n.green{color:#22c55e}
-.od-stat-n.amber{color:#f59e0b}
-.od-stat-n.red{color:#ef4444}
-.od-stat-lbl{font-size:8px;font-weight:600;letter-spacing:1.5px;color:#3a3a55;text-transform:uppercase;margin-top:3px}
-.od-empty{text-align:center;color:#2e2e44;font-size:11px;padding:16px 0;font-style:italic}
+/* live pulse bar — left edge */
+.tchip.live::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:2px;
+  background:#f59e0b;animation:pulse 1.2s ease-in-out infinite;
+}
+.tchip.earned::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:2px;
+  background:#22c55e;
+}
 
-/* ── UTIL ────────────────────────────────────────────── */
-.dimtxt{color:#4a4a66}
-.greentxt{color:#22c55e}
-::-webkit-scrollbar{width:4px;height:4px}
+.tchip-logo{width:30px;height:30px;border-radius:7px;object-fit:contain;background:#1a1a28;flex-shrink:0}
+.tchip-logo-fb{width:30px;height:30px;border-radius:7px;background:#1a1a28;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;color:#34344a;flex-shrink:0}
+.tchip-info{flex:1;min-width:0}
+.tchip-seed{font-size:8px;font-weight:700;color:#3a3a55;letter-spacing:.3px;line-height:1}
+.tchip-name{font-size:10px;font-weight:600;color:#9090aa;line-height:1.25;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tchip.live  .tchip-name{color:#f59e0b}
+.tchip.live  .tchip-seed{color:#7a5500}
+.tchip.earned .tchip-name{color:#4ade80}
+.tchip.lost  .tchip-name{text-decoration:line-through;color:#2c2c3e}
+
+/* earn tag on chip */
+.tchip-earn{font-size:7px;font-weight:800;color:#4ade80;letter-spacing:.2px;margin-top:2px}
+.tchip-live-dot{width:5px;height:5px;border-radius:50%;background:#f59e0b;animation:pulse 1s ease-in-out infinite;flex-shrink:0;margin-left:auto}
+
+/* ══════════════════════════════════════════════════════
+   GAMES TAB — full-width matchup cards
+══════════════════════════════════════════════════════ */
+.games-section{margin-bottom:20px}
+.games-sec-hdr{
+  font-size:10px;font-weight:700;letter-spacing:2.5px;
+  color:#3a3a55;text-transform:uppercase;
+  margin-bottom:8px;display:flex;align-items:center;gap:8px;
+}
+.games-sec-hdr .live-dot{width:6px;height:6px;background:#ef4444}
+.game-list{display:flex;flex-direction:column;gap:8px}
+
+/* matchup card */
+.mcard{
+  background:#111119;border-radius:14px;
+  overflow:hidden;border:1px solid #1a1a27;
+}
+.mcard.live{border-color:rgba(239,68,68,.35);background:#120a0a}
+.mcard.final{border-color:#181825}
+
+/* card top bar */
+.mcard-top{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:7px 12px 6px;border-bottom:1px solid #16161f;
+  font-size:9px;font-weight:700;letter-spacing:1.5px;
+  color:#3a3a55;text-transform:uppercase;
+}
+.mcard.live .mcard-top{color:#ef4444}
+.mcard-top-left{display:flex;align-items:center;gap:5px}
+.mcard-round{color:inherit}
+.mcard-top-right{font-size:9px;font-weight:600;color:#3a3a55}
+
+/* two-team layout */
+.mcard-teams{display:grid;grid-template-columns:1fr 44px 1fr;align-items:center}
+.mcard-team{display:flex;flex-direction:column;align-items:center;padding:12px 8px 10px;gap:6px}
+.mcard-team.left{align-items:flex-start;padding-left:12px}
+.mcard-team.right{align-items:flex-end;padding-right:12px}
+
+/* team logo in matchup */
+.mcard-logo{width:36px;height:36px;border-radius:9px;object-fit:contain;background:#1a1a28;flex-shrink:0}
+.mcard-logo-fb{width:36px;height:36px;border-radius:9px;background:#1a1a28;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#34344a;flex-shrink:0}
+
+/* team info */
+.mcard-tinfo{display:flex;flex-direction:column;gap:3px;min-width:0;width:100%}
+.mcard-team.left .mcard-tinfo{align-items:flex-start}
+.mcard-team.right .mcard-tinfo{align-items:flex-end}
+.mcard-tname{font-size:12px;font-weight:600;color:#d0d0e4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.mcard-tname.winner{color:#22c55e}
+.mcard-tname.loser{color:#2c2c3e;text-decoration:line-through}
+.mcard-tags{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.mcard-team.right .mcard-tags{justify-content:flex-end}
+.mcard-seed{font-size:9px;font-weight:700;color:#3a3a55;letter-spacing:.3px}
+.mcard-owner-tag{font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;color:#000;letter-spacing:.2px}
+
+/* earn badge in matchup */
+.mcard-earn{
+  font-size:9px;font-weight:700;
+  padding:2px 6px;border-radius:4px;
+  white-space:nowrap;margin-top:2px;
+}
+.mcard-earn.r1{background:#0d1a07;color:#4ade80;border:1px solid rgba(74,222,128,.2)}
+.mcard-earn.s16{background:#0d0d20;color:#818cf8;border:1px solid rgba(129,140,248,.2)}
+
+/* center score/vs */
+.mcard-center{
+  display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:8px 0;gap:4px;
+}
+.mcard-score-wrap{display:flex;align-items:center;gap:6px}
+.mcard-score{font-size:22px;font-weight:800;line-height:1;color:#4a4a66}
+.mcard-score.winner{color:#22c55e}
+.mcard-score.loser{color:#2c2c3e}
+.mcard-dash{font-size:14px;font-weight:600;color:#2a2a3a}
+.mcard-vs{font-size:11px;font-weight:700;color:#2a2a3a;letter-spacing:.5px}
+.mcard-time{font-size:9px;color:#4a4a66;text-align:center;line-height:1.4}
+.mcard-time.live-txt{color:#ef4444;font-weight:700;letter-spacing:.5px}
+
+/* bottom pot bar */
+.mcard-pot{
+  padding:7px 12px;border-top:1px solid #16161f;
+  font-size:10px;color:#4a4a66;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:8px;
+}
+.mcard-pot-label{font-size:9px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:#2a2a3a}
+.mcard-pot-items{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.mcard-pot-item{
+  display:flex;align-items:center;gap:4px;
+  font-size:9px;font-weight:700;
+  background:#14141e;border-radius:5px;padding:3px 7px;
+}
+.mcard-pot-item.r1-item{color:#4ade80}
+.mcard-pot-item.s16-item{color:#818cf8}
+
+/* ══════════════════════════════════════════════════════
+   STANDINGS TAB
+══════════════════════════════════════════════════════ */
+.stand-list{display:flex;flex-direction:column;gap:8px;padding-bottom:16px}
+.stand-card{
+  background:#111119;border-radius:14px;
+  padding:14px 14px 12px;
+  position:relative;overflow:hidden;
+  border:1px solid #1a1a27;
+}
+.stand-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--oc)}
+.stand-rank{position:absolute;top:12px;right:13px;font-size:11px;color:#252535;font-weight:800}
+.stand-net{font-size:28px;font-weight:800;line-height:1;color:#4a4a66}
+.stand-net.pos{color:#22c55e}
+.stand-name{font-size:14px;font-weight:700;color:var(--oc);margin-top:3px}
+.stand-stats{font-size:11px;color:#3a3a55;margin-top:7px;line-height:1.7}
+.stand-stats b{color:#6a6a88}
+.stand-teams{display:flex;gap:5px;flex-wrap:wrap;margin-top:10px;padding-top:9px;border-top:1px solid #17172a}
+.stand-team-chip{
+  display:flex;align-items:center;gap:4px;
+  background:#161625;border-radius:6px;padding:3px 6px 3px 4px;
+}
+.stand-chip-logo{width:18px;height:18px;border-radius:4px;object-fit:contain;background:#1a1a28;flex-shrink:0}
+.stand-chip-logo-fb{width:18px;height:18px;border-radius:4px;background:#1a1a28;display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:800;color:#34344a;flex-shrink:0}
+.stand-chip-name{font-size:9px;color:#5a5a7a;font-weight:500}
+.stand-chip-name.earn{color:#4ade80}
+.stand-chip-live{width:5px;height:5px;border-radius:50%;background:#f59e0b;animation:pulse 1.2s ease-in-out infinite;flex-shrink:0}
+
+/* ══════════════════════════════════════════════════════
+   PAYOUTS TAB
+══════════════════════════════════════════════════════ */
+.pay-list{display:flex;flex-direction:column;gap:8px;padding-bottom:16px}
+.pcard{background:#111119;border-radius:14px;padding:14px;border:1px solid #1a1a27}
+.pcard-hdr{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.pcard-name{font-size:13px;font-weight:700;color:#c0c0dc}
+.pcard-pct{font-size:10px;color:#3a3a55;margin-top:2px}
+.pcard-amt{font-size:16px;font-weight:800;color:#f59e0b;white-space:nowrap}
+.pcard-note{font-size:10px;color:#4a4a66;margin-top:7px;line-height:1.65}
+.pcard-rule{font-size:10px;color:#555570;margin-top:6px;line-height:1.6;background:#14141e;border-radius:7px;padding:8px 10px}
+.pcard-sep{height:1px;background:#18182a;margin:9px 0}
+.pcard-winners{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.pwinner{display:inline-flex;align-items:center;gap:6px;background:#18182a;border-radius:6px;padding:5px 9px 5px 5px}
+.pw-logo{width:20px;height:20px;border-radius:5px;object-fit:contain;background:#1a1a28;flex-shrink:0}
+.pw-logo-fb{width:20px;height:20px;border-radius:5px;background:#1a1a28;display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:800;color:#3a3a55;flex-shrink:0}
+.pw-name{font-size:11px;color:#c0c0dc;font-weight:500}
+.pw-tag{font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;color:#000}
+.pw-amt{font-size:11px;font-weight:700;color:#22c55e;margin-left:2px}
+.pcard-tbd{font-size:10px;color:#2a2a3a;font-style:italic;margin-top:7px}
+.pcard-leader{font-size:10px;color:#5a5a7a;margin-top:6px;line-height:1.6;background:#13131e;border-radius:6px;padding:7px 10px}
+.pcard-sec{font-size:10px;font-weight:600;letter-spacing:2px;color:#3a3a55;text-transform:uppercase;margin:18px 0 8px}
+
+/* ── SCROLLBAR ───────────────────────────────────────── */
+::-webkit-scrollbar{width:3px;height:3px}
 ::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:#252535;border-radius:4px}
+::-webkit-scrollbar-thumb{background:#252535;border-radius:3px}
 </style>
 </head>
 <body>
+<div id="app">
 
-<div class="hdr">
-  <div class="hdr-eye">The Calcutta</div>
-  <div class="hdr-title">March Madness</div>
-  <div class="hdr-year">2 · 0 · 2 · 6</div>
-  <div><span class="live-pill" id="round-pill"><span class="pill-dot"></span>Round of 64 · Live</span></div>
-</div>
-
-<div class="tabs-wrap">
-  <div class="tabs">
-    <button class="tab on"  onclick="switchTab('teams',this)">Teams</button>
-    <button class="tab"     onclick="switchTab('standings',this)">Standings</button>
-    <button class="tab"     onclick="switchTab('games',this)">Games</button>
-    <button class="tab"     onclick="switchTab('payouts',this)">Payouts</button>
+  <!-- HEADER -->
+  <div class="hdr">
+    <div>
+      <div class="hdr-title">Calcutta 2026</div>
+      <div class="hdr-sub">MARCH MADNESS · $27,160 POT</div>
+    </div>
+    <div class="live-badge" id="round-pill"><span class="live-dot"></span><span id="round-txt">R64 · Live</span></div>
   </div>
-</div>
 
-<div class="panel" id="panel-standings">
-  <div class="slabel">Standings</div>
-  <div class="s-grid" id="standings-grid"></div>
-</div>
+  <!-- SCROLL AREA -->
+  <div class="scroll-area" id="scroll-area">
+    <!-- Teams panel -->
+    <div class="panel on" id="panel-teams">
+      <div class="sec-label" id="teams-label">All Owners</div>
+      <div class="owner-list" id="owner-list"></div>
+    </div>
 
-<div class="panel on" id="panel-teams">
-  <div class="slabel">Rosters</div>
-  <div class="roster-scroll" id="roster-scroll"></div>
-</div>
+    <!-- Games panel -->
+    <div class="panel" id="panel-games">
+      <div id="games-content"></div>
+    </div>
 
-<div class="panel" id="panel-games">
-  <div id="games-content"></div>
-</div>
+    <!-- Standings panel -->
+    <div class="panel" id="panel-standings">
+      <div class="sec-label">Leaderboard</div>
+      <div class="stand-list" id="stand-list"></div>
+    </div>
 
-<div class="panel" id="panel-payouts">
-  <div class="slabel">Prize Breakdown · $27,160 Total Pot</div>
-  <div id="payouts-content"></div>
+    <!-- Payouts panel -->
+    <div class="panel" id="panel-payouts">
+      <div class="sec-label">Prize Breakdown · $27,160 Total</div>
+      <div class="pay-list" id="pay-list"></div>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <button class="nav-btn on" onclick="switchTab('teams',this)">
+      <span class="nav-icon">🏀</span>
+      <span class="nav-label">Teams</span>
+    </button>
+    <button class="nav-btn" onclick="switchTab('games',this)">
+      <span class="nav-icon">📋</span>
+      <span class="nav-label">Games</span>
+    </button>
+    <button class="nav-btn" onclick="switchTab('standings',this)">
+      <span class="nav-icon">🏆</span>
+      <span class="nav-label">Standings</span>
+    </button>
+    <button class="nav-btn" onclick="switchTab('payouts',this)">
+      <span class="nav-icon">💰</span>
+      <span class="nav-label">Payouts</span>
+    </button>
+  </nav>
 </div>
 
 <script>
 /* ═══════════════════════════════════════════════════════
-   DATA
+   DATA — identical to v2 source of truth
 ═══════════════════════════════════════════════════════ */
 
 var TOTAL_POT = 27160;
 
 var POTS = {
-  r1:     2716.00,   /* 10% — 8-16 seeds that win R1, split equally */
-  loss:   1086.40,   /* 4%  — biggest point-margin loss in R1 */
-  upset:  1086.40,   /* 4%  — biggest upset by seed differential */
-  seed15: 1086.40,   /* 4%  — best performance by a 15 or 16 seed */
-  s16:    6246.80,   /* 23% — Sweet 16 teams (4-16 seeds), split equally */
-  e8:     2716.00,   /* 10% — Elite 8 teams (1-3 seeds only), split equally */
-  f4:     1901.20,   /* per team — Final Four (fixed, not split) */
-  finals: 1086.40,   /* per team — Title game participants (fixed) */
-  champ:  2444.40    /* 9%  — National Champion */
+  r1:     2716.00,
+  loss:   1086.40,
+  upset:  1086.40,
+  seed15: 1086.40,
+  s16:    6246.80,
+  e8:     2716.00,
+  f4:     1901.20,   /* per team */
+  finals: 1086.40,   /* per team */
+  champ:  2444.40
 };
 
-/* owner id → display props */
 var OWNERS = {
   curt:   { name:'Curt',   color:'#f59e0b', paid:6450 },
   stark:  { name:'Stark',  color:'#ef4444', paid:5825 },
@@ -230,1120 +389,699 @@ var OWNERS = {
   hudd:   { name:'Hudd',   color:'#06b6d4', paid:1805 }
 };
 
-/* Hardcoded ESPN CDN logo URLs — loads instantly, no API wait
-   Format: https://a.espncdn.com/i/teamlogos/ncaa/500/{id}.png */
 var L = 'https://a.espncdn.com/i/teamlogos/ncaa/500/';
 var LOGOS = {
-  /* South */
-  'Florida':        L+'57.png',
-  'Houston':        L+'248.png',
-  'Illinois':       L+'356.png',
-  'Nebraska':       L+'158.png',
-  'Vanderbilt':     L+'238.png',
-  'UNC':            L+'153.png',
-  "Saint Mary's":   L+'2608.png',
-  'Clemson':        L+'228.png',
-  'Iowa':           L+'2294.png',
-  'Texas A&M':      L+'245.png',
-  'VCU':            L+'2670.png',
-  'McNeese':        L+'2413.png',
-  'Troy':           L+'2653.png',
-  'Penn':           L+'219.png',
-  'Idaho':          L+'70.png',
-  /* Midwest */
-  'Michigan':       L+'130.png',
-  'Iowa State':     L+'66.png',
-  'Virginia':       L+'258.png',
-  'Alabama':        L+'333.png',
-  'Texas Tech':     L+'2641.png',
-  'Tennessee':      L+'2633.png',
-  'Kentucky':       L+'96.png',
-  'Georgia':        L+'61.png',
-  'Saint Louis':    L+'2567.png',
-  'Santa Clara':    L+'324.png',
-  'Akron':          L+'2006.png',
-  'Hofstra':        L+'2287.png',
-  'Wright State':   L+'2691.png',
-  /* West */
-  'Arizona':        L+'12.png',
-  'Purdue':         L+'197.png',
-  'Gonzaga':        L+'2250.png',
-  'Arkansas':       L+'8.png',
-  'Wisconsin':      L+'275.png',
-  'BYU':            L+'252.png',
-  'Miami':          L+'2655.png',
-  'Villanova':      L+'222.png',
-  'Utah State':     L+'254.png',
-  'Missouri':       L+'142.png',
-  'Texas':          L+'251.png',
-  'High Point':     L+'2272.png',
-  'Hawaii':         L+'62.png',
-  'Kennesaw St.':   L+'338.png',
-  'Queens':         L+'2930.png',
-  /* East */
-  'Duke':           L+'150.png',
-  'UConn':          L+'41.png',
-  'Michigan St.':   L+'127.png',
-  'Kansas':         L+'2305.png',
-  "St. John's":     L+'2599.png',
-  'Louisville':     L+'97.png',
-  'UCLA':           L+'26.png',
-  'Ohio State':     L+'194.png',
-  'TCU':            L+'2628.png',
-  'UCF':            L+'2116.png',
-  'S. Florida':     L+'58.png',
-  'Northern Iowa':  L+'2550.png',
-  'CA Baptist':     L+'2856.png',
-  'N. Dakota St.':  L+'2449.png',
-  'Furman':         L+'231.png',
-  'Siena':          L+'2561.png',
-  /* Added for completeness */
-  'Tennessee St.':  L+'2630.png',
-  'Long Island':    L+'2374.png'
+  'Florida':L+'57.png','Houston':L+'248.png','Illinois':L+'356.png',
+  'Nebraska':L+'158.png','Vanderbilt':L+'238.png','UNC':L+'153.png',
+  "Saint Mary's":L+'2608.png','Clemson':L+'228.png','Iowa':L+'2294.png',
+  'Texas A&M':L+'245.png','VCU':L+'2670.png','McNeese':L+'2413.png',
+  'Troy':L+'2653.png','Penn':L+'219.png','Idaho':L+'70.png',
+  'Michigan':L+'130.png','Iowa State':L+'66.png','Virginia':L+'258.png',
+  'Alabama':L+'333.png','Texas Tech':L+'2641.png','Tennessee':L+'2633.png',
+  'Kentucky':L+'96.png','Georgia':L+'61.png','Saint Louis':L+'2567.png',
+  'Santa Clara':L+'324.png','Akron':L+'2006.png','Hofstra':L+'2287.png',
+  'Wright State':L+'2691.png','Arizona':L+'12.png','Purdue':L+'197.png',
+  'Gonzaga':L+'2250.png','Arkansas':L+'8.png','Wisconsin':L+'275.png',
+  'BYU':L+'252.png','Miami':L+'2655.png','Villanova':L+'222.png',
+  'Utah State':L+'254.png','Missouri':L+'142.png','Texas':L+'251.png',
+  'High Point':L+'2272.png','Hawaii':L+'62.png','Kennesaw St.':L+'338.png',
+  'Queens':L+'2930.png','Duke':L+'150.png','UConn':L+'41.png',
+  'Michigan St.':L+'127.png','Kansas':L+'2305.png',"St. John's":L+'2599.png',
+  'Louisville':L+'97.png','UCLA':L+'26.png','Ohio State':L+'194.png',
+  'TCU':L+'2628.png','UCF':L+'2116.png','S. Florida':L+'58.png',
+  'Northern Iowa':L+'2550.png','CA Baptist':L+'2856.png',
+  'N. Dakota St.':L+'2449.png','Furman':L+'231.png','Siena':L+'2561.png',
+  'Tennessee St.':L+'2630.png','Long Island':L+'2374.png',
+  'Prairie View/Lehigh':L+'2505.png','UMBC/Howard':L+'2439.png',
+  'SMU/Miami OH':L+'2567.png'
 };
 
-/* All 64 teams
-   status: 'alive' | 'won' | 'live' | 'lost'
-   r1eligible: true if seed 8-16 (eligible for R1 prize)
-   top3: true if seed 1-3 (eligible for E8 prize, NOT R1/S16)
-   espn: lowercase fragments to match ESPN API names */
 var TEAMS = [
-  /* ── SOUTH ──────────────────────────────── */
-  {seed:1,  region:'South',name:'Florida',       owner:'curt',  price:1550,status:'alive',r1eligible:false,top3:true, espn:['florida']},
-  {seed:2,  region:'South',name:'Houston',       owner:'tommy', price:1100,status:'alive',r1eligible:false,top3:true, espn:['houston']},
-  {seed:3,  region:'South',name:'Illinois',      owner:'topper',price:520, status:'alive',r1eligible:false,top3:true, espn:['illinois']},
-  {seed:4,  region:'South',name:'Nebraska',      owner:'dolla', price:210, status:'alive',r1eligible:false,top3:false,espn:['nebraska']},
-  {seed:5,  region:'South',name:'Vanderbilt',    owner:'flan',  price:450, status:'alive',r1eligible:false,top3:false,espn:['vanderbilt']},
-  {seed:6,  region:'South',name:'UNC',           owner:'dolla', price:85,  status:'lost', r1eligible:false,top3:false,espn:['north carolina','unc']},
-  {seed:7,  region:'South',name:"Saint Mary's",  owner:'topper',price:100, status:'lost', r1eligible:false,top3:false,espn:["saint mary's",'saint marys']},
-  {seed:8,  region:'South',name:'Clemson',       owner:'stark', price:190, status:'alive',r1eligible:true, top3:false,espn:['clemson']},
-  {seed:9,  region:'South',name:'Iowa',          owner:'topper',price:180, status:'alive',r1eligible:true, top3:false,espn:['iowa']},
-  {seed:10, region:'South',name:'Texas A&M',     owner:'hudd',  price:200, status:'won',  r1eligible:true, top3:false,espn:['texas a&m','texas am']},
-  {seed:11, region:'South',name:'VCU',           owner:'curt',  price:170, status:'won',  r1eligible:true, top3:false,espn:['vcu','virginia commonwealth']},
-  {seed:12, region:'South',name:'McNeese',       owner:'dolla', price:110, status:'alive',r1eligible:true, top3:false,espn:['mcneese']},
-  {seed:13, region:'South',name:'Troy',          owner:'flan',  price:185, status:'alive',r1eligible:true, top3:false,espn:['troy']},
-  {seed:14, region:'South',name:'Penn',          owner:'stark', price:65,  status:'alive',r1eligible:true, top3:false,espn:['pennsylvania','penn']},
-  {seed:15, region:'South',name:'Idaho',         owner:'topper',price:210, status:'alive',r1eligible:true, top3:false,espn:['idaho']},
-  {seed:16, region:'South',name:'Prairie View/Lehigh',owner:'stark',price:230,status:'alive',r1eligible:true,top3:false,espn:['prairie view','lehigh']},
-
-  /* ── MIDWEST ─────────────────────────────── */
-  {seed:1,  region:'MW',   name:'Michigan',      owner:'tommy', price:2250,status:'alive',r1eligible:false,top3:true, espn:['michigan']},
-  {seed:2,  region:'MW',   name:'Iowa State',    owner:'stark', price:775, status:'alive',r1eligible:false,top3:true, espn:['iowa state']},
-  {seed:3,  region:'MW',   name:'Virginia',      owner:'curt',  price:375, status:'alive',r1eligible:false,top3:true, espn:['virginia']},
-  {seed:4,  region:'MW',   name:'Alabama',       owner:'dolla', price:370, status:'alive',r1eligible:false,top3:false,espn:['alabama']},
-  {seed:5,  region:'MW',   name:'Texas Tech',    owner:'topper',price:320, status:'alive',r1eligible:false,top3:false,espn:['texas tech']},
-  {seed:6,  region:'MW',   name:'Tennessee',     owner:'dolla', price:350, status:'alive',r1eligible:false,top3:false,espn:['tennessee']},
-  {seed:7,  region:'MW',   name:'Kentucky',      owner:'hudd',  price:170, status:'alive',r1eligible:false,top3:false,espn:['kentucky']},
-  {seed:8,  region:'MW',   name:'Georgia',       owner:'curt',  price:220, status:'lost', r1eligible:true, top3:false,espn:['georgia']},
-  {seed:9,  region:'MW',   name:'Saint Louis',   owner:'hudd',  price:170, status:'won',  r1eligible:true, top3:false,espn:['saint louis']},
-  {seed:10, region:'MW',   name:'Santa Clara',   owner:'stark', price:160, status:'alive',r1eligible:true, top3:false,espn:['santa clara']},
-  {seed:11, region:'MW',   name:'SMU/Miami OH',  owner:'stark', price:290, status:'alive',r1eligible:true, top3:false,espn:['smu','miami oh','miami (oh)']},
-  {seed:12, region:'MW',   name:'Akron',         owner:'curt',  price:280, status:'alive',r1eligible:true, top3:false,espn:['akron']},
-  {seed:13, region:'MW',   name:'Hofstra',       owner:'curt',  price:140, status:'lost', r1eligible:true, top3:false,espn:['hofstra']},
-  {seed:14, region:'MW',   name:'Wright State',  owner:'dolla', price:70,  status:'alive',r1eligible:true, top3:false,espn:['wright state']},
-  {seed:15, region:'MW',   name:'Tennessee St.', owner:'topper',price:250, status:'alive',r1eligible:true, top3:false,espn:['tennessee state','tennessee st']},
-  {seed:16, region:'MW',   name:'UMBC/Howard',   owner:'topper',price:300, status:'alive',r1eligible:true, top3:false,espn:['umbc','howard']},
-
-  /* ── WEST ────────────────────────────────── */
-  {seed:1,  region:'West', name:'Arizona',       owner:'curt',  price:2625,status:'alive',r1eligible:false,top3:true, espn:['arizona']},
-  {seed:2,  region:'West', name:'Purdue',        owner:'flan',  price:1000,status:'alive',r1eligible:false,top3:true, espn:['purdue']},
-  {seed:3,  region:'West', name:'Gonzaga',       owner:'stark', price:550, status:'won',  r1eligible:false,top3:true, espn:['gonzaga']},
-  {seed:4,  region:'West', name:'Arkansas',      owner:'topper',price:700, status:'alive',r1eligible:false,top3:false,espn:['arkansas']},
-  {seed:5,  region:'West', name:'Wisconsin',     owner:'hudd',  price:525, status:'lost', r1eligible:false,top3:false,espn:['wisconsin']},
-  {seed:6,  region:'West', name:'BYU',           owner:'dolla', price:130, status:'lost', r1eligible:false,top3:false,espn:['byu','brigham young']},
-  {seed:7,  region:'West', name:'Miami',         owner:'stark', price:110, status:'alive',r1eligible:false,top3:false,espn:["miami (fl)","miami fl","miami"]},
-  {seed:8,  region:'West', name:'Villanova',     owner:'topper',price:170, status:'alive',r1eligible:true, top3:false,espn:['villanova']},
-  {seed:9,  region:'West', name:'Utah State',    owner:'stark', price:180, status:'alive',r1eligible:true, top3:false,espn:['utah state']},
-  {seed:10, region:'West', name:'Missouri',      owner:'curt',  price:220, status:'alive',r1eligible:true, top3:false,espn:['missouri']},
-  {seed:11, region:'West', name:'Texas',         owner:'flan',  price:260, status:'won',  r1eligible:true, top3:false,espn:['texas']},
-  {seed:12, region:'West', name:'High Point',    owner:'dolla', price:190, status:'won',  r1eligible:true, top3:false,espn:['high point']},
-  {seed:13, region:'West', name:'Hawaii',        owner:'hudd',  price:90,  status:'alive',r1eligible:true, top3:false,espn:['hawaii']},
-  {seed:14, region:'West', name:'Kennesaw St.',  owner:'curt',  price:180, status:'lost', r1eligible:true, top3:false,espn:['kennesaw state','kennesaw st']},
-  {seed:15, region:'West', name:'Queens',        owner:'topper',price:375, status:'alive',r1eligible:true, top3:false,espn:['queens']},
-  {seed:16, region:'West', name:'Long Island',   owner:'topper',price:310, status:'alive',r1eligible:true, top3:false,espn:['long island','liu']},
-
-  /* ── EAST ────────────────────────────────── */
-  {seed:1,  region:'East', name:'Duke',          owner:'stark', price:2250,status:'alive',r1eligible:false,top3:true, espn:['duke']},
-  {seed:2,  region:'East', name:'UConn',         owner:'flan',  price:1100,status:'alive',r1eligible:false,top3:true, espn:['uconn','connecticut']},
-  {seed:3,  region:'East', name:'Michigan St.',  owner:'curt',  price:475, status:'won',  r1eligible:false,top3:true, espn:['michigan state','michigan st']},
-  {seed:4,  region:'East', name:'Kansas',        owner:'hudd',  price:650, status:'alive',r1eligible:false,top3:false,espn:['kansas']},
-  {seed:5,  region:'East', name:"St. John's",    owner:'topper',price:725, status:'alive',r1eligible:false,top3:false,espn:["st. john's","st johns"]},
-  {seed:6,  region:'East', name:'Louisville',    owner:'dolla', price:170, status:'alive',r1eligible:false,top3:false,espn:['louisville']},
-  {seed:7,  region:'East', name:'UCLA',          owner:'topper',price:185, status:'alive',r1eligible:false,top3:false,espn:['ucla']},
-  {seed:8,  region:'East', name:'Ohio State',    owner:'stark', price:265, status:'lost', r1eligible:true, top3:false,espn:['ohio state']},
-  {seed:9,  region:'East', name:'TCU',           owner:'topper',price:180, status:'won',  r1eligible:true, top3:false,espn:['tcu','texas christian']},
-  {seed:10, region:'East', name:'UCF',           owner:'curt',  price:115, status:'alive',r1eligible:true, top3:false,espn:['ucf','central florida']},
-  {seed:11, region:'East', name:'S. Florida',    owner:'stark', price:300, status:'alive',r1eligible:true, top3:false,espn:['south florida','s. florida']},
-  {seed:12, region:'East', name:'Northern Iowa', owner:'dolla', price:135, status:'alive',r1eligible:true, top3:false,espn:['northern iowa']},
-  {seed:13, region:'East', name:'CA Baptist',    owner:'stark', price:80,  status:'alive',r1eligible:true, top3:false,espn:['california baptist','cal baptist','ca baptist']},
-  {seed:14, region:'East', name:'N. Dakota St.', owner:'curt',  price:100, status:'lost', r1eligible:true, top3:false,espn:['north dakota state','n. dakota st','north dakota st']},
-  {seed:15, region:'East', name:'Furman',        owner:'topper',price:390, status:'alive',r1eligible:true, top3:false,espn:['furman']},
-  {seed:16, region:'East', name:'Siena',         owner:'stark', price:380, status:'alive',r1eligible:true, top3:false,espn:['siena']}
+  /* ── SOUTH */
+  {seed:1, region:'South',name:'Florida',      owner:'curt',  price:1550,status:'alive',r1eligible:false,top3:true, espn:['florida']},
+  {seed:2, region:'South',name:'Houston',      owner:'tommy', price:1100,status:'alive',r1eligible:false,top3:true, espn:['houston']},
+  {seed:3, region:'South',name:'Illinois',     owner:'topper',price:520, status:'alive',r1eligible:false,top3:true, espn:['illinois']},
+  {seed:4, region:'South',name:'Nebraska',     owner:'dolla', price:210, status:'alive',r1eligible:false,top3:false,espn:['nebraska']},
+  {seed:5, region:'South',name:'Vanderbilt',   owner:'flan',  price:450, status:'alive',r1eligible:false,top3:false,espn:['vanderbilt']},
+  {seed:6, region:'South',name:'UNC',          owner:'dolla', price:85,  status:'lost', r1eligible:false,top3:false,espn:['north carolina','unc']},
+  {seed:7, region:'South',name:"Saint Mary's", owner:'topper',price:100, status:'lost', r1eligible:false,top3:false,espn:["saint mary's",'saint marys']},
+  {seed:8, region:'South',name:'Clemson',      owner:'stark', price:190, status:'alive',r1eligible:true, top3:false,espn:['clemson']},
+  {seed:9, region:'South',name:'Iowa',         owner:'topper',price:180, status:'alive',r1eligible:true, top3:false,espn:['iowa']},
+  {seed:10,region:'South',name:'Texas A&M',    owner:'hudd',  price:200, status:'won',  r1eligible:true, top3:false,espn:['texas a&m','texas am']},
+  {seed:11,region:'South',name:'VCU',          owner:'curt',  price:170, status:'won',  r1eligible:true, top3:false,espn:['vcu','virginia commonwealth']},
+  {seed:12,region:'South',name:'McNeese',      owner:'dolla', price:110, status:'alive',r1eligible:true, top3:false,espn:['mcneese']},
+  {seed:13,region:'South',name:'Troy',         owner:'flan',  price:185, status:'alive',r1eligible:true, top3:false,espn:['troy']},
+  {seed:14,region:'South',name:'Penn',         owner:'stark', price:65,  status:'alive',r1eligible:true, top3:false,espn:['pennsylvania','penn']},
+  {seed:15,region:'South',name:'Idaho',        owner:'topper',price:210, status:'alive',r1eligible:true, top3:false,espn:['idaho']},
+  {seed:16,region:'South',name:'Prairie View/Lehigh',owner:'stark',price:230,status:'alive',r1eligible:true,top3:false,espn:['prairie view','lehigh']},
+  /* ── MIDWEST */
+  {seed:1, region:'MW',   name:'Michigan',     owner:'tommy', price:2250,status:'alive',r1eligible:false,top3:true, espn:['michigan']},
+  {seed:2, region:'MW',   name:'Iowa State',   owner:'stark', price:775, status:'alive',r1eligible:false,top3:true, espn:['iowa state']},
+  {seed:3, region:'MW',   name:'Virginia',     owner:'curt',  price:375, status:'alive',r1eligible:false,top3:true, espn:['virginia']},
+  {seed:4, region:'MW',   name:'Alabama',      owner:'dolla', price:370, status:'alive',r1eligible:false,top3:false,espn:['alabama']},
+  {seed:5, region:'MW',   name:'Texas Tech',   owner:'topper',price:320, status:'alive',r1eligible:false,top3:false,espn:['texas tech']},
+  {seed:6, region:'MW',   name:'Tennessee',    owner:'dolla', price:350, status:'alive',r1eligible:false,top3:false,espn:['tennessee']},
+  {seed:7, region:'MW',   name:'Kentucky',     owner:'hudd',  price:170, status:'alive',r1eligible:false,top3:false,espn:['kentucky']},
+  {seed:8, region:'MW',   name:'Georgia',      owner:'curt',  price:220, status:'lost', r1eligible:true, top3:false,espn:['georgia']},
+  {seed:9, region:'MW',   name:'Saint Louis',  owner:'hudd',  price:170, status:'won',  r1eligible:true, top3:false,espn:['saint louis']},
+  {seed:10,region:'MW',   name:'Santa Clara',  owner:'stark', price:160, status:'alive',r1eligible:true, top3:false,espn:['santa clara']},
+  {seed:11,region:'MW',   name:'SMU/Miami OH', owner:'stark', price:290, status:'alive',r1eligible:true, top3:false,espn:['smu','miami oh','miami (oh)']},
+  {seed:12,region:'MW',   name:'Akron',        owner:'curt',  price:280, status:'alive',r1eligible:true, top3:false,espn:['akron']},
+  {seed:13,region:'MW',   name:'Hofstra',      owner:'curt',  price:140, status:'lost', r1eligible:true, top3:false,espn:['hofstra']},
+  {seed:14,region:'MW',   name:'Wright State', owner:'dolla', price:70,  status:'alive',r1eligible:true, top3:false,espn:['wright state']},
+  {seed:15,region:'MW',   name:'Tennessee St.',owner:'topper',price:250, status:'alive',r1eligible:true, top3:false,espn:['tennessee state','tennessee st']},
+  {seed:16,region:'MW',   name:'UMBC/Howard',  owner:'topper',price:300, status:'alive',r1eligible:true, top3:false,espn:['umbc','howard']},
+  /* ── WEST */
+  {seed:1, region:'West', name:'Arizona',      owner:'curt',  price:2625,status:'alive',r1eligible:false,top3:true, espn:['arizona']},
+  {seed:2, region:'West', name:'Purdue',       owner:'flan',  price:1000,status:'alive',r1eligible:false,top3:true, espn:['purdue']},
+  {seed:3, region:'West', name:'Gonzaga',      owner:'stark', price:550, status:'won',  r1eligible:false,top3:true, espn:['gonzaga']},
+  {seed:4, region:'West', name:'Arkansas',     owner:'topper',price:700, status:'alive',r1eligible:false,top3:false,espn:['arkansas']},
+  {seed:5, region:'West', name:'Wisconsin',    owner:'hudd',  price:525, status:'lost', r1eligible:false,top3:false,espn:['wisconsin']},
+  {seed:6, region:'West', name:'BYU',          owner:'dolla', price:130, status:'lost', r1eligible:false,top3:false,espn:['byu','brigham young']},
+  {seed:7, region:'West', name:'Miami',        owner:'stark', price:110, status:'alive',r1eligible:false,top3:false,espn:["miami (fl)","miami fl","miami"]},
+  {seed:8, region:'West', name:'Villanova',    owner:'topper',price:170, status:'alive',r1eligible:true, top3:false,espn:['villanova']},
+  {seed:9, region:'West', name:'Utah State',   owner:'stark', price:180, status:'alive',r1eligible:true, top3:false,espn:['utah state']},
+  {seed:10,region:'West', name:'Missouri',     owner:'curt',  price:220, status:'alive',r1eligible:true, top3:false,espn:['missouri']},
+  {seed:11,region:'West', name:'Texas',        owner:'flan',  price:260, status:'won',  r1eligible:true, top3:false,espn:['texas']},
+  {seed:12,region:'West', name:'High Point',   owner:'dolla', price:190, status:'won',  r1eligible:true, top3:false,espn:['high point']},
+  {seed:13,region:'West', name:'Hawaii',       owner:'hudd',  price:90,  status:'alive',r1eligible:true, top3:false,espn:['hawaii']},
+  {seed:14,region:'West', name:'Kennesaw St.', owner:'curt',  price:180, status:'lost', r1eligible:true, top3:false,espn:['kennesaw state','kennesaw st']},
+  {seed:15,region:'West', name:'Queens',       owner:'topper',price:375, status:'alive',r1eligible:true, top3:false,espn:['queens']},
+  {seed:16,region:'West', name:'Long Island',  owner:'topper',price:310, status:'alive',r1eligible:true, top3:false,espn:['long island','liu']},
+  /* ── EAST */
+  {seed:1, region:'East', name:'Duke',         owner:'stark', price:2250,status:'alive',r1eligible:false,top3:true, espn:['duke']},
+  {seed:2, region:'East', name:'UConn',        owner:'flan',  price:1100,status:'alive',r1eligible:false,top3:true, espn:['uconn','connecticut']},
+  {seed:3, region:'East', name:'Michigan St.', owner:'curt',  price:475, status:'won',  r1eligible:false,top3:true, espn:['michigan state','michigan st']},
+  {seed:4, region:'East', name:'Kansas',       owner:'hudd',  price:650, status:'alive',r1eligible:false,top3:false,espn:['kansas']},
+  {seed:5, region:'East', name:"St. John's",   owner:'topper',price:725, status:'alive',r1eligible:false,top3:false,espn:["st. john's","st johns"]},
+  {seed:6, region:'East', name:'Louisville',   owner:'dolla', price:170, status:'alive',r1eligible:false,top3:false,espn:['louisville']},
+  {seed:7, region:'East', name:'UCLA',         owner:'topper',price:185, status:'alive',r1eligible:false,top3:false,espn:['ucla']},
+  {seed:8, region:'East', name:'Ohio State',   owner:'stark', price:265, status:'lost', r1eligible:true, top3:false,espn:['ohio state']},
+  {seed:9, region:'East', name:'TCU',          owner:'topper',price:180, status:'won',  r1eligible:true, top3:false,espn:['tcu','texas christian']},
+  {seed:10,region:'East', name:'UCF',          owner:'curt',  price:115, status:'alive',r1eligible:true, top3:false,espn:['ucf','central florida']},
+  {seed:11,region:'East', name:'S. Florida',   owner:'stark', price:300, status:'alive',r1eligible:true, top3:false,espn:['south florida','s. florida']},
+  {seed:12,region:'East', name:'Northern Iowa',owner:'dolla', price:135, status:'alive',r1eligible:true, top3:false,espn:['northern iowa']},
+  {seed:13,region:'East', name:'CA Baptist',   owner:'stark', price:80,  status:'alive',r1eligible:true, top3:false,espn:['california baptist','cal baptist','ca baptist']},
+  {seed:14,region:'East', name:'N. Dakota St.',owner:'curt',  price:100, status:'lost', r1eligible:true, top3:false,espn:['north dakota state','n. dakota st','north dakota st']},
+  {seed:15,region:'East', name:'Furman',       owner:'topper',price:390, status:'alive',r1eligible:true, top3:false,espn:['furman']},
+  {seed:16,region:'East', name:'Siena',        owner:'stark', price:380, status:'alive',r1eligible:true, top3:false,espn:['siena']}
 ];
 
-/* ── NCAA BRACKET STRUCTURE ─────────────────────────────
-   R32 matchups: winner of sideA seeds vs winner of sideB seeds
-   Standard bracket pairing within each region */
-var BRACKET_R32 = [
-  {region:'South', a:[1,16], b:[8,9]},  {region:'South', a:[5,12], b:[4,13]},
-  {region:'South', a:[6,11], b:[3,14]}, {region:'South', a:[7,10], b:[2,15]},
-  {region:'MW',    a:[1,16], b:[8,9]},  {region:'MW',    a:[5,12], b:[4,13]},
-  {region:'MW',    a:[6,11], b:[3,14]}, {region:'MW',    a:[7,10], b:[2,15]},
-  {region:'West',  a:[1,16], b:[8,9]},  {region:'West',  a:[5,12], b:[4,13]},
-  {region:'West',  a:[6,11], b:[3,14]}, {region:'West',  a:[7,10], b:[2,15]},
-  {region:'East',  a:[1,16], b:[8,9]},  {region:'East',  a:[5,12], b:[4,13]},
-  {region:'East',  a:[6,11], b:[3,14]}, {region:'East',  a:[7,10], b:[2,15]}
-];
-
-/* Returns the projected advancer from a bracket pair.
-   certain:true = guaranteed; certain:false = game still pending */
-function projectedAdvancer(region, seeds) {
-  var ts = TEAMS.filter(function(t){
-    return t.region === region && seeds.indexOf(t.seed) > -1;
-  });
-  var won   = ts.filter(function(t){ return t.status === 'won'; });
-  var alive = ts.filter(function(t){ return t.status === 'alive' || t.status === 'live'; });
-  if (won.length === 1)   return { team: won[0],   certain: true,  alt: null };
-  if (alive.length === 1) return { team: alive[0], certain: true,  alt: null }; /* other lost */
-  if (alive.length === 2) return { team: alive[0], certain: false, alt: alive[1] }; /* both pending */
-  return null;
-}
-
-/* Confirmed R1 winners — r1eligible seeds (8–16) that won Round of 64 */
-var CONFIRMED_R1 = [
-  'VCU','Texas A&M','Saint Louis','High Point','TCU','Texas',  /* existing */
-  'Iowa','Utah State'                                          /* all R1 now complete */
-];
-/* Teams confirmed advanced (won R1) but NOT r1eligible (seeds 1–7) */
+/* Confirmed results */
+var CONFIRMED_R1 = ['VCU','Texas A&M','Saint Louis','High Point','TCU','Texas','Iowa','Utah State'];
 var CONFIRMED_ADV_TOP = [
-  'Michigan St.','Gonzaga','Texas Tech','Kentucky',            /* existing */
-  /* 1-seeds */ 'Florida','Michigan','Arizona','Duke',
-  /* 2-seeds */ 'Houston','Iowa State','Purdue','UConn',
-  /* 3-seeds */ 'Illinois','Virginia',
-  /* 4-seeds */ 'Nebraska','Alabama','Arkansas','Kansas',
-  /* 5-seeds */ 'Vanderbilt',"St. John's",
-  /* 6-seeds */ 'Tennessee','Louisville',
-  /* 7-seeds */ 'UCLA','Miami'
+  'Michigan St.','Gonzaga','Texas Tech','Kentucky',
+  'Florida','Michigan','Arizona','Duke',
+  'Houston','Iowa State','Purdue','UConn',
+  'Illinois','Virginia',
+  'Nebraska','Alabama','Arkansas','Kansas',
+  'Vanderbilt',"St. John's",
+  'Tennessee','Louisville',
+  'UCLA','Miami'
 ];
-/* Confirmed eliminated — all R1 losers */
 var CONFIRMED_LOST = [
-  /* existing */  'Georgia','Kennesaw St.','N. Dakota St.','Hofstra','Wisconsin','BYU',"Saint Mary's",'UNC','Ohio State','Akron',
-  /* South */     'Clemson','McNeese','Troy','Penn','Idaho','Prairie View/Lehigh',
-  /* Midwest */   'SMU/Miami OH','Wright State','Santa Clara','Tennessee St.','UMBC/Howard',
-  /* West */      'Villanova','Hawaii','Missouri','Queens','Long Island',
-  /* East */      'Northern Iowa','CA Baptist','S. Florida','UCF','Furman','Siena'
+  'Georgia','Kennesaw St.','N. Dakota St.','Hofstra','Wisconsin','BYU',"Saint Mary's",'UNC','Ohio State','Akron',
+  'Clemson','McNeese','Troy','Penn','Idaho','Prairie View/Lehigh',
+  'SMU/Miami OH','Wright State','Santa Clara','Tennessee St.','UMBC/Howard',
+  'Villanova','Hawaii','Missouri','Queens','Long Island',
+  'Northern Iowa','CA Baptist','S. Florida','UCF','Furman','Siena'
 ];
 
-/* Apply confirmed statuses.
-   wonR1: permanent flag set once a team wins R1 — does NOT change if they later go
-   'live' or 'lost' in R32+. All R1 prize math uses wonR1, not status. */
 TEAMS.forEach(function(t) {
-  if (CONFIRMED_LOST.indexOf(t.name) > -1)  t.status = 'lost';
-  if (CONFIRMED_R1.indexOf(t.name) > -1)    { t.status = 'won'; t.wonR1 = true; }
+  if (CONFIRMED_LOST.indexOf(t.name) > -1)    t.status = 'lost';
+  if (CONFIRMED_R1.indexOf(t.name) > -1)      { t.status = 'won'; t.wonR1 = true; }
   if (CONFIRMED_ADV_TOP.indexOf(t.name) > -1) t.status = 'won';
 });
 
 /* ═══════════════════════════════════════════════════════
-   DERIVED CALCULATIONS
+   CALCULATIONS
 ═══════════════════════════════════════════════════════ */
 
-function getR1Winners() {
-  /* Use wonR1 flag — permanent once set, unaffected by later 'live'/'lost' status */
-  return TEAMS.filter(function(t){ return t.r1eligible && t.wonR1; });
-}
+function getR1Winners() { return TEAMS.filter(function(t){ return t.r1eligible && t.wonR1; }); }
+function getR1PerTeam() { var w=getR1Winners().length; return w>0?Math.ceil(POTS.r1/w):0; }
 
-function getR1PerTeam() {
-  var w = getR1Winners().length;
-  return w > 0 ? Math.ceil(POTS.r1 / w) : 0;
-}
-
-function ownerEarned(oid) {
-  var total = 0;
-  var r1pp = getR1PerTeam();
-  TEAMS.forEach(function(t) {
-    if (t.owner !== oid) return;
-    if (t.r1eligible && t.wonR1) total += r1pp;   /* wonR1 stable across live/lost */
-  });
-  return total;
+function computeS16PerTeam() {
+  var eligible = TEAMS.filter(function(t){ return t.seed>=4 && t.status!=='lost'; });
+  var projected = Math.min(eligible.length, 16);
+  return projected>0 ? Math.ceil(POTS.s16/projected) : 0;
 }
 
 function teamEarned(t) {
-  /* Returns dollars this specific team has earned — stable even when live/lost in R32 */
-  var total = 0;
-  if (t.r1eligible && t.wonR1) total += getR1PerTeam();
+  if (t.r1eligible && t.wonR1) return getR1PerTeam();
+  return 0;
+}
+
+function ownerEarned(oid) {
+  var total=0, r1pp=getR1PerTeam();
+  TEAMS.forEach(function(t){ if(t.owner===oid && t.r1eligible && t.wonR1) total+=r1pp; });
   return total;
 }
 
-function ownerNet(oid) {
-  return ownerEarned(oid) - OWNERS[oid].paid;
-}
-
-/* S16 per-team projection — $6,246.80 split among alive seeds 4-16 still in the field.
-   At most 16 teams can advance to S16 (one per R32 bracket slot), so cap denominator at 16. */
-function computeS16PerTeam() {
-  var eligible = TEAMS.filter(function(t){ return t.seed >= 4 && t.status !== 'lost'; });
-  var projected = Math.min(eligible.length, 16);
-  return projected > 0 ? Math.ceil(POTS.s16 / projected) : 0;
-}
+function ownerNet(oid) { return ownerEarned(oid)-OWNERS[oid].paid; }
 
 /* ═══════════════════════════════════════════════════════
    ESPN LIVE DATA
 ═══════════════════════════════════════════════════════ */
 
-var liveGames = [];
-var completedGames = [];
-var upcomingGames = [];
-/* Dates (YYYY-MM-DD) confirmed to contain R32 games — populated at fetch time */
-var knownR32Dates = {};
+var liveGames=[], completedGames=[], upcomingGames=[];
+var knownR32Dates={};
 
-function espnNameMatch(espnName) {
-  var n = (espnName || '').toLowerCase().trim();
-  /* Exact match only — partial matching causes Texas → Texas A&M / Texas Tech false positives */
-  for (var i = 0; i < TEAMS.length; i++) {
-    var t = TEAMS[i];
-    for (var j = 0; j < t.espn.length; j++) {
-      if (n === t.espn[j]) return t;
-    }
+function espnNameMatch(n) {
+  n=(n||'').toLowerCase().trim();
+  for(var i=0;i<TEAMS.length;i++){
+    var t=TEAMS[i];
+    for(var j=0;j<t.espn.length;j++){ if(n===t.espn[j]) return t; }
   }
   return null;
 }
 
-function fetchESPN(dateStr) {
-  var url = 'https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/scoreboard?dates=' + dateStr;
-  return fetch(url).then(function(r){ return r.json(); }).catch(function(){ return null; });
+function toETDate(iso) {
+  try {
+    var d=new Date(iso);
+    var s=d.toLocaleDateString('en-US',{timeZone:'America/New_York',year:'numeric',month:'2-digit',day:'2-digit'});
+    var p=s.split('/');
+    return p[2]+'-'+p[0]+'-'+p[1];
+  } catch(e){ return ''; }
 }
 
-/* Detect game round using ESPN notes + team-status fallback.
-   Populates knownR32Dates so dateSectionLabel can label correctly. */
 function getGameRound(ev, teams) {
-  /* Method 1: ESPN competition notes headline — most reliable */
-  var comp = ev.competitions && ev.competitions[0];
-  if (comp && comp.notes && comp.notes.length) {
-    var hl = (comp.notes[0].headline || '').toLowerCase();
-    if (hl.indexOf('second') > -1 || hl.indexOf('2nd') > -1 || hl.indexOf('round of 32') > -1) {
-      var etDate = toETDate(ev.date || '');
-      if (etDate) knownR32Dates[etDate] = true;
-      return 'R32';
+  var comp=ev.competitions&&ev.competitions[0];
+  if(comp&&comp.notes&&comp.notes.length){
+    var hl=(comp.notes[0].headline||'').toLowerCase();
+    if(hl.indexOf('second')>-1||hl.indexOf('2nd')>-1||hl.indexOf('round of 32')>-1){
+      var d=toETDate(ev.date||''); if(d) knownR32Dates[d]=true; return 'R32';
     }
-    if (hl.indexOf('sweet') > -1)  return 'S16';
-    if (hl.indexOf('elite') > -1)  return 'E8';
-    if (hl.indexOf('final four') > -1 || hl.indexOf('semifinal') > -1) return 'F4';
-    if (hl.indexOf('national') > -1 || hl.indexOf('championship') > -1) return 'NCG';
+    if(hl.indexOf('sweet')>-1)  return 'S16';
+    if(hl.indexOf('elite')>-1)  return 'E8';
+    if(hl.indexOf('final four')>-1||hl.indexOf('semifinal')>-1) return 'F4';
+    if(hl.indexOf('national')>-1||hl.indexOf('championship')>-1) return 'NCG';
   }
-  /* Method 2: both tracked teams already won R64 → must be R32 */
-  if (teams) {
-    var matched = teams.filter(function(t){ return t.matched; });
-    if (matched.length >= 2 && matched.every(function(t){ return t.matched.status === 'won'; })) {
-      var etDate2 = toETDate(ev.date || '');
-      if (etDate2) knownR32Dates[etDate2] = true;
-      return 'R32';
+  if(teams){
+    var matched=teams.filter(function(t){return t.matched;});
+    if(matched.length>=2&&matched.every(function(t){return t.matched.status==='won';})){
+      var d2=toETDate(ev.date||''); if(d2) knownR32Dates[d2]=true; return 'R32';
     }
   }
   return 'R64';
 }
 
 function processESPN(data) {
-  if (!data || !data.events) return;
-  data.events.forEach(function(ev) {
-    if (!ev.competitions || !ev.competitions[0]) return;
-    var comp = ev.competitions[0];
-    var comps = comp.competitors;
-    if (!comps || comps.length < 2) return;
+  if(!data||!data.events) return;
+  liveGames=[]; completedGames=[]; upcomingGames=[];
 
-    var s = comp.status && comp.status.type ? comp.status.type.state : 'pre';
-    var detail = comp.status && comp.status.type ? comp.status.type.shortDetail : '';
+  data.events.forEach(function(ev){
+    if(!ev.competitions||!ev.competitions[0]) return;
+    var comp=ev.competitions[0];
+    var comps=comp.competitors;
+    if(!comps||comps.length<2) return;
 
-    var teams = comps.map(function(c) {
-      /* shortDisplayName = "Florida", displayName = "Florida Gators" — use short first */
-      var nm    = c.team ? (c.team.shortDisplayName || c.team.displayName || '') : '';
-      var nmAlt = c.team ? (c.team.displayName || '') : '';
-      var matched = espnNameMatch(nm) || espnNameMatch(nmAlt);
-      var sc = parseInt(c.score || '0', 10) || 0;
-      var winner = c.winner === true;
-      /* Construct logo URL from team ID (always present) or fall back to logo field.
-         ESPN CDN: https://a.espncdn.com/i/teamlogos/ncaa/500/{id}.png */
-      var logoUrl = '';
-      if (c.team) {
-        if (c.team.id) {
-          logoUrl = 'https://a.espncdn.com/i/teamlogos/ncaa/500/' + c.team.id + '.png';
-        } else if (c.team.logo) {
-          logoUrl = c.team.logo;
-        } else if (c.team.logos && c.team.logos.length) {
-          logoUrl = c.team.logos[0].href || c.team.logos[0].url || '';
+    var state=comp.status&&comp.status.type?comp.status.type.state:'pre';
+    var detail=comp.status&&comp.status.type?comp.status.type.shortDetail:'';
+
+    var teams=comps.map(function(c){
+      var nm=c.team?(c.team.shortDisplayName||c.team.displayName||''):'';
+      var nmAlt=c.team?(c.team.displayName||''):'';
+      var matched=espnNameMatch(nm)||espnNameMatch(nmAlt);
+      var sc=parseInt(c.score||'0',10)||0;
+      var winner=c.winner===true;
+      var logoUrl='';
+      if(c.team){
+        if(c.team.id) logoUrl='https://a.espncdn.com/i/teamlogos/ncaa/500/'+c.team.id+'.png';
+        else if(c.team.logo) logoUrl=c.team.logo;
+      }
+      return {espnName:nm,matched:matched,score:sc,winner:winner,logoUrl:logoUrl};
+    });
+
+    var gameRound=getGameRound(ev,teams);
+
+    /* Update team status from ESPN */
+    teams.forEach(function(t){
+      if(!t.matched) return;
+      if(state==='in'){
+        t.matched.status='live';
+      } else if(state==='post'){
+        if(t.winner){
+          if(gameRound==='R64'&&t.matched.r1eligible) t.matched.wonR1=true;
+          t.matched.status='won';
+        } else {
+          t.matched.status='lost';
         }
       }
-      return { espnName: nm, matched: matched, score: sc, winner: winner, homeAway: c.homeAway, logoUrl: logoUrl };
+      if(t.logoUrl) t.matched.logo=t.logoUrl;
     });
 
-    var gameRound = getGameRound(ev, teams);
-
-    /* Update team statuses + logos from ESPN */
-    teams.forEach(function(t) {
-      if (!t.matched) return;
-      if (t.logoUrl && !t.matched.logo) t.matched.logo = t.logoUrl;
-      if (s === 'post') {
-        var next = t.winner ? 'won' : 'lost';
-        /* Guard: only protect a confirmed R1 win from stale R64 data.
-           R32 results always take effect (a team can lose in R32). */
-        if (t.matched.status === 'won' && next === 'lost' && gameRound === 'R64') return;
-        t.matched.status = next;
-        /* Lock wonR1 for any r1eligible team that ESPN confirms won a R64 game */
-        if (t.winner && gameRound === 'R64' && t.matched.r1eligible) t.matched.wonR1 = true;
-      } else if (s === 'in') {
-        /* Always go live when in progress — including R32 teams that already 'won' R1 */
-        t.matched.status = 'live';
-      }
-    });
-
-    var gameObj = {
-      id: ev.id,
-      state: s,
-      detail: detail,
-      date: ev.date || '',   /* ISO tip-off time for sorting */
-      round: gameRound,
-      t1: teams[0],
-      t2: teams[1],
-      title: ev.shortName || ''
-    };
-
-    /* Deduplicate */
-    function removeFromAll(id) {
-      liveGames      = liveGames.filter(function(g){ return g.id !== id; });
-      completedGames = completedGames.filter(function(g){ return g.id !== id; });
-      upcomingGames  = upcomingGames.filter(function(g){ return g.id !== id; });
-    }
-    removeFromAll(gameObj.id);
-
-    if (s === 'in')   liveGames.push(gameObj);
-    else if (s === 'post') completedGames.push(gameObj);
-    else upcomingGames.push(gameObj);
+    var g={t1:teams[0],t2:teams[1],round:gameRound,detail:detail,date:toETDate(ev.date||''),evDate:ev.date||''};
+    if(state==='in')        liveGames.push(g);
+    else if(state==='post') completedGames.push(g);
+    else                    upcomingGames.push(g);
   });
+
+  renderAll();
 }
 
-function fetchAll() {
-  /* Fetch R64 (Mar 20-23) + R32 (Mar 22-25) windows.
-     Overlapping dates are deduplicated below.
-     Also fetch today/yesterday dynamically for live use. */
-  var r1Dates = ['20260320','20260321','20260322','20260323','20260324','20260325'];
-  var today = new Date();
-  var d = today.toISOString().slice(0,10).replace(/-/g,'');
-  var yesterday = new Date(today); yesterday.setDate(yesterday.getDate()-1);
-  var y = yesterday.toISOString().slice(0,10).replace(/-/g,'');
-  /* Merge, deduplicate */
-  var dates = r1Dates.slice();
-  if (dates.indexOf(d) === -1) dates.push(d);
-  if (dates.indexOf(y) === -1) dates.push(y);
+function dateSectionLabel(ymd) {
+  if(!ymd) return 'UPCOMING';
+  if(knownR32Dates[ymd]) return 'ROUND OF 32 · '+fmtDate(ymd);
+  return 'ROUND OF 64 · '+fmtDate(ymd);
+}
 
-  Promise.all(dates.map(fetchESPN)).then(function(results) {
-    results.forEach(function(r){ if(r) processESPN(r); });
-    renderAll();
-  });
+function fmtDate(ymd) {
+  if(!ymd) return '';
+  var months=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  var parts=ymd.split('-');
+  return months[parseInt(parts[1],10)-1]+' '+parseInt(parts[2],10);
+}
+
+function startPolling() {
+  function fetchAll() {
+    var today=toETDate(new Date().toISOString());
+    var yesterday=toETDate(new Date(Date.now()-86400000).toISOString());
+    var tomorrow=toETDate(new Date(Date.now()+86400000).toISOString());
+    var dates=[yesterday,today,tomorrow].filter(function(d,i,a){ return d&&a.indexOf(d)===i; });
+    Promise.all(dates.map(function(d){
+      return fetch('https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/scoreboard?dates='+d.replace(/-/g,''))
+        .then(function(r){return r.json();}).catch(function(){return null;});
+    })).then(function(results){
+      var merged={events:[]};
+      results.forEach(function(r){
+        if(r&&r.events) merged.events=merged.events.concat(r.events);
+      });
+      processESPN(merged);
+    });
+  }
+  fetchAll();
+  setInterval(fetchAll, 30000);
 }
 
 /* ═══════════════════════════════════════════════════════
-   RENDER: STANDINGS
+   HELPERS
 ═══════════════════════════════════════════════════════ */
 
-function renderStandings() {
-  var el = document.getElementById('standings-grid');
-  if (!el) return;
+function logoImg(t, size, radius) {
+  size = size||36; radius = radius||9;
+  var src = (t&&t.logo)||LOGOS[t&&t.name]||'';
+  if(src) return '<img src="'+src+'" style="width:'+size+'px;height:'+size+'px;border-radius:'+radius+'px;object-fit:contain;background:#1a1a28;flex-shrink:0" onerror="this.style.display=\'none\'">';
+  var seed = t?t.seed:'?';
+  return '<div style="width:'+size+'px;height:'+size+'px;border-radius:'+radius+'px;background:#1a1a28;display:flex;align-items:center;justify-content:center;font-size:'+(size>30?11:8)+'px;font-weight:800;color:#34344a;flex-shrink:0">'+(seed||'?')+'</div>';
+}
 
-  /* Sort by earned descending, then by net as tiebreaker */
-  var sorted = Object.keys(OWNERS).sort(function(a,b){
-    var diff = ownerEarned(b) - ownerEarned(a);
-    return diff !== 0 ? diff : ownerNet(b) - ownerNet(a);
-  });
-
-  var html = '';
-  sorted.forEach(function(oid, i) {
-    var o = OWNERS[oid];
-    var net = ownerNet(oid);
-    var earned = ownerEarned(oid);
-    var netStr = (net >= 0 ? '+$' : '-$') + Math.abs(Math.round(net)).toLocaleString();
-    var cls = net >= 0 ? 'pos' : '';
-    /* Center the lone last card when total count is odd */
-    var isLast = (i === sorted.length - 1) && (sorted.length % 2 === 1);
-    var style = 'style="--oc:' + o.color + (isLast ? ';grid-column:1/-1;max-width:calc(50% - 4px);margin:0 auto;width:100%' : '') + '"';
-    /* Logo strip — only teams still alive/live/won (not eliminated) */
-    var myTeams = TEAMS.filter(function(t){ return t.owner === oid; })
-                       .sort(function(a,b){ return a.seed - b.seed; });
-    var activeTeams = myTeams.filter(function(t){ return t.status !== 'lost'; });
-    var logosHtml = '';
-    activeTeams.forEach(function(t) {
-      var src = t.logo || LOGOS[t.name] || '';
-      var te = teamEarned(t);
-      var logoEl = src
-        ? '<img src="' + src + '" alt="' + t.name + '" onerror="this.style.display=\'none\'">'
-        : '<div class="scard-logo-fb">' + t.seed + '</div>';
-      var liveEl  = t.status === 'live' ? '<span class="scard-logo-live"></span>' : '';
-      var earnEl  = te > 0 ? '<span class="scard-logo-earn">+$' + Math.round(te).toLocaleString() + '</span>' : '';
-      logosHtml += '<div class="scard-logo-wrap">' + logoEl + liveEl + earnEl + '</div>';
-    });
-
-    html +=
-      '<div class="scard" ' + style + '>' +
-        '<div class="scard-rank">#' + (i+1) + '</div>' +
-        '<div class="scard-netlabel">Net Position</div>' +
-        '<div class="scard-net ' + cls + '">' + netStr + '</div>' +
-        '<div class="scard-name">' + o.name + '</div>' +
-        '<div class="scard-stats">' +
-          'Paid <b>$' + o.paid.toLocaleString() + '</b> · ' +
-          'Earned <b style="color:' + (earned > 0 ? '#22c55e' : '#4a4a66') + '">' + (earned > 0 ? '+$'+Math.round(earned).toLocaleString() : '$0') + '</b>' +
-        '</div>' +
-        (logosHtml ? '<div class="scard-logos">' + logosHtml + '</div>' : '') +
-      '</div>';
-  });
-  el.innerHTML = html;
+function ownerTag(oid, size) {
+  var o=OWNERS[oid]; if(!o) return '';
+  size=size||8;
+  return '<span style="background:'+o.color+';color:#000;font-size:'+size+'px;font-weight:700;padding:1px 5px;border-radius:3px;letter-spacing:.2px">'+o.name+'</span>';
 }
 
 /* ═══════════════════════════════════════════════════════
-   RENDER: TEAMS / ROSTERS
+   RENDER — TEAMS (3-col alive grid)
 ═══════════════════════════════════════════════════════ */
 
 function renderTeams() {
-  var el = document.getElementById('roster-scroll');
-  if (!el) return;
+  var el    = document.getElementById('owner-list');
+  var label = document.getElementById('teams-label');
+  if(!el) return;
 
-  /* Sort owners by earned desc, then paid desc as tiebreaker */
-  var sorted = Object.keys(OWNERS).sort(function(a,b){
-    var diff = ownerEarned(b) - ownerEarned(a);
-    return diff !== 0 ? diff : OWNERS[b].paid - OWNERS[a].paid;
-  });
+  var r1pp = getR1PerTeam();
 
-  var html = '';
-  sorted.forEach(function(oid, rank) {
-    var o = OWNERS[oid];
-    var myTeams = TEAMS.filter(function(t){ return t.owner === oid; })
-                       .sort(function(a,b){
-                         /* Live = top, then alive/won, then eliminated — within each tier by seed */
-                         function pri(t) {
-                           if (t.status === 'live') return 0;
-                           if (t.status === 'lost') return 2;
-                           return 1;
-                         }
-                         var ap = pri(a), bp = pri(b);
-                         if (ap !== bp) return ap - bp;
-                         return a.seed - b.seed;
-                       });
-    var earned = ownerEarned(oid);
-    var net = ownerNet(oid);
-    var netStr = (net >= 0 ? '+$' : '-$') + Math.abs(Math.round(net)).toLocaleString();
-    var netColor = net >= 0 ? '#22c55e' : '#4a4a66';
-    var hasLive = myTeams.some(function(t){ return t.status === 'live'; });
+  /* Sort owners by net P&L descending */
+  var ownerIds = Object.keys(OWNERS).sort(function(a,b){ return ownerNet(b)-ownerNet(a); });
 
-    html += '<div class="rcol" style="--oc:' + o.color + '">' +
-      '<div class="rcol-hdr">' +
-        '<div style="display:flex;align-items:center;gap:7px">' +
-          '<span class="rcol-rank">' + (rank + 1) + '</span>' +
-          '<div class="rcol-name">' + o.name + '</div>' +
-          (hasLive ? '<span style="width:7px;height:7px;border-radius:50%;background:#f59e0b;animation:blink 1.2s ease-in-out infinite;flex-shrink:0;display:inline-block"></span>' : '') +
-          (earned > 0 ? '<span style="font-size:10px;font-weight:700;color:#4ade80;margin-left:2px">+$' + Math.round(earned).toLocaleString() + '</span>' : '') +
-        '</div>' +
-        '<div class="rcol-sub">' + myTeams.length + ' teams · $' + o.paid.toLocaleString() + '</div>' +
-        '<div class="rcol-earned" style="color:' + netColor + '">' + netStr + '</div>' +
-      '</div>';
+  var aliveTotal = TEAMS.filter(function(t){ return t.status!=='lost'; }).length;
+  label.textContent = aliveTotal+' Teams Alive · '+ownerIds.length+' Owners';
 
-    myTeams.forEach(function(t) {
-      var te = teamEarned(t);
-      var badgeHtml = '';
-      var nameCls = 'tname alive';
+  el.innerHTML = ownerIds.map(function(oid){
+    var o       = OWNERS[oid];
+    var earned  = ownerEarned(oid);
+    var net     = ownerNet(oid);
+    var netStr  = (net>=0?'+$':'-$')+Math.abs(net).toLocaleString();
+    var netCls  = net>=0?'ocard-net pos':'ocard-net';
+    var hasLive = TEAMS.some(function(t){ return t.owner===oid && t.status==='live'; });
 
-      if (t.status === 'live') {
-        nameCls = 'tname live';
-        /* Look up live score from liveGames */
-        var liveScore = '';
-        for (var li = 0; li < liveGames.length; li++) {
-          var lg = liveGames[li];
-          if (lg.t1.matched === t || lg.t2.matched === t) {
-            var me  = lg.t1.matched === t ? lg.t1 : lg.t2;
-            var opp = lg.t1.matched === t ? lg.t2 : lg.t1;
-            liveScore = me.score + '–' + opp.score;
-            break;
-          }
+    /* Sort teams: live → earned → alive → lost */
+    var myTeams = TEAMS.filter(function(t){ return t.owner===oid; })
+      .sort(function(a,b){
+        function pri(t){
+          if(t.status==='live')            return 0;
+          if(t.wonR1 && t.r1eligible)      return 1;
+          if(t.status==='won'||t.status==='alive') return 2+t.seed;
+          return 100+t.seed; /* lost last */
         }
-        /* Show live score + existing earnings if any */
-        if (te > 0) {
-          badgeHtml = '<span class="tbadge money" style="background:#1a1000;color:#f59e0b">▶ ' + (liveScore || 'LIVE') + '</span>';
-        } else {
-          badgeHtml = '<span class="tbadge live">' + (liveScore ? liveScore : '▶') + '</span>';
-        }
-      } else if (t.status === 'won') {
-        if (te > 0) {
-          nameCls = 'tname earning';
-          badgeHtml = '<span class="tbadge money">+$' + Math.round(te).toLocaleString() + '</span>';
-        } else {
-          nameCls = 'tname adv';
-          badgeHtml = '<span class="tbadge adv">ADV</span>';
-        }
-      } else if (t.status === 'lost') {
-        nameCls = 'tname elim';
-        /* Show earnings even on eliminated teams that already earned R1 */
-        badgeHtml = te > 0
-          ? '<span class="tbadge money" style="opacity:.6">+$' + Math.round(te).toLocaleString() + '</span>'
-          : '<span class="tbadge elim">✕</span>';
-      }
+        return pri(a)-pri(b);
+      });
 
-      var logoSrc = t.logo || LOGOS[t.name] || '';
+    var aliveCount = myTeams.filter(function(t){ return t.status!=='lost'; }).length;
+
+    var chips = myTeams.map(function(t){
+      var isLive   = t.status==='live';
+      var isLost   = t.status==='lost';
+      var hasEarned= t.wonR1 && t.r1eligible;
+      var te       = teamEarned(t);
+      var logoSrc  = t.logo||LOGOS[t.name]||'';
+      var chipCls  = 'tchip'+(isLive?' live':hasEarned?' earned':isLost?' lost':'');
+
+      var nm = t.name
+        .replace('Saint ','St. ')
+        .replace('Northern ','N. ')
+        .replace(' State',' St.');
+      if(nm.length > 11) nm = nm.substring(0,10)+'…';
+
       var logoHtml = logoSrc
-        ? '<img class="tlogo" src="' + logoSrc + '" alt="" loading="lazy" onerror="this.style.display=\'none\'">'
-        : '<div class="tlogo-seed">' + t.seed + '</div>';
-      html += '<div class="trow">' +
-        logoHtml +
-        '<div class="' + nameCls + '"><span class="tseed-num">' + t.seed + '</span>' + t.name + '</div>' +
-        badgeHtml +
-      '</div>';
-    });
+        ? '<img src="'+logoSrc+'" class="tchip-logo" onerror="this.style.display=\'none\'">'
+        : '<div class="tchip-logo-fb">'+t.seed+'</div>';
 
-    html += '</div>';
-  });
-  el.innerHTML = html;
+      var earnLine = (te>0 && !isLive) ? '<div class="tchip-earn">+$'+Math.round(te)+' R1</div>' : '';
+      var liveDot  = isLive ? '<div class="tchip-live-dot"></div>' : '';
+
+      return '<div class="'+chipCls+'">'
+        + logoHtml
+        + '<div class="tchip-info">'
+          + '<div class="tchip-seed">#'+t.seed+'</div>'
+          + '<div class="tchip-name">'+nm+'</div>'
+          + earnLine
+        + '</div>'
+        + liveDot
+      + '</div>';
+    }).join('');
+
+    return '<div class="ocard'+(hasLive?' has-live':'')+'" style="--oc:'+o.color+'">'
+      + '<div class="ocard-hdr">'
+        + '<div class="ocard-left">'
+          + '<div class="ocard-name">'+o.name+'</div>'
+          + '<div class="ocard-stats">'
+            + '<b>$'+o.paid.toLocaleString()+'</b> spent'
+            + (earned>0?' · <b style="color:#4ade80">+$'+earned.toLocaleString()+'</b> earned':'')
+            + ' · <b>'+aliveCount+'</b> alive'
+          + '</div>'
+        + '</div>'
+        + '<div class="ocard-right">'
+          + '<div class="'+netCls+'">'+netStr+'</div>'
+          + '<div class="ocard-netlabel">Net P&L</div>'
+        + '</div>'
+      + '</div>'
+      + '<div class="ocard-teams">'+chips+'</div>'
+    + '</div>';
+  }).join('');
 }
 
 /* ═══════════════════════════════════════════════════════
-   RENDER: GAMES
+   RENDER — GAMES (full-width matchup cards)
 ═══════════════════════════════════════════════════════ */
-
-function ownerTag(teamObj) {
-  if (!teamObj || !teamObj.matched) return '';
-  var oid = teamObj.matched.owner;
-  var o = OWNERS[oid];
-  if (!o) return '';
-  /* Dark contrast text on colored pill */
-  return '<span class="gotag" style="background:' + o.color + ';color:#000">' + o.name + '</span>';
-}
-
-function gameRowHtml(g) {
-  var t1 = g.t1, t2 = g.t2;
-  var isLive = g.state === 'in';
-  var isDone = g.state === 'post';
-
-  /* Status column for first team row */
-  var statusHtml = '';
-  if (isLive) {
-    /* #1: show clock once only — in gright, not repeated */
-    statusHtml = '<div class="glive"><span class="glive-dot"></span>LIVE</div>' +
-                 '<div class="gtime-detail">' + g.detail + '</div>';
-  } else if (isDone) {
-    statusHtml = '<div class="gfinal">Final</div>';
-  } else {
-    statusHtml = '<div class="gsched">' + formatTipoff(g.date, g.detail) + '</div>';
-  }
-
-  /* #3: payout callout for R1 winners — only on R64 concluded games */
-  function payoutBadge(t) {
-    if (!isDone || !t.winner) return '';
-    if (g.round !== 'R64') return '';             /* R1 prize only awarded in R64 */
-    if (!t.matched || !t.matched.r1eligible) return '';
-    var pp = getR1PerTeam();
-    if (!pp) return '';
-    return '<span style="font-size:9px;font-weight:700;color:#4ade80;background:#0a2010;padding:1px 5px;border-radius:3px;margin-left:5px">+$' + pp + ' R1</span>';
-  }
-
-  /* Build two-row matchup */
-  function glogoHtml(t) {
-    var src = (t.matched && (t.matched.logo || LOGOS[t.matched.name])) || (t.logoUrl) || '';
-    if (src) return '<img class="glogo-img" src="' + src + '" alt="" onerror="this.style.display=\'none\'">';
-    var abbr = t.matched ? t.matched.name.slice(0,2).toUpperCase() : (t.espnName||'?').charAt(0).toUpperCase();
-    return '<div class="glogo">' + abbr + '</div>';
-  }
-  function nameCls(t) { return (isDone && !t.winner) ? 'gteam-name elim' : 'gteam-name'; }
-  function scoreCls(t){ return (isDone && t.winner) ? 'gscore winner' : 'gscore'; }
-
-  /* #4: in concluded games, don't show score for loser — just dim them out */
-  function scoreHtml(t) {
-    if (isLive || isDone) {
-      if (isDone && !t.winner) return '<div class="gscore" style="color:#2c2c40;font-size:14px">' + t.score + '</div>';
-      return '<div class="' + scoreCls(t) + '">' + t.score + '</div>';
-    }
-    return '<div class="gscore dimtxt"></div>';
-  }
-
-  /* Earning potential badge — shows what an owner's team would earn by winning this game.
-     Only shown on live/upcoming games (not concluded).
-     • R32: seeds 4-16 → S16 prize (proj. split among alive eligible teams)
-     • R64: seeds 8-16 not yet confirmed → R1 prize */
-  function potentialBadge(t) {
-    if (isDone || !t.matched) return '';
-    var tm = t.matched;
-    if (g.round === 'R32' && tm.seed >= 4) {
-      var s16pp = computeS16PerTeam();
-      if (s16pp > 0) {
-        return '<span style="font-size:9px;font-weight:700;color:#818cf8;background:#0d0d20;border:1px solid #252545;padding:1px 5px;border-radius:3px;margin-left:4px">+$' + s16pp + ' S16</span>';
-      }
-    }
-    if (g.round === 'R64' && tm.r1eligible && !tm.wonR1) {
-      var r1pp = getR1PerTeam();
-      if (r1pp > 0) {
-        return '<span style="font-size:9px;font-weight:700;color:#4ade80;background:#0a2010;padding:1px 5px;border-radius:3px;margin-left:4px">+$' + r1pp + ' R1</span>';
-      }
-    }
-    return '';
-  }
-
-  var row = '<div class="grow">' +
-      glogoHtml(t1) +
-      '<div class="gteam"><div class="' + nameCls(t1) + '">' + t1.espnName + '</div>' +
-        '<div style="display:flex;align-items:center;flex-wrap:wrap;gap:3px">' + ownerTag(t1) + payoutBadge(t1) + potentialBadge(t1) + '</div>' +
-      '</div>' +
-      scoreHtml(t1) +
-      '<div class="gright">' + statusHtml + '</div>' +
-    '</div>' +
-    '<div class="grow">' +
-      glogoHtml(t2) +
-      '<div class="gteam"><div class="' + nameCls(t2) + '">' + t2.espnName + '</div>' +
-        '<div style="display:flex;align-items:center;flex-wrap:wrap;gap:3px">' + ownerTag(t2) + payoutBadge(t2) + potentialBadge(t2) + '</div>' +
-      '</div>' +
-      scoreHtml(t2) +
-      '<div class="gright"></div>' +
-    '</div>';
-
-  return row;
-}
-
-/* Clean winner-centric card for concluded games */
-function concludedCardHtml(g) {
-  var winner = (g.t1.winner) ? g.t1 : (g.t2.winner ? g.t2 : null);
-  var loser  = (g.t1.winner) ? g.t2 : (g.t2.winner ? g.t1 : null);
-  /* Fallback: no winner flag set yet — use old format */
-  if (!winner) return gameRowHtml(g);
-
-  function logoImg(t, cls) {
-    var src = (t.matched && (t.matched.logo || LOGOS[t.matched.name])) || t.logoUrl || '';
-    return src
-      ? '<img class="' + cls + '" src="' + src + '" alt="" onerror="this.style.display=\'none\'">'
-      : '<div class="' + cls + '-fb">' + (t.matched ? t.matched.name.slice(0,1) : '?') + '</div>';
-  }
-
-  var winName  = winner.matched ? winner.matched.name : winner.espnName;
-  var loseName = loser.matched  ? loser.matched.name  : loser.espnName;
-
-  /* Payout — shown once, only for R64 concluded games */
-  var pp = getR1PerTeam();
-  var payoutHtml = (g.round === 'R64' && winner.matched && winner.matched.r1eligible && pp)
-    ? '<span style="font-size:9px;font-weight:700;color:#4ade80;background:#0a2010;padding:1px 5px;border-radius:3px">+$' + pp + ' R1</span>'
-    : '';
-
-  var winTag = '';
-  if (winner.matched && winner.matched.owner && OWNERS[winner.matched.owner]) {
-    var wo = OWNERS[winner.matched.owner];
-    winTag = '<span class="gotag" style="background:' + wo.color + ';color:#000">' + wo.name + '</span>';
-  }
-  var loseTag = '';
-  if (loser.matched && loser.matched.owner && OWNERS[loser.matched.owner]) {
-    var lo = OWNERS[loser.matched.owner];
-    loseTag = '<span style="font-size:9px;font-weight:600;color:' + lo.color + ';opacity:.45">' + lo.name + '</span>';
-  }
-
-  /* S16 potential badge for R32 winner — they just locked in their S16 prize */
-  var s16EarnHtml = '';
-  if (g.round === 'R32' && winner.matched && winner.matched.seed >= 4) {
-    var s16pp2 = computeS16PerTeam();
-    if (s16pp2 > 0) {
-      s16EarnHtml = '<span style="font-size:9px;font-weight:700;color:#818cf8;background:#0d0d20;border:1px solid #252545;padding:1px 5px;border-radius:3px">+$' + s16pp2 + ' S16</span>';
-    }
-  }
-
-  return '<div class="gconcl">' +
-    /* Winner row */
-    '<div class="gconcl-top">' +
-      logoImg(winner, 'glogo-img') +
-      '<div class="gconcl-info">' +
-        '<div class="gconcl-name">' + winName + '</div>' +
-        '<div class="gconcl-tags">' + winTag + payoutHtml + s16EarnHtml + '</div>' +
-      '</div>' +
-      '<div style="text-align:right">' +
-        '<div class="gconcl-score">' + winner.score + '</div>' +
-        '<div class="gconcl-final">Final</div>' +
-      '</div>' +
-    '</div>' +
-    /* Loser compact row — score once, no redundancy */
-    '<div class="gconcl-def">' +
-      logoImg(loser, 'gconcl-def-logo') +
-      '<div class="gconcl-def-txt">def. ' + loseName + (loseTag ? ' · ' : '') + '</div>' +
-      loseTag +
-      '<div class="gconcl-def-score">' + loser.score + '</div>' +
-    '</div>' +
-  '</div>';
-}
-
-/* Render one row of a projected R32 matchup */
-function projRowHtml(adv, isFirst, regionLabel) {
-  var t = adv ? adv.team : null;
-  var certain = adv ? adv.certain : false;
-  var alt = adv ? adv.alt : null;
-
-  /* Logo */
-  var src = t ? (t.logo || LOGOS[t.name] || '') : '';
-  var logoHtml = src
-    ? '<img class="glogo-img" src="' + src + '" style="opacity:' + (certain ? '1' : '0.5') + '" alt="" onerror="this.style.display=\'none\'">'
-    : '<div class="glogo" style="opacity:' + (certain ? '1' : '0.4') + '">' + (t ? t.seed : '?') + '</div>';
-
-  /* Name */
-  var nameStr = t
-    ? (certain
-        ? t.name
-        : (alt ? t.name + ' <span style="color:#3a3a55">/ ' + alt.name + '</span>' : t.name))
-    : 'TBD';
-  var nameColor = certain ? '#d4d4e8' : '#6a6a88';
-  var wonDot = (t && t.status === 'won') ? ' <span style="color:#22c55e;font-size:9px">✓</span>' : '';
-
-  /* Owner tag */
-  var tagHtml = '';
-  if (t && t.owner && OWNERS[t.owner]) {
-    var o = OWNERS[t.owner];
-    tagHtml = '<span class="gotag" style="background:' + o.color + ';color:#000;opacity:' + (certain ? '1' : '0.5') + '">' + o.name + '</span>';
-  }
-
-  /* Right side — only on first row */
-  var rightHtml = isFirst
-    ? '<div style="font-size:9px;font-weight:700;letter-spacing:1px;color:#2e2e44;text-align:right">R32</div>'
-    : '<div></div>';
-
-  return '<div class="grow">' +
-    logoHtml +
-    '<div class="gteam"><div class="gteam-name" style="color:' + nameColor + '">' + nameStr + wonDot + '</div>' + tagHtml + '</div>' +
-    '<div></div>' +
-    rightHtml +
-  '</div>';
-}
-
-function renderProjectedR32() {
-  /* Only show matchups where at least one side is determined */
-  var cards = '';
-  BRACKET_R32.forEach(function(pair) {
-    var advA = projectedAdvancer(pair.region, pair.a);
-    var advB = projectedAdvancer(pair.region, pair.b);
-    if (!advA && !advB) return;
-    /* Skip if both sides are entirely TBD (no games played on either side yet) */
-    var aKnown = advA && (advA.certain || advA.team);
-    var bKnown = advB && (advB.certain || advB.team);
-    if (!aKnown && !bKnown) return;
-    cards += '<div class="gcard" style="opacity:0.85">' +
-      projRowHtml(advA, true,  pair.region) +
-      projRowHtml(advB, false, pair.region) +
-    '</div>';
-  });
-  if (!cards) return '';
-  return '<div class="gsec">' +
-    '<div class="gsec-hdr" style="color:#3a3a55">Round of 32 · Projected</div>' +
-    '<div class="gmatch-list">' + cards + '</div>' +
-  '</div>';
-}
-
-/* Convert UTC ISO date to ET local date string YYYY-MM-DD */
-function toETDate(isoDate) {
-  if (!isoDate) return '';
-  var d = new Date(isoDate);
-  /* March = EDT (UTC-4) */
-  var et = new Date(d.getTime() - 4 * 60 * 60 * 1000);
-  return et.toISOString().slice(0, 10);
-}
-
-/* Format tip-off time for display: "7:25 PM ET" */
-function formatTipoff(isoDate, fallback) {
-  if (!isoDate) return fallback || '';
-  var d = new Date(isoDate);
-  var et = new Date(d.getTime() - 4 * 60 * 60 * 1000);
-  var h = et.getUTCHours(), m = et.getUTCMinutes();
-  var ampm = h >= 12 ? 'PM' : 'AM';
-  h = h % 12 || 12;
-  return h + ':' + (m < 10 ? '0' + m : m) + ' ' + ampm + ' ET';
-}
-
-/* Section date label: "MAR 21 · ROUND OF 32" — uses knownR32Dates populated at fetch time */
-function dateSectionLabel(ymd) {
-  var months = ['','JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
-  var parts = ymd.split('-');
-  var roundLabel = knownR32Dates[ymd] ? 'ROUND OF 32' : 'ROUND OF 64';
-  return months[parseInt(parts[1], 10)] + ' ' + parseInt(parts[2], 10) + ' · ' + roundLabel;
-}
 
 function renderGames() {
   var el = document.getElementById('games-content');
-  if (!el) return;
+  if(!el) return;
 
   var html = '';
+  var r1pp  = getR1PerTeam();
+  var s16pp = computeS16PerTeam();
 
-  /* ── 1. LIVE NOW ── */
-  if (liveGames.length > 0) {
-    html += '<div class="gsec">' +
-      '<div class="gsec-hdr"><span class="pill-dot"></span>Live Now</div>' +
-      '<div class="gmatch-list">';
-    liveGames.forEach(function(g) {
-      html += '<div class="gcard">' + gameRowHtml(g) + '</div>';
+  function earnBadges(t, round, isDone) {
+    if(isDone || !t || !t.matched) return '';
+    var tm = t.matched;
+    var out = '';
+    if(round==='R64' && tm.r1eligible && !tm.wonR1 && r1pp>0)
+      out += '<div class="mcard-earn r1">+$'+r1pp+' R1</div>';
+    if(round==='R32' && tm.seed>=4 && s16pp>0)
+      out += '<div class="mcard-earn s16">+$'+s16pp+' S16</div>';
+    return out;
+  }
+
+  function teamCol(t, round, isDone, side) {
+    var tm = t.matched;
+    var isWinner = isDone && t.winner;
+    var isLoser  = isDone && !t.winner;
+    var nameCls  = 'mcard-tname'+(isWinner?' winner':isLoser?' loser':'');
+    var logoSrc  = (tm&&tm.logo)||LOGOS[tm&&tm.name]||'';
+    var logoHtml = logoSrc
+      ? '<img src="'+logoSrc+'" class="mcard-logo" onerror="this.style.display=\'none\'">'
+      : '<div class="mcard-logo-fb">'+(tm?tm.seed:'?')+'</div>';
+    var nm = tm ? tm.name : (t.espnName||'TBD');
+    if(nm.length>13) nm = nm.replace('Saint ','St. ').replace('Northern ','N. ').replace(' State',' St.');
+    var ownHtml = tm ? ownerTag(tm.owner,8) : '';
+    var earn = earnBadges(t, round, isDone);
+
+    return '<div class="mcard-team '+side+'">'
+      + logoHtml
+      + '<div class="mcard-tinfo">'
+        + '<div class="'+nameCls+'">'+nm+'</div>'
+        + '<div class="mcard-tags">'
+          + (tm?'<span class="mcard-seed">#'+tm.seed+'</span>':'')
+          + ownHtml
+        + '</div>'
+        + earn
+      + '</div>'
+    + '</div>';
+  }
+
+  /* LIVE */
+  if(liveGames.length) {
+    html += '<div class="games-section"><div class="games-sec-hdr"><span class="live-dot"></span>LIVE NOW</div><div class="game-list">';
+    liveGames.forEach(function(g){
+      var t1=g.t1, t2=g.t2;
+      html += '<div class="mcard live">'
+        + '<div class="mcard-top"><div class="mcard-top-left"><span class="live-dot"></span><span class="mcard-round">'+g.round+'</span></div><div class="mcard-top-right">'+g.detail+'</div></div>'
+        + '<div class="mcard-teams">'
+          + teamCol(t1,g.round,false,'left')
+          + '<div class="mcard-center"><div class="mcard-score-wrap"><span class="mcard-score">'+t1.score+'</span><span class="mcard-dash">–</span><span class="mcard-score">'+t2.score+'</span></div><div class="mcard-time live-txt">LIVE</div></div>'
+          + teamCol(t2,g.round,false,'right')
+        + '</div>'
+        + potBar(t1,t2,g.round,false)
+      + '</div>';
     });
     html += '</div></div>';
   }
 
-  /* Helper: render a section of games grouped by ET date */
-  function renderDateGroup(games, sortAsc) {
-    var sorted = games.slice().sort(function(a, b) {
-      var cmp = (a.date || '').localeCompare(b.date || '');
-      return sortAsc ? cmp : -cmp;
+  /* UPCOMING — grouped by date */
+  if(upcomingGames.length) {
+    var byDate={};
+    upcomingGames.forEach(function(g){
+      var d=g.date||'unknown'; if(!byDate[d]) byDate[d]=[];
+      byDate[d].push(g);
     });
-    var groups = {}, order = [];
-    sorted.forEach(function(g) {
-      var d = toETDate(g.date) || 'unknown';
-      if (!groups[d]) { groups[d] = []; order.push(d); }
-      groups[d].push(g);
-    });
-    var out = '';
-    order.forEach(function(d) {
-      var hasR32g = groups[d].some(function(g){ return g.round === 'R32'; });
-      var label = d === 'unknown' ? (hasR32g ? 'ROUND OF 32' : 'ROUND OF 64') : dateSectionLabel(d);
-      out += '<div class="gsec"><div class="gsec-hdr">' + label + '</div><div class="gmatch-list">';
-      groups[d].forEach(function(g) { out += '<div class="gcard">' + gameRowHtml(g) + '</div>'; });
-      out += '</div></div>';
-    });
-    return out;
-  }
-
-  /* ── 2. NEXT UP — upcoming sorted earliest first, grouped by date ── */
-  if (upcomingGames.length > 0) {
-    html += renderDateGroup(upcomingGames, true);
-  }
-
-  /* ── 2b. ROUND OF 32 PROJECTED ──
-     Hide once actual R32 games are in the feed (live, upcoming, or concluded) */
-  var hasR32 = [].concat(liveGames, upcomingGames, completedGames)
-                 .some(function(g){ return g.round === 'R32'; });
-  if (!hasR32) html += renderProjectedR32();
-
-  /* ── 3. CONCLUDED — winner-centric cards, most recent first ── */
-  if (completedGames.length > 0) {
-    /* Use concludedCardHtml for clean layout — score shown once, no redundancy */
-    var sortedDone = completedGames.slice().sort(function(a,b){ return (b.date||'').localeCompare(a.date||''); });
-    var doneGroups = {}, doneOrder = [];
-    sortedDone.forEach(function(g) {
-      var d = toETDate(g.date) || 'unknown';
-      if (!doneGroups[d]) { doneGroups[d] = []; doneOrder.push(d); }
-      doneGroups[d].push(g);
-    });
-    doneOrder.forEach(function(d) {
-      var hasR32d = doneGroups[d].some(function(g){ return g.round === 'R32'; });
-      var label = d === 'unknown' ? (hasR32d ? 'ROUND OF 32' : 'ROUND OF 64') : dateSectionLabel(d);
-      html += '<div class="gsec"><div class="gsec-hdr">' + label + '</div><div class="gmatch-list">';
-      doneGroups[d].forEach(function(g) { html += '<div class="gcard">' + concludedCardHtml(g) + '</div>'; });
+    Object.keys(byDate).sort().forEach(function(d){
+      var lbl = d==='unknown'?'UPCOMING':dateSectionLabel(d);
+      html += '<div class="games-section"><div class="games-sec-hdr">'+lbl+'</div><div class="game-list">';
+      byDate[d].forEach(function(g){
+        var t1=g.t1,t2=g.t2;
+        var timeStr=g.detail||'TBD';
+        html += '<div class="mcard">'
+          + '<div class="mcard-top"><div class="mcard-top-left"><span class="mcard-round">'+g.round+'</span></div><div class="mcard-top-right">'+timeStr+'</div></div>'
+          + '<div class="mcard-teams">'
+            + teamCol(t1,g.round,false,'left')
+            + '<div class="mcard-center"><div class="mcard-vs">VS</div></div>'
+            + teamCol(t2,g.round,false,'right')
+          + '</div>'
+          + potBar(t1,t2,g.round,false)
+        + '</div>';
+      });
       html += '</div></div>';
     });
   }
 
-  if (!html) {
-    html = '<div style="text-align:center;color:#4a4a66;padding:40px 16px;font-size:12px">Loading games…</div>';
+  /* COMPLETED */
+  if(completedGames.length) {
+    var cByDate={};
+    completedGames.forEach(function(g){
+      var d=g.date||'unknown'; if(!cByDate[d]) cByDate[d]=[];
+      cByDate[d].push(g);
+    });
+    Object.keys(cByDate).sort().reverse().forEach(function(d){
+      var lbl = d==='unknown'?'COMPLETED':dateSectionLabel(d);
+      html += '<div class="games-section"><div class="games-sec-hdr">'+lbl+' · FINAL</div><div class="game-list">';
+      cByDate[d].forEach(function(g){
+        var t1=g.t1,t2=g.t2;
+        var w=t1.winner?t1:t2, l=t1.winner?t2:t1;
+        html += '<div class="mcard final">'
+          + '<div class="mcard-top"><div class="mcard-top-left"><span class="mcard-round">'+g.round+' · FINAL</span></div><div class="mcard-top-right" style="color:#22c55e;font-weight:700">'+(w.matched?w.matched.name:'')+'</div></div>'
+          + '<div class="mcard-teams">'
+            + teamCol(t1,g.round,true,'left')
+            + '<div class="mcard-center"><div class="mcard-score-wrap"><span class="mcard-score '+(t1.winner?'winner':'loser')+'">'+t1.score+'</span><span class="mcard-dash">–</span><span class="mcard-score '+(t2.winner?'winner':'loser')+'">'+t2.score+'</span></div><div class="mcard-time">FINAL</div></div>'
+            + teamCol(t2,g.round,true,'right')
+          + '</div>'
+        + '</div>';
+      });
+      html += '</div></div>';
+    });
   }
 
+  if(!html) html='<div style="text-align:center;color:#2e2e44;font-size:12px;padding:40px 0;font-style:italic">Loading games…</div>';
   el.innerHTML = html;
 }
 
+function potBar(t1, t2, round, isDone) {
+  if(isDone) return '';
+  var r1pp=getR1PerTeam(), s16pp=computeS16PerTeam();
+  var items=[];
+
+  [t1,t2].forEach(function(t){
+    if(!t.matched) return;
+    var tm=t.matched, o=OWNERS[tm.owner];
+    if(round==='R64' && tm.r1eligible && !tm.wonR1 && r1pp>0)
+      items.push('<div class="mcard-pot-item r1-item">'+logoImg(tm,14,3)+'<span style="background:'+o.color+';color:#000;font-size:7px;font-weight:700;padding:1px 4px;border-radius:2px">'+o.name+'</span><span>+$'+r1pp+' R1</span></div>');
+    if(round==='R32' && tm.seed>=4 && s16pp>0)
+      items.push('<div class="mcard-pot-item s16-item">'+logoImg(tm,14,3)+'<span style="background:'+o.color+';color:#000;font-size:7px;font-weight:700;padding:1px 4px;border-radius:2px">'+o.name+'</span><span>+$'+s16pp+' S16</span></div>');
+  });
+
+  if(!items.length) return '';
+  return '<div class="mcard-pot"><span class="mcard-pot-label">At stake</span><div class="mcard-pot-items">'+items.join('')+'</div></div>';
+}
+
 /* ═══════════════════════════════════════════════════════
-   RENDER: PAYOUTS
+   RENDER — STANDINGS
+═══════════════════════════════════════════════════════ */
+
+function renderStandings() {
+  var el = document.getElementById('stand-list');
+  if(!el) return;
+
+  var owners = Object.keys(OWNERS).map(function(oid){
+    return {oid:oid,o:OWNERS[oid],earned:ownerEarned(oid),net:ownerNet(oid)};
+  }).sort(function(a,b){ return b.net-a.net; });
+
+  el.innerHTML = owners.map(function(item,i){
+    var oid=item.oid, o=item.o, net=item.net, earned=item.earned;
+    var netCls = net>=0?'stand-net pos':'stand-net';
+    var netStr = (net>=0?'+$':'-$')+Math.abs(net).toLocaleString();
+
+    var myTeams = TEAMS.filter(function(t){ return t.owner===oid && t.status!=='lost'; })
+      .sort(function(a,b){
+        if(a.status==='live'&&b.status!=='live') return -1;
+        if(b.status==='live'&&a.status!=='live') return 1;
+        return a.seed-b.seed;
+      });
+
+    var chips = myTeams.map(function(t){
+      var isLive=t.status==='live';
+      var te=teamEarned(t);
+      var logoSrc=t.logo||LOGOS[t.name]||'';
+      var logoHtml = logoSrc
+        ? '<img src="'+logoSrc+'" class="stand-chip-logo" onerror="this.style.display=\'none\'">'
+        : '<div class="stand-chip-logo-fb">'+t.seed+'</div>';
+      var liveIcon = isLive ? '<div class="stand-chip-live"></div>' : '';
+      var nm = t.name.replace('Saint ','St. ').replace('Northern ','N. ');
+      if(nm.length>10) nm=nm.substring(0,10)+'…';
+      var nameCls = te>0?'stand-chip-name earn':'stand-chip-name';
+      return '<div class="stand-team-chip">'+liveIcon+logoHtml+'<span class="'+nameCls+'">#'+t.seed+' '+nm+'</span></div>';
+    }).join('');
+
+    return '<div class="stand-card" style="--oc:'+o.color+'">'
+      + '<div class="stand-rank">#'+(i+1)+'</div>'
+      + '<div class="'+netCls+'">'+netStr+'</div>'
+      + '<div class="stand-name">'+o.name+'</div>'
+      + '<div class="stand-stats">'
+        + '<b>$'+earned.toLocaleString()+'</b> earned · <b>$'+o.paid.toLocaleString()+'</b> paid'
+        + (myTeams.length?' · <b>'+myTeams.length+'</b> alive':'')
+      + '</div>'
+      + '<div class="stand-teams">'+chips+'</div>'
+    + '</div>';
+  }).join('');
+}
+
+/* ═══════════════════════════════════════════════════════
+   RENDER — PAYOUTS
 ═══════════════════════════════════════════════════════ */
 
 function renderPayouts() {
-  var el = document.getElementById('payouts-content');
-  if (!el) return;
+  var el = document.getElementById('pay-list');
+  if(!el) return;
 
   var r1pp = getR1PerTeam();
   var r1w  = getR1Winners();
+  var s16Eligible = TEAMS.filter(function(t){ return t.seed>=4 && t.status!=='lost'; });
 
-  function ownerTag2(oid) {
-    var o = OWNERS[oid];
-    return '<span style="background:' + o.color + ';color:#000;font-size:9px;font-weight:700;padding:1px 6px;border-radius:3px;">' + o.name + '</span>';
-  }
+  function pLogoImg(t) { return logoImg(t, 20, 5); }
 
-  function pLogoHtml(t) {
-    var src = t.logo || LOGOS[t.name] || '';
-    if (src) return '<img src="' + src + '" style="width:20px;height:20px;border-radius:4px;object-fit:contain;background:#1a1a28;flex-shrink:0" onerror="this.style.display=\'none\'">';
-    return '<div style="width:20px;height:20px;border-radius:4px;background:#1a1a28;display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:800;color:#3a3a55;flex-shrink:0">' + t.seed + '</div>';
-  }
-
-  /* R1 */
-  var r1WinnersHtml = r1w.length > 0
+  /* R1 Winners */
+  var r1Html = r1w.length
     ? r1w.map(function(t){
-        return '<div class="pwinner">' + pLogoHtml(t) + '<span class="pw-name">' + t.name + '</span>' + ownerTag2(t.owner) + '<span class="pw-amt">+$' + r1pp.toLocaleString() + '</span></div>';
+        return '<div class="pwinner">'+pLogoImg(t)+'<span class="pw-name">'+t.name+'</span>'+ownerTag(t.owner,8)+'<span class="pw-amt">+$'+r1pp+'</span></div>';
       }).join('')
-    : '<div class="prow-tbd">No winners yet</div>';
+    : '<div class="pcard-tbd">No winners yet</div>';
 
   var html =
-    '<div class="prow">' +
-      '<div class="prow-hdr">' +
-        '<div class="prow-left"><div class="prow-name">Round of 64 Winners</div><div class="prow-pct">10% of pot · 8–16 seeds only · split equally</div></div>' +
-        '<div class="prow-amt">$' + POTS.r1.toLocaleString() + '</div>' +
-      '</div>' +
-      '<div class="prow-note">$' + r1pp + ' per winner · ' + r1w.length + ' confirmed so far</div>' +
-      '<div class="prow-winners">' + r1WinnersHtml + '</div>' +
-    '</div>';
+    '<div class="pcard">'
+    + '<div class="pcard-hdr"><div><div class="pcard-name">Round of 64 Winners</div><div class="pcard-pct">10% of pot · seeds 8–16 only · split equally</div></div><div class="pcard-amt">$'+POTS.r1.toLocaleString()+'</div></div>'
+    + '<div class="pcard-note">$'+r1pp+' per winner · '+r1w.length+' confirmed</div>'
+    + '<div class="pcard-winners">'+r1Html+'</div>'
+    + '</div>'
 
-  /* S16 */
-  var s16Eligible = TEAMS.filter(function(t){ return t.seed >= 4 && t.status !== 'lost'; });
-  html +=
-    '<div class="prow">' +
-      '<div class="prow-hdr">' +
-        '<div class="prow-left"><div class="prow-name">Sweet 16</div><div class="prow-pct">23% of pot · seeds 4–16 only · split equally</div></div>' +
-        '<div class="prow-amt">$' + POTS.s16.toFixed(0) + '</div>' +
-      '</div>' +
-      '<div class="prow-note">~$' + Math.ceil(POTS.s16/16) + '/team if 16 teams advance · ' + s16Eligible.length + ' eligible teams still alive</div>' +
-      '<div class="prow-tbd">Winners determined after Round of 32</div>' +
-    '</div>';
+    + '<div class="pcard">'
+    + '<div class="pcard-hdr"><div><div class="pcard-name">Sweet 16</div><div class="pcard-pct">23% of pot · seeds 4–16 only · split equally</div></div><div class="pcard-amt">$'+Math.round(POTS.s16)+'</div></div>'
+    + '<div class="pcard-note">~$'+computeS16PerTeam()+'/team if 16 advance · '+s16Eligible.length+' eligible still alive</div>'
+    + '<div class="pcard-tbd">Winners determined after Round of 32</div>'
+    + '</div>'
 
-  /* E8 */
-  var e8Eligible = TEAMS.filter(function(t){ return t.top3 && t.status !== 'lost'; });
-  html +=
-    '<div class="prow">' +
-      '<div class="prow-hdr">' +
-        '<div class="prow-left"><div class="prow-name">Elite 8</div><div class="prow-pct">10% of pot · seeds 1–3 only · split equally</div></div>' +
-        '<div class="prow-amt">$' + POTS.e8.toFixed(0) + '</div>' +
-      '</div>' +
-      '<div class="prow-note">' + e8Eligible.length + ' eligible teams (seeds 1–3) still alive<br>' +
-      e8Eligible.map(function(t){ return '<span style="color:#7a7a96">' + t.seed + ' ' + t.name + ' (' + OWNERS[t.owner].name + ')</span>'; }).join(' · ') +
-      '</div>' +
-    '</div>';
+    + '<div class="pcard">'
+    + '<div class="pcard-hdr"><div><div class="pcard-name">Elite 8</div><div class="pcard-pct">10% of pot · seeds 1–3 only · split equally</div></div><div class="pcard-amt">$'+Math.round(POTS.e8)+'</div></div>'
+    + '<div class="pcard-note">'+TEAMS.filter(function(t){return t.top3&&t.status!=='lost';}).length+' seeds 1–3 still alive</div>'
+    + '<div class="pcard-tbd">Winners determined after Sweet 16</div>'
+    + '</div>'
 
-  /* F4 */
-  html +=
-    '<div class="prow">' +
-      '<div class="prow-hdr">' +
-        '<div class="prow-left"><div class="prow-name">Final Four</div><div class="prow-pct">28% of pot · fixed per team, not split</div></div>' +
-        '<div class="prow-amt">$' + Math.round(POTS.f4 * 4).toLocaleString() + '</div>' +
-      '</div>' +
-      '<div class="prow-note">$' + POTS.f4.toFixed(0) + ' per team regardless of how many advance — no dilution</div>' +
-      '<div class="prow-tbd">4 spots available</div>' +
-    '</div>';
+    + '<div class="pcard">'
+    + '<div class="pcard-hdr"><div><div class="pcard-name">Final Four</div><div class="pcard-pct">28% of pot · fixed per team</div></div><div class="pcard-amt">$'+Math.round(POTS.f4*4).toLocaleString()+'</div></div>'
+    + '<div class="pcard-note">$'+Math.round(POTS.f4)+' per team — fixed, no dilution</div>'
+    + '</div>'
 
-  /* Finals */
-  html +=
-    '<div class="prow">' +
-      '<div class="prow-hdr">' +
-        '<div class="prow-left"><div class="prow-name">Championship Game</div><div class="prow-pct">8% of pot · both finalists, fixed</div></div>' +
-        '<div class="prow-amt">$' + (POTS.finals * 2).toFixed(0) + '</div>' +
-      '</div>' +
-      '<div class="prow-note">$' + POTS.finals.toFixed(0) + ' per finalist — regardless of outcome</div>' +
-      '<div class="prow-tbd">2 spots available</div>' +
-    '</div>';
+    + '<div class="pcard">'
+    + '<div class="pcard-hdr"><div><div class="pcard-name">Championship Game</div><div class="pcard-pct">8% of pot · both finalists</div></div><div class="pcard-amt">$'+Math.round(POTS.finals*2).toLocaleString()+'</div></div>'
+    + '<div class="pcard-note">$'+Math.round(POTS.finals)+' per finalist</div>'
+    + '</div>'
 
-  /* Champ */
-  html +=
-    '<div class="prow">' +
-      '<div class="prow-hdr">' +
-        '<div class="prow-left"><div class="prow-name">National Champion</div><div class="prow-pct">9% of pot</div></div>' +
-        '<div class="prow-amt">$' + POTS.champ.toFixed(0) + '</div>' +
-      '</div>' +
-      '<div class="prow-tbd">Winner takes all</div>' +
-    '</div>';
+    + '<div class="pcard">'
+    + '<div class="pcard-hdr"><div><div class="pcard-name">National Champion</div><div class="pcard-pct">9% of pot · winner takes all</div></div><div class="pcard-amt">$'+Math.round(POTS.champ).toLocaleString()+'</div></div>'
+    + '</div>';
 
-  /* ── Side pot leader computation ── */
-  var r64Done = completedGames.filter(function(g){ return g.round === 'R64'; });
+  /* Side pots */
+  var r64Done = completedGames.filter(function(g){ return g.round==='R64'; });
 
-  /* Biggest R1 Loss — largest margin of defeat in R64 */
-  var bloss = null, blossMargin = -1;
-  r64Done.forEach(function(g) {
-    var winner = g.t1.winner ? g.t1 : (g.t2.winner ? g.t2 : null);
-    var loser  = g.t1.winner ? g.t2 : (g.t2.winner ? g.t1 : null);
-    if (!winner || !loser) return;
-    var m = winner.score - loser.score;
-    if (m > blossMargin || (m === blossMargin && loser.score < (bloss ? bloss.loser.score : Infinity))) {
-      blossMargin = m; bloss = { winner: winner, loser: loser, margin: m };
+  /* Biggest Loss leader */
+  var bloss=null, blossMargin=-1;
+  r64Done.forEach(function(g){
+    var winner=g.t1.winner?g.t1:g.t2, loser=g.t1.winner?g.t2:g.t1;
+    if(!winner||!loser) return;
+    var m=winner.score-loser.score;
+    if(m>blossMargin||(m===blossMargin&&loser.score<(bloss?bloss.loser.score:Infinity))){
+      blossMargin=m; bloss={winner:winner,loser:loser,margin:m};
     }
   });
-  var blossLeaderHtml = '';
-  if (bloss) {
-    var blt = bloss.loser.matched;
-    var blown = blt ? OWNERS[blt.owner] : null;
-    blossLeaderHtml = '<div style="margin-top:8px;color:#7a7a96;font-size:10px;line-height:1.6">Current leader: ' +
-      '<b style="color:#c4c4dc">' + (blt ? blt.name : bloss.loser.espnName) + '</b>' +
-      (blown ? ' <span style="background:' + blown.color + ';color:#000;font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px">' + blown.name + '</span>' : '') +
-      ' — lost by <b style="color:#ef4444">' + bloss.margin + ' pts</b> (' + bloss.winner.score + '–' + bloss.loser.score + ')</div>';
-  } else if (r64Done.length === 0) {
-    blossLeaderHtml = '<div style="margin-top:8px;color:#2e2e44;font-size:10px;font-style:italic">Loading…</div>';
-  }
+  var blossHtml='<div class="pcard-tbd">Determined after all R64 games complete</div>';
+  if(bloss){ var bt=bloss.loser.matched; blossHtml='<div class="pcard-leader">Current leader: <b style="color:#c4c4dc">'+(bt?bt.name:bloss.loser.espnName||'?')+'</b> '+(bt?ownerTag(bt.owner,8):'')+'<span style="color:#ef4444;font-weight:700"> — lost by '+bloss.margin+' pts</span></div>'; }
 
-  /* Biggest Upset — largest seed differential (higher seed beats lower seed) */
-  var bupset = null, bupsetDiff = -1;
-  r64Done.forEach(function(g) {
-    var winner = g.t1.winner ? g.t1 : (g.t2.winner ? g.t2 : null);
-    var loser  = g.t1.winner ? g.t2 : (g.t2.winner ? g.t1 : null);
-    if (!winner || !loser || !winner.matched || !loser.matched) return;
-    var diff = winner.matched.seed - loser.matched.seed;
-    if (diff <= 0) return;
-    if (diff > bupsetDiff || (diff === bupsetDiff && winner.matched.seed > (bupset ? bupset.winner.matched.seed : 0))) {
-      bupsetDiff = diff; bupset = { winner: winner, loser: loser, diff: diff };
+  /* Biggest Upset leader */
+  var bupset=null,bupsetDiff=-1;
+  r64Done.forEach(function(g){
+    var winner=g.t1.winner?g.t1:g.t2, loser=g.t1.winner?g.t2:g.t1;
+    if(!winner||!loser||!winner.matched||!loser.matched) return;
+    var diff=winner.matched.seed-loser.matched.seed;
+    if(diff<=0) return;
+    if(diff>bupsetDiff||(diff===bupsetDiff&&winner.matched.seed>(bupset?bupset.winner.matched.seed:0))){
+      bupsetDiff=diff; bupset={winner:winner,loser:loser,diff:diff};
     }
   });
-  var bupsetLeaderHtml = '';
-  if (bupset) {
-    var bwt = bupset.winner.matched;
-    var bwown = bwt ? OWNERS[bwt.owner] : null;
-    bupsetLeaderHtml = '<div style="margin-top:8px;color:#7a7a96;font-size:10px;line-height:1.6">Current leader: ' +
-      '<b style="color:#c4c4dc">' + (bwt ? bwt.seed + ' ' + bwt.name : bupset.winner.espnName) + '</b>' +
-      (bwown ? ' <span style="background:' + bwown.color + ';color:#000;font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px">' + bwown.name + '</span>' : '') +
-      ' over <span style="color:#3a3a55">' + (bupset.loser.matched ? bupset.loser.matched.seed + ' ' + bupset.loser.matched.name : bupset.loser.espnName) + '</span>' +
-      ' — <b style="color:#22c55e">+' + bupset.diff + ' seed diff</b></div>';
-  } else if (r64Done.length === 0) {
-    bupsetLeaderHtml = '<div style="margin-top:8px;color:#2e2e44;font-size:10px;font-style:italic">Loading…</div>';
-  }
+  var bupsetHtml='<div class="pcard-tbd">Largest seed differential — any round</div>';
+  if(bupset){ var bwt=bupset.winner.matched; bupsetHtml='<div class="pcard-leader">Current leader: <b style="color:#c4c4dc">'+(bwt?bwt.seed+' '+bwt.name:'?')+'</b> '+ownerTag(bwt.owner,8)+'<span style="color:#22c55e;font-weight:700"> — +'+bupset.diff+' seed diff</span></div>'; }
 
-  /* Best 15/16 Seed — furthest 15 or 16 seed; if all out, closest R64 margin */
-  var alive1516 = TEAMS.filter(function(t){ return (t.seed === 15 || t.seed === 16) && t.status !== 'lost'; });
-  var best1516StatusHtml = '';
-  if (alive1516.length > 0) {
-    best1516StatusHtml = '<div style="margin-top:8px;color:#7a7a96;font-size:10px;line-height:1.6">Still alive: ' +
-      alive1516.map(function(t){
-        var ow = OWNERS[t.owner];
-        return '<b style="color:#22c55e">' + t.seed + ' ' + t.name + '</b>' +
-          (ow ? ' <span style="background:' + ow.color + ';color:#000;font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px">' + ow.name + '</span>' : '');
-      }).join(' · ') + '</div>';
+  /* Best 15/16 */
+  var alive1516=TEAMS.filter(function(t){return (t.seed===15||t.seed===16)&&t.status!=='lost';});
+  var best1516Html='';
+  if(alive1516.length){
+    best1516Html='<div class="pcard-leader">Still alive: '+alive1516.map(function(t){return '<b style="color:#22c55e">#'+t.seed+' '+t.name+'</b> '+ownerTag(t.owner,8);}).join(' · ')+'</div>';
   } else {
-    /* All eliminated — find closest margin in R64 among 15/16 seeds */
-    var best1516g = null, best1516closest = Infinity;
-    r64Done.forEach(function(g) {
-      var winner = g.t1.winner ? g.t1 : (g.t2.winner ? g.t2 : null);
-      var loser  = g.t1.winner ? g.t2 : (g.t2.winner ? g.t1 : null);
-      if (!loser || !loser.matched) return;
-      if (loser.matched.seed !== 15 && loser.matched.seed !== 16) return;
-      var margin = winner ? (winner.score - loser.score) : 999;
-      if (margin < best1516closest || (margin === best1516closest && loser.matched.seed > (best1516g ? best1516g.loser.matched.seed : 0))) {
-        best1516closest = margin; best1516g = { winner: winner, loser: loser, margin: margin };
-      }
+    var b1516=null,b1516m=Infinity;
+    r64Done.forEach(function(g){
+      var winner=g.t1.winner?g.t1:g.t2,loser=g.t1.winner?g.t2:g.t1;
+      if(!loser||!loser.matched) return;
+      if(loser.matched.seed!==15&&loser.matched.seed!==16) return;
+      var m=winner?(winner.score-loser.score):999;
+      if(m<b1516m||(m===b1516m&&loser.matched.seed>(b1516?b1516.loser.matched.seed:0))){b1516m=m;b1516={loser:loser,margin:m};}
     });
-    if (best1516g) {
-      var bt = best1516g.loser.matched;
-      var bown = bt ? OWNERS[bt.owner] : null;
-      best1516StatusHtml = '<div style="margin-top:8px;color:#7a7a96;font-size:10px;line-height:1.6">Current leader: ' +
-        '<b style="color:#c4c4dc">' + (bt ? bt.seed + ' ' + bt.name : best1516g.loser.espnName) + '</b>' +
-        (bown ? ' <span style="background:' + bown.color + ';color:#000;font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px">' + bown.name + '</span>' : '') +
-        ' — lost by <b style="color:#c4c4dc">' + best1516g.margin + ' pts</b></div>';
-    } else {
-      best1516StatusHtml = '<div style="margin-top:8px;color:#2e2e44;font-size:10px;font-style:italic">Loading…</div>';
-    }
+    if(b1516){var bt2=b1516.loser.matched;best1516Html='<div class="pcard-leader">Current leader: <b style="color:#c4c4dc">#'+bt2.seed+' '+bt2.name+'</b> '+ownerTag(bt2.owner,8)+'<span style="color:#c4c4dc;font-weight:700"> — lost by '+b1516.margin+' pts</span></div>';}
+    else best1516Html='<div class="pcard-tbd">Loading…</div>';
   }
 
-  /* Special pots */
-  html +=
-    '<div class="slabel mt">Special Side Pots</div>' +
-    '<div class="prow">' +
-      '<div class="prow-hdr">' +
-        '<div class="prow-left"><div class="prow-name">Biggest R1 Loss</div><div class="prow-pct">4% of pot</div></div>' +
-        '<div class="prow-amt">$' + POTS.loss.toFixed(0) + '</div>' +
-      '</div>' +
-      '<div class="prow-special">Largest point-margin defeat in Round of 64. Tiebreaker: lowest points scored. If still tied, teams split.</div>' +
-      blossLeaderHtml +
-    '</div>' +
-    '<div class="prow">' +
-      '<div class="prow-hdr">' +
-        '<div class="prow-left"><div class="prow-name">Biggest Upset</div><div class="prow-pct">4% of pot</div></div>' +
-        '<div class="prow-amt">$' + POTS.upset.toFixed(0) + '</div>' +
-      '</div>' +
-      '<div class="prow-special">Largest seed differential upset throughout the tournament. Tiebreaker: higher seed wins. Example: 13-over-4 beats 11-over-2 (same diff, 13 is higher seed).</div>' +
-      bupsetLeaderHtml +
-    '</div>' +
-    '<div class="prow">' +
-      '<div class="prow-hdr">' +
-        '<div class="prow-left"><div class="prow-name">Best #15 / #16 Seed</div><div class="prow-pct">4% of pot</div></div>' +
-        '<div class="prow-amt">$' + POTS.seed15.toFixed(0) + '</div>' +
-      '</div>' +
-      '<div class="prow-special">Awarded to the 15 or 16 seed that goes furthest. If tied, determined by margin of defeat in final shared round.</div>' +
-      best1516StatusHtml +
-    '</div>';
+  html += '<div class="pcard-sec">Special Side Pots</div>'
+    + '<div class="pcard"><div class="pcard-hdr"><div><div class="pcard-name">Biggest R1 Loss</div><div class="pcard-pct">4% of pot</div></div><div class="pcard-amt">$'+Math.round(POTS.loss)+'</div></div><div class="pcard-rule">Largest point-margin defeat in Round of 64. Tiebreaker: lowest points scored.</div>'+blossHtml+'</div>'
+    + '<div class="pcard"><div class="pcard-hdr"><div><div class="pcard-name">Biggest Upset</div><div class="pcard-pct">4% of pot</div></div><div class="pcard-amt">$'+Math.round(POTS.upset)+'</div></div><div class="pcard-rule">Largest seed differential upset in the tournament. Tiebreaker: higher seed wins.</div>'+bupsetHtml+'</div>'
+    + '<div class="pcard"><div class="pcard-hdr"><div><div class="pcard-name">Best #15 / #16 Seed</div><div class="pcard-pct">4% of pot</div></div><div class="pcard-amt">$'+Math.round(POTS.seed15)+'</div></div><div class="pcard-rule">Awarded to the 15 or 16 seed that goes furthest. Tiebreaker: margin of defeat.</div>'+best1516Html+'</div>';
 
   el.innerHTML = html;
 }
@@ -1354,9 +1092,10 @@ function renderPayouts() {
 
 function switchTab(name, btn) {
   document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('on'); });
-  document.querySelectorAll('.tab').forEach(function(b){ b.classList.remove('on'); });
-  document.getElementById('panel-' + name).classList.add('on');
+  document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.remove('on'); });
+  document.getElementById('panel-'+name).classList.add('on');
   btn.classList.add('on');
+  document.getElementById('scroll-area').scrollTop = 0;
   renderAll();
 }
 
@@ -1365,27 +1104,18 @@ function switchTab(name, btn) {
 ═══════════════════════════════════════════════════════ */
 
 function renderAll() {
-  /* Update header pill: Round of 32 once any R32 game is in the feed */
-  var hasR32 = [].concat(liveGames, upcomingGames, completedGames)
-                 .some(function(g){ return g.round === 'R32'; });
-  var pill = document.getElementById('round-pill');
-  if (pill) {
-    var roundTxt = hasR32 ? 'Round of 32' : 'Round of 64';
-    pill.innerHTML = '<span class="pill-dot"></span>' + roundTxt + ' · Live';
-  }
-  renderStandings();
+  var hasR32=[].concat(liveGames,upcomingGames,completedGames).some(function(g){return g.round==='R32';});
+  var rt=document.getElementById('round-txt');
+  if(rt) rt.textContent=(hasR32?'R32':'R64')+' · Live';
   renderTeams();
   renderGames();
+  renderStandings();
   renderPayouts();
 }
 
-/* ═══════════════════════════════════════════════════════
-   BOOT
-═══════════════════════════════════════════════════════ */
-
+/* ── BOOT ─────────────────────────────────────────────── */
 renderAll();
-fetchAll();
-setInterval(fetchAll, 30000);
+startPolling();
 </script>
 </body>
 </html>
