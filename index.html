@@ -101,57 +101,59 @@ html,body{
 .ocard-row2{display:flex;align-items:baseline;justify-content:space-between;}
 .ocard-name{font-size:17px;font-weight:800;color:var(--oc);line-height:1;letter-spacing:-.3px}
 .ocard-alive-pill{font-size:9px;font-weight:700;color:#22c55e;background:rgba(34,197,94,.12);border-radius:20px;padding:2px 7px;margin-left:7px;letter-spacing:.3px}
+.ocard-sp-pill{font-size:8px;font-weight:700;border-radius:20px;padding:2px 7px;margin-left:5px;letter-spacing:.2px;white-space:nowrap}
+.ocard-sp-pill.upset {color:#f59e0b;background:rgba(245,158,11,.12)}
+.ocard-sp-pill.loss  {color:#ef4444;background:rgba(239,68,68,.10)}
+.ocard-sp-pill.seed15{color:#a78bfa;background:rgba(167,139,250,.10)}
 .ocard-stats{font-size:11px;color:#3a3a55;line-height:1.7}
 .ocard-stats b{color:#5a5a7a}
 .ocard-net{font-size:20px;font-weight:800;line-height:1;color:#3a3a55}
 .ocard-net.pos{color:#22c55e}
 .ocard-netlabel{font-size:8px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
 
-/* team chips grid — 3 per row */
+/* ── TEAMS tab chip rows ─────────────────────────────── */
 .ocard-teams{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:1px;
-  background:#16161f;
+  padding:10px 14px 12px;
   border-top:1px solid #16161f;
+  display:flex;flex-direction:column;gap:7px;
 }
+.ocard-alive-row{display:flex;flex-wrap:wrap;gap:5px;align-items:flex-start;padding-bottom:1px;}
+
+/* alive chip — mirrors .stand-team-chip but slightly brighter */
 .tchip{
-  background:#111119;
-  display:flex;align-items:center;gap:8px;
-  padding:9px 10px;
-  position:relative;
+  display:inline-flex;align-items:center;gap:4px;
+  background:#161625;border-radius:6px;
+  padding:3px 7px 3px 4px;
+  flex-shrink:0;width:auto;
 }
-.tchip.live{background:#130f07}
-.tchip.earned{background:#0c130c}
-.tchip.lost{background:#0e0e14;opacity:.4}
-.tchip.lost.sp-winner{opacity:1}
+.tchip.live  {background:#140f04;}
+.tchip.earned{background:#0b130b;}
 
-/* live pulse bar — left edge */
-.tchip.live::before{
-  content:'';position:absolute;left:0;top:0;bottom:0;width:2px;
-  background:#f59e0b;animation:pulse 1.2s ease-in-out infinite;
+.tchip-logo{width:20px;height:20px;border-radius:4px;object-fit:contain;background:#1a1a28;flex-shrink:0}
+.tchip-logo-fb{width:20px;height:20px;border-radius:4px;background:#1a1a28;display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:800;color:#34344a;flex-shrink:0}
+
+.tchip-label{font-size:10px;font-weight:500;color:#7070aa;white-space:nowrap}
+.tchip-label .tchip-seed{font-weight:700;color:#3a3a55}
+.tchip.live   .tchip-label{color:#f59e0b}
+.tchip.live   .tchip-label .tchip-seed{color:#8a5f00}
+.tchip.earned .tchip-label{color:#4ade80}
+.tchip.earned .tchip-label .tchip-seed{color:#1d5c28}
+
+.tchip-earn{font-size:7px;font-weight:800;color:#4ade80;margin-left:2px}
+.tchip-sp-icon{font-size:8px;margin-left:1px;line-height:1}
+.tchip-live-dot{width:5px;height:5px;border-radius:50%;background:#f59e0b;
+  animation:amber-pulse 1s ease-in-out infinite;flex-shrink:0;margin-left:2px}
+
+/* ── lost line — plain text, no chips ───────────────── */
+.ocard-lost-row{
+  font-size:9px;color:#2e2e45;line-height:1.6;
+  border-top:1px solid #14141e;
+  padding-top:7px;margin-top:1px;
 }
-.tchip.earned::before{
-  content:'';position:absolute;left:0;top:0;bottom:0;width:2px;
-  background:#22c55e;
-}
-
-.tchip-logo{width:30px;height:30px;border-radius:7px;object-fit:contain;background:#1a1a28;flex-shrink:0}
-.tchip-logo-fb{width:30px;height:30px;border-radius:7px;background:#1a1a28;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;color:#34344a;flex-shrink:0}
-.tchip-info{flex:1;min-width:0}
-.tchip-seed{font-size:8px;font-weight:700;color:#3a3a55;letter-spacing:.3px;line-height:1}
-.tchip-name{font-size:10px;font-weight:600;color:#9090aa;line-height:1.25;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tchip.live  .tchip-name{color:#f59e0b}
-.tchip.live  .tchip-seed{color:#7a5500}
-.tchip.earned .tchip-name{color:#4ade80}
-.tchip.lost  .tchip-name{text-decoration:line-through;color:#2c2c3e}
-
-/* earn tag on chip */
-.tchip-earn{font-size:7px;font-weight:800;color:#4ade80;letter-spacing:.2px;margin-top:2px}
-.tchip-loss-badge{display:inline-flex;align-items:center;gap:2px;font-size:7px;font-weight:800;color:#ef4444;background:#1a0808;border-radius:3px;padding:1px 4px;margin-top:2px;letter-spacing:.2px}
-.tchip-upset-badge{display:inline-flex;align-items:center;gap:2px;font-size:7px;font-weight:800;color:#f59e0b;background:#1a1000;border-radius:3px;padding:1px 4px;margin-top:2px;letter-spacing:.2px}
-.tchip-seed15-badge{display:inline-flex;align-items:center;gap:2px;font-size:7px;font-weight:800;color:#a78bfa;background:#0e0a1a;border-radius:3px;padding:1px 4px;margin-top:2px;letter-spacing:.2px}
-.tchip-live-dot{width:5px;height:5px;border-radius:50%;background:#f59e0b;animation:pulse 1s ease-in-out infinite;flex-shrink:0;margin-left:auto}
+.ocard-lost-lbl{font-weight:700;letter-spacing:.6px;text-transform:uppercase;margin-right:5px;color:#282838}
+.ocard-lost-sep{color:#222232}
+.ocard-lost-sp{color:#3e2e5a}
+.ocard-lost-earned{color:#2d5c36} /* dim green — previously earned R1 */
 /* owner card loss badge — shown in standings */
 .ocard-loss-badge{display:inline-flex;align-items:center;gap:3px;font-size:8px;font-weight:800;color:#ef4444;background:#1a0808;border:1px solid rgba(239,68,68,.2);border-radius:4px;padding:2px 6px;margin-top:5px}
 
@@ -245,17 +247,26 @@ html,body{
 .stand-list{display:flex;flex-direction:column;gap:8px;padding-bottom:16px}
 .stand-card{
   background:#111119;border-radius:14px;
-  padding:14px 14px 12px;
-  position:relative;overflow:hidden;
+  padding:13px 14px 12px;
   border:1px solid #1a1a27;
+  border-left:3px solid var(--oc);
 }
-.stand-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--oc)}
-.stand-rank{position:absolute;top:12px;right:13px;font-size:11px;color:#252535;font-weight:800}
-.stand-net{font-size:28px;font-weight:800;line-height:1;color:#4a4a66}
+.stand-card-hdr{display:flex;align-items:center;gap:11px}
+.stand-rank{
+  font-size:20px;font-weight:800;color:#1e1e30;
+  width:28px;text-align:center;flex-shrink:0;line-height:1;
+}
+.stand-rank.podium{color:var(--oc);opacity:.5}
+.stand-info{flex:1;min-width:0}
+.stand-row1{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.stand-name{font-size:15px;font-weight:800;color:var(--oc);line-height:1}
+.stand-net{font-size:17px;font-weight:800;line-height:1;color:#3a3a55;white-space:nowrap}
 .stand-net.pos{color:#22c55e}
-.stand-name{font-size:14px;font-weight:700;color:var(--oc);margin-top:3px}
-.stand-stats{font-size:11px;color:#3a3a55;margin-top:7px;line-height:1.7}
-.stand-stats b{color:#6a6a88}
+.stand-row2{display:flex;align-items:center;justify-content:space-between;margin-top:5px;gap:8px}
+.stand-earned-lbl{font-size:10px;color:#32324a;white-space:nowrap}
+.stand-insight{font-size:10px;color:#44446a;text-align:right;white-space:nowrap}
+.stand-insight .upside{font-size:11px;font-weight:800;color:#22c55e}
+.stand-insight .alive{font-weight:600;color:#44446a}
 .stand-teams{display:flex;gap:5px;flex-wrap:wrap;margin-top:10px;padding-top:9px;border-top:1px solid #17172a}
 .stand-team-chip{
   display:flex;align-items:center;gap:4px;
@@ -287,6 +298,9 @@ html,body{
 .pw-tag{font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;color:#000}
 .pw-amt{font-size:11px;font-weight:700;color:#22c55e;margin-left:2px}
 .pcard-tbd{font-size:10px;color:#2a2a3a;font-style:italic;margin-top:7px}
+.pcard-pending{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;padding-top:6px;border-top:1px solid #14141e}
+.ppending{display:inline-flex;align-items:center;gap:5px;background:#111118;border-radius:6px;padding:4px 8px 4px 4px;opacity:.45}
+.pp-name{font-size:10px;color:#44446a}
 .pcard-leader{font-size:10px;color:#5a5a7a;margin-top:6px;line-height:1.6;background:#13131e;border-radius:6px;padding:7px 10px}
 .pcard-sec{font-size:10px;font-weight:600;letter-spacing:2px;color:#3a3a55;text-transform:uppercase;margin:18px 0 8px}
 
@@ -564,14 +578,31 @@ function getR1PerTeam() { var w=getR1Winners().length; return w>0?Math.ceil(POTS
 /* Currency formatter — whole dollars with commas, no decimals */
 function c(n){ return Math.floor(Number(n)).toLocaleString('en-US'); }
 
+/* S16 pot: split among seeds 4-16 who won R32 (made Sweet 16).
+   Use actual wonR32 data when any exists; fall back to projection. */
+function getS16Winners() { return TEAMS.filter(function(t){ return t.seed>=4 && t.wonR32; }); }
 function computeS16PerTeam() {
+  var winners = getS16Winners();
+  if(winners.length>0) return Math.ceil(POTS.s16/winners.length);
+  /* pre-R32 projection: eligible seeds 4+ still alive, max 16 */
   var eligible = TEAMS.filter(function(t){ return t.seed>=4 && t.status!=='lost'; });
   var projected = Math.min(eligible.length, 16);
   return projected>0 ? Math.ceil(POTS.s16/projected) : 0;
 }
 
+/* E8 pot: split among seeds 1-3 who won S16 (made Elite 8). */
+function getE8Winners() { return TEAMS.filter(function(t){ return t.top3 && t.wonS16; }); }
+function computeE8PerTeam() {
+  var winners = getE8Winners();
+  if(winners.length>0) return Math.ceil(POTS.e8/winners.length);
+  var eligible = TEAMS.filter(function(t){ return t.top3 && t.status!=='lost'; });
+  var projected = Math.min(eligible.length, 8);
+  return projected>0 ? Math.ceil(POTS.e8/projected) : 0;
+}
+
+/* teamEarned: chip highlight color only — R1 bonus winners (seeds 8-16 that won R64) */
 function teamEarned(t) {
-  if (t.r1eligible && t.wonR1) return getR1PerTeam();
+  if(t.r1eligible && t.wonR1) return getR1PerTeam();
   return 0;
 }
 
@@ -715,8 +746,23 @@ function computeSidePots() {
 function clearSidePotCache(){ _sidePotCache=null; }
 
 function ownerEarned(oid) {
-  var total=0, r1pp=getR1PerTeam();
+  var total=0;
+  /* R1 (R64 winners, seeds 8-16) */
+  var r1pp=getR1PerTeam();
   TEAMS.forEach(function(t){ if(t.owner===oid && t.r1eligible && t.wonR1) total+=r1pp; });
+  /* S16 (seeds 4-16 that won R32) */
+  var s16pp=computeS16PerTeam();
+  TEAMS.forEach(function(t){ if(t.owner===oid && t.seed>=4 && t.wonR32) total+=s16pp; });
+  /* E8 (seeds 1-3 that won S16) */
+  var e8pp=computeE8PerTeam();
+  TEAMS.forEach(function(t){ if(t.owner===oid && t.top3 && t.wonS16) total+=e8pp; });
+  /* F4 (fixed per team — won E8) */
+  TEAMS.forEach(function(t){ if(t.owner===oid && t.wonE8) total+=POTS.f4; });
+  /* Finals appearance (fixed per team — won F4) */
+  TEAMS.forEach(function(t){ if(t.owner===oid && t.wonF4) total+=POTS.finals; });
+  /* Champion (winner takes all) */
+  TEAMS.forEach(function(t){ if(t.owner===oid && t.wonNCG) total+=POTS.champ; });
+  /* Side pots */
   var sp=computeSidePots();
   if(sp.lossConfirmed   && sp.lossWinners.indexOf(oid)>-1)  total += POTS.loss/sp.lossWinners.length;
   if(sp.upsetWinners.length && sp.upsetWinners.indexOf(oid)>-1) total += POTS.upset/sp.upsetWinners.length;
@@ -731,7 +777,7 @@ function ownerNet(oid) { return ownerEarned(oid)-OWNERS[oid].paid; }
 ═══════════════════════════════════════════════════════ */
 
 var liveGames=[], completedGames=[], upcomingGames=[];
-var knownR32Dates={};
+var knownRoundDates={}; /* date → round string, e.g. '2026-03-22' → 'R32' */
 
 function espnNameMatch(n) {
   n=(n||'').toLowerCase().trim();
@@ -757,19 +803,22 @@ function getGameRound(ev, teams) {
     var hl=(comp.notes[0].headline||'').toLowerCase();
     /* IMPORTANT: check specific rounds BEFORE generic "championship" keyword,
        because ESPN prepends "NCAA ... Championship -" to every round headline */
-    if(hl.indexOf('first round')>-1||hl.indexOf('1st round')>-1||hl.indexOf('round of 64')>-1) return 'R64';
-    if(hl.indexOf('second round')>-1||hl.indexOf('2nd round')>-1||hl.indexOf('round of 32')>-1){
-      var d=toETDate(ev.date||''); if(d) knownR32Dates[d]=true; return 'R32';
+    var d=toETDate(ev.date||'');
+    if(hl.indexOf('first round')>-1||hl.indexOf('1st round')>-1||hl.indexOf('round of 64')>-1){
+      if(d) knownRoundDates[d]='R64'; return 'R64';
     }
-    if(hl.indexOf('sweet')>-1)  return 'S16';
-    if(hl.indexOf('elite')>-1)  return 'E8';
-    if(hl.indexOf('final four')>-1||hl.indexOf('semifinal')>-1) return 'F4';
-    if(hl.indexOf('national championship')>-1||hl.indexOf('championship game')>-1) return 'NCG';
+    if(hl.indexOf('second round')>-1||hl.indexOf('2nd round')>-1||hl.indexOf('round of 32')>-1){
+      if(d) knownRoundDates[d]='R32'; return 'R32';
+    }
+    if(hl.indexOf('sweet')>-1)  { if(d) knownRoundDates[d]='S16'; return 'S16'; }
+    if(hl.indexOf('elite')>-1)  { if(d) knownRoundDates[d]='E8';  return 'E8';  }
+    if(hl.indexOf('final four')>-1||hl.indexOf('semifinal')>-1){ if(d) knownRoundDates[d]='F4'; return 'F4'; }
+    if(hl.indexOf('national championship')>-1||hl.indexOf('championship game')>-1){ if(d) knownRoundDates[d]='NCG'; return 'NCG'; }
   }
   if(teams){
     var matched=teams.filter(function(t){return t.matched;});
     if(matched.length>=2&&matched.every(function(t){return t.matched.status==='won';})){
-      var d2=toETDate(ev.date||''); if(d2) knownR32Dates[d2]=true; return 'R32';
+      var d2=toETDate(ev.date||''); if(d2) knownRoundDates[d2]='R32'; return 'R32';
     }
   }
   return 'R64';
@@ -812,6 +861,11 @@ function processESPN(data) {
       } else if(state==='post'){
         if(t.winner){
           if(gameRound==='R64'&&t.matched.r1eligible) t.matched.wonR1=true;
+          if(gameRound==='R32') t.matched.wonR32=true;
+          if(gameRound==='S16') t.matched.wonS16=true;
+          if(gameRound==='E8')  t.matched.wonE8=true;
+          if(gameRound==='F4')  t.matched.wonF4=true;
+          if(gameRound==='NCG') t.matched.wonNCG=true;
           t.matched.status='won';
         } else {
           t.matched.status='lost';
@@ -829,9 +883,11 @@ function processESPN(data) {
   renderAll();
 }
 
+var ROUND_LABELS = {R64:'ROUND OF 64',R32:'ROUND OF 32',S16:'SWEET 16',E8:'ELITE 8',F4:'FINAL FOUR',NCG:'CHAMPIONSHIP'};
 function dateSectionLabel(ymd) {
   if(!ymd) return 'UPCOMING';
-  if(knownR32Dates[ymd]) return 'ROUND OF 32 · '+fmtDate(ymd);
+  var r=knownRoundDates[ymd];
+  if(r) return (ROUND_LABELS[r]||r)+' · '+fmtDate(ymd);
   return 'ROUND OF 64 · '+fmtDate(ymd);
 }
 
@@ -932,68 +988,90 @@ function renderTeams() {
 
     var sp = computeSidePots();
 
-    var chips = myTeams.map(function(t){
-      var isLive    = t.status==='live';
-      var isLost    = t.status==='lost';
-      var hasEarned = t.wonR1 && t.r1eligible;
+    /* Separate alive vs lost */
+    var aliveTeams = myTeams.filter(function(t){ return t.status!=='lost'; });
+    var lostTeams  = myTeams.filter(function(t){ return t.status==='lost'; });
+
+    function shortName(t) {
+      var nm = t.name.replace('Saint ','St. ').replace('Northern ','N. ').replace(' State',' St.');
+      return nm.length>12 ? nm.substring(0,11)+'…' : nm;
+    }
+
+    /* ── Alive chips ── */
+    var aliveChips = aliveTeams.map(function(t){
+      var isLive       = t.status==='live';
+      var hasEarned    = t.wonR1 && t.r1eligible;
       var isBigLoss    = sp.lossTeams   && sp.lossTeams.indexOf(t.name)>-1;
       var isUpsetLeader= sp.upsetTeams  && sp.upsetTeams.indexOf(t.name)>-1;
       var is1516Win    = sp.seed15Teams && sp.seed15Teams.indexOf(t.name)>-1;
-      var te        = teamEarned(t);
-      var logoSrc   = t.logo||LOGOS[t.name]||'';
-      var hasSidePot= isBigLoss||isUpsetLeader||is1516Win;
-      var chipCls   = 'tchip'+(isLive?' live':hasEarned?' earned':isLost?' lost':'')+(hasSidePot?' sp-winner':'');
-
-      var nm = t.name
-        .replace('Saint ','St. ')
-        .replace('Northern ','N. ')
-        .replace(' State',' St.');
-      if(nm.length > 11) nm = nm.substring(0,10)+'…';
-
+      var hasSidePot   = isBigLoss||isUpsetLeader||is1516Win;
+      var chipCls      = 'tchip'+(isLive?' live':hasEarned?' earned':'')+(hasSidePot?' sp-winner':'');
+      var logoSrc      = t.logo||LOGOS[t.name]||'';
       var logoHtml = logoSrc
         ? '<img src="'+logoSrc+'" class="tchip-logo" onerror="this.style.display=\'none\'">'
         : '<div class="tchip-logo-fb">'+t.seed+'</div>';
-
-      var earnLine    = te>0 ? '<div class="tchip-earn">+$'+c(te)+' R1</div>' : '';
-      var upsetBadge  = isUpsetLeader ? '<div class="tchip-upset-badge">⚡ UPSET LEADER</div>' : '';
-      var lossBadge   = isBigLoss     ? '<div class="tchip-loss-badge">📉 BIGGEST LOSS</div>' : '';
-      var seed15Badge = is1516Win     ? '<div class="tchip-seed15-badge">🏅 BEST 15/16</div>' : '';
-      var liveDot     = isLive ? '<div class="tchip-live-dot"></div>' : '';
-
+      var earnSpan = hasEarned ? '<span class="tchip-earn">+$'+c(getR1PerTeam())+' R1</span>' : '';
+      var spIcons  = (isUpsetLeader?'<span class="tchip-sp-icon">⚡</span>':'')
+                   + (isBigLoss    ?'<span class="tchip-sp-icon">📉</span>':'')
+                   + (is1516Win    ?'<span class="tchip-sp-icon">🏅</span>':'');
+      var liveDot  = isLive ? '<div class="tchip-live-dot"></div>' : '';
       return '<div class="'+chipCls+'">'
         + logoHtml
-        + '<div class="tchip-info">'
-          + '<div class="tchip-seed">#'+t.seed+'</div>'
-          + '<div class="tchip-name">'+nm+'</div>'
-          + earnLine
-          + upsetBadge
-          + lossBadge
-          + seed15Badge
-        + '</div>'
-        + liveDot
-      + '</div>';
+        + '<span class="tchip-label"><span class="tchip-seed">#'+t.seed+' </span>'+shortName(t)+'</span>'
+        + earnSpan + spIcons + liveDot
+        + '</div>';
     }).join('');
+
+    /* ── Lost — plain comma-separated text line ──
+       Longer name budget than alive chips; side pot icons sit AFTER
+       the separator so they never attach to a truncated name.
+       Earned teams get a dim green tint to denote prior earnings. */
+    var lostRow = lostTeams.length
+      ? '<div class="ocard-lost-row"><span class="ocard-lost-lbl">Lost</span>'
+          + lostTeams.map(function(t){
+              var isBigLoss    = sp.lossTeams   && sp.lossTeams.indexOf(t.name)>-1;
+              var isUpsetLeader= sp.upsetTeams  && sp.upsetTeams.indexOf(t.name)>-1;
+              var is1516Win    = sp.seed15Teams && sp.seed15Teams.indexOf(t.name)>-1;
+              var hasSidePot   = isBigLoss||isUpsetLeader||is1516Win;
+              var hadEarned    = t.r1eligible && t.wonR1;
+              /* Full name, no truncation in lost row — it's plain text with more room */
+              var nm = t.name.replace('Saint ','St. ').replace('Northern ','N. ').replace(' State',' St.');
+              var icon = hasSidePot ? (isUpsetLeader?'⚡':isBigLoss?'📉':'🏅') : '';
+              var cls  = hasSidePot ? 'ocard-lost-sp' : hadEarned ? 'ocard-lost-earned' : '';
+              return '<span'+(cls?' class="'+cls+'"':'')+'>#'+t.seed+' '+nm+(icon?' '+icon:'')+'</span>';
+            }).join('<span class="ocard-lost-sep"> · </span>')
+        + '</div>'
+      : '';
+
+    var ownsLossT  = sp.lossWinners   && sp.lossWinners.indexOf(oid)>-1;
+    var ownsUpsetT = sp.upsetWinners  && sp.upsetWinners.indexOf(oid)>-1;
+    var owns1516T  = sp.seed15Winners && sp.seed15Winners.indexOf(oid)>-1;
+    var spPills = (ownsUpsetT ? '<span class="ocard-sp-pill upset">⚡ Upset</span>'  : '')
+                + (ownsLossT  ? '<span class="ocard-sp-pill loss">📉 Loss</span>'    : '')
+                + (owns1516T  ? '<span class="ocard-sp-pill seed15">🏅 15/16</span>' : '');
 
     return '<div class="ocard'+(hasLive?' has-live':'')+'" style="--oc:'+o.color+'">'
       + '<div class="ocard-hdr">'
         + '<div class="ocard-row1">'
-          + '<div style="display:flex;align-items:center">'
+          + '<div style="display:flex;align-items:center;flex-wrap:wrap;gap:0">'
             + '<div class="ocard-name">'+o.name+'</div>'
             + '<span class="ocard-alive-pill">'+aliveCount+' alive</span>'
+            + spPills
           + '</div>'
           + '<div class="'+netCls+'">'+netStr+'</div>'
         + '</div>'
         + '<div class="ocard-row2">'
           + '<div class="ocard-stats">'
-            + (teamEarnedAmt>0?'<b style="color:#4ade80">+$'+c(teamEarnedAmt)+'</b> teams':'')
-            + (sideBetAmt>0?(teamEarnedAmt>0?' · ':'')+'<b style="color:#a78bfa">+$'+c(sideBetAmt)+'</b> side bets':'')
-            + ((teamEarnedAmt>0||sideBetAmt>0)?' · ':'')
+            + (earned>0 ? '<b style="color:#4ade80">+$'+c(earned)+'</b> earned · ' : '')
             + '<b style="color:#ef4444">-$'+c(o.paid)+'</b> spent'
           + '</div>'
           + '<div class="ocard-netlabel" style="color:'+o.color+'">NET</div>'
         + '</div>'
       + '</div>'
-      + '<div class="ocard-teams">'+chips+'</div>'
+      + '<div class="ocard-teams">'
+        + '<div class="ocard-alive-row">'+aliveChips+'</div>'
+        + lostRow
+      + '</div>'
     + '</div>';
   }).join('');
 }
@@ -1008,7 +1086,10 @@ function renderGames() {
 
   var html = '';
   var r1pp  = getR1PerTeam();
-  var s16pp = computeS16PerTeam();
+  /* Use projected S16 rate (all seeds 4+ still alive ÷ POTS.s16),
+     same formula as standings — avoids inflation from early partial winners */
+  var _s16Eligible = TEAMS.filter(function(t){ return t.seed>=4 && t.status!=='lost'; });
+  var s16pp = _s16Eligible.length>0 ? Math.ceil(POTS.s16/Math.min(_s16Eligible.length,16)) : 0;
 
   /* Build one team side column */
   function teamCol(t, round, isDone, side) {
@@ -1030,7 +1111,15 @@ function renderGames() {
       if(round==='R64' && tm.r1eligible && !tm.wonR1 && r1pp>0)
         earn = '<div class="mcard-earn r1">+$'+c(r1pp)+' R1</div>';
       if(round==='R32' && tm.seed>=4 && s16pp>0)
-        earn = '<div class="mcard-earn s16">+$'+c(s16pp)+' S16</div>';
+        earn = '<div class="mcard-earn s16">+$'+c(s16pp)+' S16<span style="opacity:.5;font-size:.85em">*</span></div>';
+      if(round==='S16' && tm.top3) {
+        var e8pp=computeE8PerTeam();
+        if(e8pp>0) earn = '<div class="mcard-earn s16">+$'+c(e8pp)+' E8</div>';
+      }
+      if(round==='E8')
+        earn = '<div class="mcard-earn s16">+$'+c(POTS.f4)+' F4</div>';
+      if(round==='F4')
+        earn = '<div class="mcard-earn s16">+$'+c(POTS.finals+POTS.champ)+' Finals</div>';
     }
 
     return '<div class="mcard-side'+(side==='right'?' right':'')+'">'
@@ -1091,9 +1180,12 @@ function renderGames() {
     return '';
   }
 
+  var s16NoteSuffix = s16pp>0 ? '<span style="margin-left:auto;display:inline-block;text-align:right;font-weight:500;letter-spacing:.2px;text-transform:none;font-size:9px;line-height:1.5;color:#7070aa;background:rgba(112,112,170,.1);border:1px solid rgba(112,112,170,.2);border-radius:6px;padding:2px 7px">* S16 payouts variable<br>on eligible seeds</span>' : '';
+
   /* LIVE */
   if(liveGames.length) {
-    html += '<div class="games-section"><div class="games-sec-hdr"><span class="live-dot"></span>LIVE NOW</div><div class="game-list">';
+    var liveHasR32 = liveGames.some(function(g){return g.round==='R32';});
+    html += '<div class="games-section"><div class="games-sec-hdr"><span class="live-dot"></span>LIVE NOW'+(liveHasR32?s16NoteSuffix:'')+'</div><div class="game-list">';
     liveGames.forEach(function(g){
       var t1=g.t1, t2=g.t2;
       html += '<div class="mcard live">'
@@ -1118,7 +1210,8 @@ function renderGames() {
     });
     Object.keys(byDate).sort().forEach(function(d){
       var lbl = d==='unknown'?'UPCOMING':dateSectionLabel(d);
-      html += '<div class="games-section"><div class="games-sec-hdr">'+lbl+'</div><div class="game-list">';
+      var isR32Date = knownRoundDates[d]==='R32';
+      html += '<div class="games-section"><div class="games-sec-hdr">'+lbl+(isR32Date?s16NoteSuffix:'')+'</div><div class="game-list">';
       byDate[d].forEach(function(g){
         var t1=g.t1,t2=g.t2;
         html += '<div class="mcard">'
@@ -1238,16 +1331,77 @@ function renderStandings() {
       ? '<div class="ocard-loss-badge" style="color:#a78bfa;background:#0e0a1a;border-color:rgba(167,139,250,.2)">🏅 Best 15/16 · +$'+c(POTS.seed15)+'</div>'
       : '';
 
-    var anyBadge = ownsLoss||ownsUpset||owns1516;
+    /* Round upside: keyed to the current active tournament round — one pot at a time */
+    var aliveCount = myTeams.filter(function(t){ return t.status!=='lost'; }).length;
+    var cr = getCurrentRound();
+    var insightHtml = '';
+    (function(){
+      /* During R64 or R32: show S16 upside.
+         Per-team value: project POTS.s16 across all seeds 4+ still alive (≤16),
+         so the denominator reflects the full field, not just early winners.
+         Candidates: only teams that haven't yet locked in S16 (not wonR32). */
+      if(cr==='R64'||cr==='R32'){
+        var allS16Eligible = TEAMS.filter(function(t){ return t.seed>=4 && t.status!=='lost'; });
+        var projected = Math.min(allS16Eligible.length, 16);
+        var s16pp2 = projected>0 ? Math.ceil(POTS.s16/projected) : 0;
+        var cands = myTeams.filter(function(t){ return t.seed>=4 && t.status!=='lost' && !t.wonR32; });
+        if(cands.length>0 && s16pp2>0){
+          insightHtml = 'S16 upside <span class="upside">+$'+c(cands.length*s16pp2)+'*</span>';
+          return;
+        }
+      }
+      /* During S16: show E8 upside. Project across all top-3 still alive;
+         only count those who haven't yet locked in E8 (not wonS16). */
+      if(cr==='S16'){
+        var allE8Eligible = TEAMS.filter(function(t){ return t.top3 && t.status!=='lost'; });
+        var e8pp2 = allE8Eligible.length>0 ? Math.ceil(POTS.e8/allE8Eligible.length) : 0;
+        var cands = myTeams.filter(function(t){ return t.top3 && t.status!=='lost' && !t.wonS16; });
+        if(cands.length>0 && e8pp2>0){
+          insightHtml = 'E8 upside <span class="upside">+$'+c(cands.length*e8pp2)+'</span>';
+          return;
+        }
+      }
+      /* During E8: show F4 upside for any alive team */
+      if(cr==='E8'){
+        var cands = myTeams.filter(function(t){ return t.status!=='lost'; });
+        if(cands.length>0){
+          insightHtml = 'F4 upside <span class="upside">+$'+c(cands.length*POTS.f4)+'</span>';
+          return;
+        }
+      }
+      /* During F4: show Finals+Champ upside */
+      if(cr==='F4'){
+        var cands = myTeams.filter(function(t){ return t.status!=='lost'; });
+        if(cands.length>0){
+          insightHtml = 'Finals upside <span class="upside">+$'+c(cands.length*(POTS.finals+POTS.champ))+'</span>';
+          return;
+        }
+      }
+      /* Fallback: just alive count or eliminated */
+      if(aliveCount>0){
+        insightHtml = '<span class="alive">'+aliveCount+' team'+(aliveCount>1?'s':'')+' alive</span>';
+      } else {
+        insightHtml = '<span class="alive">eliminated</span>';
+      }
+    })();
+
+    var rankCls = 'stand-rank'+(i<3?' podium':'');
     return '<div class="stand-card" style="--oc:'+o.color+'">'
-      + '<div class="stand-rank">#'+(i+1)+'</div>'
-      + '<div class="'+netCls+'">'+netStr+'</div>'
-      + '<div class="stand-name">'+o.name+'</div>'
-      + lossBadgeCard + upsetBadgeCard + seed15BadgeCard
-      + '<div class="stand-stats" style="margin-top:'+(anyBadge?'5':'')+'px">'
-        + '<b>$'+c(earned)+'</b> earned · <b>$'+c(o.paid)+'</b> paid'
-        + (myTeams.length?' · <b>'+myTeams.length+'</b> alive':'')
+      + '<div class="stand-card-hdr">'
+        + '<div class="'+rankCls+'">'+(i+1)+'</div>'
+        + '<div class="stand-info">'
+          + '<div class="stand-row1">'
+            + '<div class="stand-name">'+o.name+'</div>'
+            + '<div class="'+netCls+'">'+netStr+'</div>'
+          + '</div>'
+          + '<div class="stand-row2">'
+            + '<div class="stand-earned-lbl">+$'+c(earned)+' earned · $'+c(o.paid)+' spent</div>'
+            + '<div class="stand-insight">'+insightHtml+'</div>'
+          + '</div>'
+        + '</div>'
       + '</div>'
+      + (lossBadgeCard||upsetBadgeCard||seed15BadgeCard
+          ? '<div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:5px">'+lossBadgeCard+upsetBadgeCard+seed15BadgeCard+'</div>' : '')
       + '<div class="stand-teams">'+chips+'</div>'
     + '</div>';
   }).join('');
@@ -1263,9 +1417,24 @@ function renderPayouts() {
 
   var r1pp = getR1PerTeam();
   var r1w  = getR1Winners();
+  var s16pp = computeS16PerTeam();
+  var s16w  = getS16Winners();
+  var e8pp  = computeE8PerTeam();
+  var e8w   = getE8Winners();
+  var f4w   = TEAMS.filter(function(t){ return t.wonE8; });
+  var finw  = TEAMS.filter(function(t){ return t.wonF4; });
+  var champw= TEAMS.filter(function(t){ return t.wonNCG; });
   var s16Eligible = TEAMS.filter(function(t){ return t.seed>=4 && t.status!=='lost'; });
+  var e8Alive = TEAMS.filter(function(t){ return t.top3&&t.status!=='lost'; });
 
   function pLogoImg(t) { return logoImg(t, 20, 5); }
+
+  function roundWinnersList(winners, ppAmt, placeholder) {
+    if(!winners.length) return '<div class="pcard-tbd">'+placeholder+'</div>';
+    return '<div class="pcard-winners">'+winners.map(function(t){
+      return '<div class="pwinner">'+pLogoImg(t)+'<span class="pw-name">'+t.name+'</span>'+ownerTag(t.owner,8)+'<span class="pw-amt">+$'+c(ppAmt)+'</span></div>';
+    }).join('')+'</div>';
+  }
 
   /* R1 Winners */
   var r1Html = r1w.length
@@ -1281,30 +1450,60 @@ function renderPayouts() {
     + '<div class="pcard-winners">'+r1Html+'</div>'
     + '</div>'
 
-    + '<div class="pcard">'
-    + '<div class="pcard-hdr"><div><div class="pcard-name">Sweet 16</div><div class="pcard-pct">23% of pot · seeds 4–16 only · split equally</div></div><div class="pcard-amt">$'+c(POTS.s16)+'</div></div>'
-    + '<div class="pcard-note">~$'+c(computeS16PerTeam())+'/team if 16 advance · '+s16Eligible.length+' eligible still alive</div>'
-    + '<div class="pcard-tbd">Winners determined after Round of 32</div>'
-    + '</div>'
+    + (function(){
+        /* S16 card — confirmed winners + gray pending list */
+        var s16Pending = TEAMS.filter(function(t){ return t.seed>=4 && t.status!=='lost' && !t.wonR32; });
+        var totalPool  = Math.min(s16w.length + s16Pending.length, 16);
+        var s16Rate    = totalPool>0 ? Math.ceil(POTS.s16/totalPool) : 0;
+        var noteStr    = s16w.length
+          ? '~$'+c(s16Rate)+'/team* · '+s16w.length+' in, '+s16Pending.length+' pending'
+          : '~$'+c(s16Rate)+'/team* · '+s16Pending.length+' eligible still alive';
+        var confirmedHtml = s16w.length
+          ? '<div class="pcard-winners">'+s16w.map(function(t){
+              return '<div class="pwinner">'+pLogoImg(t)+'<span class="pw-name">'+t.name+'</span>'+ownerTag(t.owner,8)+'<span class="pw-amt">~$'+c(s16Rate)+'*</span></div>';
+            }).join('')+'</div>'
+          : '';
+        var pendingHtml = s16Pending.length
+          ? '<div style="display:flex;align-items:center;gap:8px;margin-top:10px">'
+              + '<div style="font-size:9px;font-weight:600;letter-spacing:1.5px;color:#2a2a3a;text-transform:uppercase;white-space:nowrap">Remaining eligible</div>'
+              + '<div style="flex:1;height:1px;background:#1a1a28"></div>'
+            + '</div>'
+            + '<div class="pcard-pending">'+s16Pending.sort(function(a,b){return a.seed-b.seed;}).map(function(t){
+                return '<div class="ppending">'+pLogoImg(t)+'<span class="pp-name">#'+t.seed+' '+t.name+'</span></div>';
+              }).join('')+'</div>'
+          : '';
+        return '<div class="pcard">'
+          + '<div class="pcard-hdr"><div><div class="pcard-name">Sweet 16</div><div class="pcard-pct">23% of pot · seeds 4–16 only · split equally</div></div><div class="pcard-amt">$'+c(POTS.s16)+'</div></div>'
+          + '<div class="pcard-note">'+noteStr+'</div>'
+          + confirmedHtml
+          + (s16Pending.length&&!confirmedHtml ? '<div class="pcard-tbd" style="margin-bottom:4px">Winners determined after Round of 32</div>' : '')
+          + pendingHtml
+          + '</div>';
+      })()
 
     + '<div class="pcard">'
     + '<div class="pcard-hdr"><div><div class="pcard-name">Elite 8</div><div class="pcard-pct">10% of pot · seeds 1–3 only · split equally</div></div><div class="pcard-amt">$'+c(POTS.e8)+'</div></div>'
-    + '<div class="pcard-note">'+TEAMS.filter(function(t){return t.top3&&t.status!=='lost';}).length+' seeds 1–3 still alive</div>'
-    + '<div class="pcard-tbd">Winners determined after Sweet 16</div>'
+    + (e8w.length
+        ? '<div class="pcard-note">$'+c(e8pp)+'/team · '+e8w.length+' qualifiers</div>'
+        : '<div class="pcard-note">'+e8Alive.length+' seeds 1–3 still alive</div>')
+    + roundWinnersList(e8w, e8pp, 'Winners determined after Sweet 16')
     + '</div>'
 
     + '<div class="pcard">'
     + '<div class="pcard-hdr"><div><div class="pcard-name">Final Four</div><div class="pcard-pct">28% of pot · fixed per team</div></div><div class="pcard-amt">$'+c(POTS.f4*4)+'</div></div>'
     + '<div class="pcard-note">$'+c(POTS.f4)+' per team — fixed, no dilution</div>'
+    + roundWinnersList(f4w, POTS.f4, 'Winners determined after Elite 8')
     + '</div>'
 
     + '<div class="pcard">'
     + '<div class="pcard-hdr"><div><div class="pcard-name">Championship Game</div><div class="pcard-pct">8% of pot · both finalists</div></div><div class="pcard-amt">$'+c(POTS.finals*2)+'</div></div>'
     + '<div class="pcard-note">$'+c(POTS.finals)+' per finalist</div>'
+    + roundWinnersList(finw, POTS.finals, 'Finalists determined after Final Four')
     + '</div>'
 
     + '<div class="pcard">'
     + '<div class="pcard-hdr"><div><div class="pcard-name">National Champion</div><div class="pcard-pct">9% of pot · winner takes all</div></div><div class="pcard-amt">$'+c(POTS.champ)+'</div></div>'
+    + roundWinnersList(champw, POTS.champ, 'Champion TBD')
     + '</div>';
 
   /* Side pots — use shared computeSidePots() */
@@ -1457,10 +1656,22 @@ function switchTab(name, btn) {
    RENDER ALL
 ═══════════════════════════════════════════════════════ */
 
+var ROUND_ORDER=['R64','R32','S16','E8','F4','NCG'];
+function getCurrentRound() {
+  var allGames=[].concat(liveGames,upcomingGames,completedGames);
+  var current='R64';
+  ROUND_ORDER.forEach(function(r){
+    if(allGames.some(function(g){return g.round===r;})) current=r;
+  });
+  return current;
+}
+
 function renderAll() {
-  var hasR32=[].concat(liveGames,upcomingGames,completedGames).some(function(g){return g.round==='R32';});
+  var currentRound=getCurrentRound();
   var rt=document.getElementById('round-txt');
-  if(rt) rt.textContent=(hasR32?'R32':'R64')+' · Live';
+  var liveNow=liveGames.length>0;
+  var roundLabel={'R64':'R64','R32':'R32','S16':'Sweet 16','E8':'Elite 8','F4':'Final Four','NCG':'Championship'}[currentRound]||currentRound;
+  if(rt) rt.textContent=roundLabel+(liveNow?' · Live':'');
   renderTeams();
   renderGames();
   renderStandings();
