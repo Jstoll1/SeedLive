@@ -597,13 +597,14 @@ function computeSidePots() {
   blossEntries.forEach(function(e){ if(e.loser.matched){ lossWinners.push(e.loser.matched.owner); lossTeams.push(e.loser.matched.name); }});
 
   /* ── BIGGEST UPSET ─────────────────────────────────────── */
-  var bupsetDiff=-1, bupsetTopSeed=-1, bupsetEntries=[];
+  var bupsetDiff=-1, bupsetTopSeed=-1, bupsetEntries=[], allUpsets=[];
   completedGames.forEach(function(g){
     var w=g.t1.winner?g.t1:g.t2, l=g.t1.winner?g.t2:g.t1;
     if(!w||!l||!w.matched||!l.matched) return;
     var diff=w.matched.seed-l.matched.seed;
     if(diff<=0) return;
     var wseed=w.matched.seed;
+    allUpsets.push({winner:w,loser:l,diff:diff,round:g.round}); /* full leaderboard */
     if(diff>bupsetDiff){
       bupsetDiff=diff; bupsetTopSeed=wseed; bupsetEntries=[{winner:w,loser:l,diff:diff,round:g.round}];
     } else if(diff===bupsetDiff){
@@ -611,6 +612,7 @@ function computeSidePots() {
       else if(wseed===bupsetTopSeed){ bupsetEntries.push({winner:w,loser:l,diff:diff,round:g.round}); } /* split */
     }
   });
+  allUpsets.sort(function(a,b){ return b.diff-a.diff||b.winner.matched.seed-a.winner.matched.seed; });
   var upsetWinners=[], upsetTeams=[];
   bupsetEntries.forEach(function(e){ if(e.winner.matched){ upsetWinners.push(e.winner.matched.owner); upsetTeams.push(e.winner.matched.name); }});
 
@@ -668,7 +670,7 @@ function computeSidePots() {
 
     /* raw data for payouts display */
     blossEntries:blossEntries,  blossMargin:blossMargin,
-    bupsetEntries:bupsetEntries, bupsetDiff:bupsetDiff,
+    bupsetEntries:bupsetEntries, bupsetDiff:bupsetDiff, allUpsets:allUpsets,
     seed15Data:seed15Data,
 
     alive1516:alive1516, r64Done:r64Done, all1516Done:all1516Done
@@ -1116,7 +1118,7 @@ function renderGames() {
         html += '<div class="mcard final">'
           + '<div class="mcard-top">'
             + '<div class="mcard-top-left"><span class="mcard-round">'+g.round+'</span></div>'
-            + '<div class="mcard-top-right" style="color:#22c55e;font-weight:700">'+(w.matched?w.matched.name:'')+'</div>'
+            + '<div class="mcard-top-right" style="color:#22c55e;font-weight:700">'+(w.matched?w.matched.name:w.espnName||'')+'</div>'
           + '</div>'
           + '<div class="mcard-body">'
             + teamCol(t1,g.round,true,'left')
@@ -1336,17 +1338,22 @@ function renderPayouts() {
   } else {
     bupsetWinner='<div class="pcard-tbd">Largest seed differential — any round</div>';
   }
+  var upsetRows = sp.allUpsets.map(function(e){
+    var wm=e.winner.matched, lm=e.loser.matched;
+    var isWinner = sp.upsetTeams.indexOf(wm.name)>-1;
+    var rl = e.round==='R64'?'R1':e.round;
+    return '<tr'+(isWinner?' class="sp-win"':'')+'>'
+      +'<td>'+wm.name+'</td><td>#'+wm.seed+'</td>'
+      +'<td>'+lm.name+'</td><td>#'+lm.seed+'</td>'
+      +'<td class="'+(isWinner?'sp-w ':'')+'sp-margin">+'+e.diff+'</td>'
+      +'<td>'+rl+'</td>'
+      +'<td>'+tblOwner(wm.owner)+'</td>'
+    +'</tr>';
+  }).join('');
   var upsetDropdown = '<details class="pcard-details"><summary></summary>'
     +'<div class="pcard-detail-body">'
-    +'<table class="pcard-tbl"><thead><tr><th>Winner</th><th>Seed</th><th>Beat</th><th>Seed</th><th>Diff</th><th>Owner</th></tr></thead><tbody>'
-    +'<tr class="sp-win"><td>High Point</td><td>#12</td><td>Wisconsin</td><td>#5</td><td class="sp-w sp-margin">+7</td><td>'+tblOwner('dolla')+'</td></tr>'
-    +'<tr><td>VCU</td><td>#11</td><td>UNC</td><td>#6</td><td class="sp-margin">+5</td><td>'+tblOwner('curt')+'</td></tr>'
-    +'<tr><td>Texas</td><td>#11</td><td>BYU</td><td>#6</td><td class="sp-margin">+5</td><td>'+tblOwner('flan')+'</td></tr>'
-    +'<tr><td>Texas A&M</td><td>#10</td><td>Saint Mary\'s</td><td>#7</td><td class="sp-margin">+3</td><td>'+tblOwner('hudd')+'</td></tr>'
-    +'<tr><td>Iowa</td><td>#9</td><td>Clemson</td><td>#8</td><td class="sp-margin">+1</td><td>'+tblOwner('topper')+'</td></tr>'
-    +'<tr><td>Saint Louis</td><td>#9</td><td>Georgia</td><td>#8</td><td class="sp-margin">+1</td><td>'+tblOwner('hudd')+'</td></tr>'
-    +'<tr><td>TCU</td><td>#9</td><td>Ohio State</td><td>#8</td><td class="sp-margin">+1</td><td>'+tblOwner('topper')+'</td></tr>'
-    +'<tr><td>Utah State</td><td>#9</td><td>Villanova</td><td>#8</td><td class="sp-margin">+1</td><td>'+tblOwner('stark')+'</td></tr>'
+    +'<table class="pcard-tbl"><thead><tr><th>Winner</th><th>Seed</th><th>Beat</th><th>Seed</th><th>Diff</th><th>Rnd</th><th>Owner</th></tr></thead><tbody>'
+    +(upsetRows||'<tr><td colspan="7" style="color:#3a3a55">No upsets recorded yet</td></tr>')
     +'</tbody></table>'
     +'<div style="font-size:8px;color:#3a3a55;margin-top:7px">⚡ Moving target — updates each round if a larger upset occurs.</div>'
     +'</div></details>';
