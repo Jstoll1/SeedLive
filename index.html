@@ -767,7 +767,7 @@ function getR1Winners() { return TEAMS.filter(function(t){ return t.r1eligible &
 function getR1PerTeam() { var w=getR1Winners().length; return w>0?Math.ceil(POTS.r1/w):0; }
 
 /* Currency formatter — whole dollars with commas, no decimals */
-function c(n){ return Math.floor(Number(n)).toLocaleString('en-US'); }
+function c(n){ return Math.round(Number(n)).toLocaleString('en-US'); }
 
 /* S16 pot: split among seeds 4-16 who won R32 (made Sweet 16).
    During R32: always project from alive eligible seeds (avoids mid-round inflation
@@ -966,9 +966,9 @@ function ownerEarned(oid) {
   TEAMS.forEach(function(t){ if(t.owner===oid && t.wonNCG) total+=POTS.champ; });
   /* Side pots */
   var sp=computeSidePots();
-  if(sp.lossConfirmed   && sp.lossWinners.indexOf(oid)>-1)  total += POTS.loss/sp.lossWinners.length;
-  if(sp.upsetWinners.length && sp.upsetWinners.indexOf(oid)>-1) total += POTS.upset/sp.upsetWinners.length;
-  if(sp.seed15Confirmed && sp.seed15Winners.indexOf(oid)>-1) total += POTS.seed15/sp.seed15Winners.length;
+  if(sp.lossConfirmed   && sp.lossWinners.indexOf(oid)>-1)  total += Math.round(POTS.loss/sp.lossWinners.length);
+  if(sp.upsetWinners.length && sp.upsetWinners.indexOf(oid)>-1) total += Math.round(POTS.upset/sp.upsetWinners.length);
+  if(sp.seed15Confirmed && sp.seed15Winners.indexOf(oid)>-1) total += Math.round(POTS.seed15/sp.seed15Winners.length);
   return total;
 }
 
@@ -1218,9 +1218,9 @@ function buildScoringBreakdown(oid) {
   var owns1516  = sp.seed15Confirmed  && sp.seed15Winners.indexOf(oid)>-1;
   if(ownsLoss||ownsUpset||owns1516) {
     spHtml += '<hr class="sb-divider"><div class="sb-sidepot-hdr">Side Pots</div>';
-    if(ownsLoss)  spHtml += '<div class="sb-sidepot-row"><span class="sb-sidepot-icon">📉</span><span class="sb-sidepot-desc">Biggest Loss — '+sp.lossTeams.join(', ')+'</span><span class="sb-sidepot-amt">+$'+c(POTS.loss/sp.lossWinners.length)+'</span></div>';
-    if(ownsUpset) spHtml += '<div class="sb-sidepot-row"><span class="sb-sidepot-icon">⚡</span><span class="sb-sidepot-desc">Biggest Upset — '+sp.upsetTeams.join(', ')+'</span><span class="sb-sidepot-amt">+$'+c(POTS.upset/sp.upsetWinners.length)+'</span></div>';
-    if(owns1516)  spHtml += '<div class="sb-sidepot-row"><span class="sb-sidepot-icon">🏅</span><span class="sb-sidepot-desc">Best 15/16 — '+sp.seed15Teams.join(', ')+'</span><span class="sb-sidepot-amt">+$'+c(POTS.seed15/sp.seed15Winners.length)+'</span></div>';
+    if(ownsLoss)  spHtml += '<div class="sb-sidepot-row"><span class="sb-sidepot-icon">📉</span><span class="sb-sidepot-desc">Biggest Loss — '+sp.lossTeams.join(', ')+'</span><span class="sb-sidepot-amt">+$'+c(Math.round(POTS.loss/sp.lossWinners.length))+'</span></div>';
+    if(ownsUpset) spHtml += '<div class="sb-sidepot-row"><span class="sb-sidepot-icon">⚡</span><span class="sb-sidepot-desc">Biggest Upset — '+sp.upsetTeams.join(', ')+'</span><span class="sb-sidepot-amt">+$'+c(Math.round(POTS.upset/sp.upsetWinners.length))+'</span></div>';
+    if(owns1516)  spHtml += '<div class="sb-sidepot-row"><span class="sb-sidepot-icon">🏅</span><span class="sb-sidepot-desc">Best 15/16 — '+sp.seed15Teams.join(', ')+'</span><span class="sb-sidepot-amt">+$'+c(Math.round(POTS.seed15/sp.seed15Winners.length))+'</span></div>';
   }
 
   var hasAnyEarnings = teamRows.trim()!==''||ownsLoss||ownsUpset||owns1516;
