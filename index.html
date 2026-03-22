@@ -1043,10 +1043,14 @@ function renderGames() {
     var sp = computeSidePots();
     var leader = sp.bupsetDiff;
     var leaderOwner = sp.upsetWinners.length ? (OWNERS[sp.upsetWinners[0]]||{name:sp.upsetWinners[0]}).name : 'TBD';
+    /* identify underdog (higher seed number) and favorite */
+    var underdog = tm1.seed > tm2.seed ? tm1 : tm2;
+    var fav      = tm1.seed > tm2.seed ? tm2 : tm1;
+    var matchup  = '#'+underdog.seed+' over #'+fav.seed;
     if(diff > leader) {
-      return '<div class="upset-banner beats">⚡ +'+diff+' upset potential — BEATS upset leader '+leaderOwner+' (+'+leader+')</div>';
+      return '<div class="upset-banner beats">⚡ +'+diff+' differential — beats upset leader '+leaderOwner+'</div>';
     } else if(diff === leader) {
-      return '<div class="upset-banner ties">⚡ +'+diff+' upset potential — TIES upset leader '+leaderOwner+' (+'+leader+')</div>';
+      return '<div class="upset-banner ties">⚡ +'+diff+' differential — ties upset leader '+leaderOwner+'</div>';
     }
     return '';
   }
