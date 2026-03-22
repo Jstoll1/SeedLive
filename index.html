@@ -523,14 +523,30 @@ var CONFIRMED_LOST = [
 /* ── CONFIRMED SIDE POT RESULTS ────────────────────────────
    Hardcoded from R1 audit so badges show before ESPN loads.
    upsetTeam is a MOVING TARGET — update each round if a new
-   upset surpasses +7 seed diff.
+   upset surpasses current leader diff.
 ─────────────────────────────────────────────────────────── */
 var SIDE_POT_MANUAL = {
   lossTeam:   'Prairie View/Lehigh', /* Florida 114-55, lost by 59pts — CONFIRMED */
-  upsetTeam:  'High Point',          /* beat Wisconsin +7 seed diff — CURRENT LEADER (moving target) */
-  upsetDiff:  7,                     /* known diff — override ESPN if ESPN finds < this */
+  upsetTeam:  'Texas',               /* beat Gonzaga +8 seed diff (R32) — CURRENT LEADER */
+  upsetDiff:  8,                     /* floor — ESPN wins if it finds bigger */
   seed15Team: 'Siena'                /* lost to Duke 71-65, 6pt margin — CONFIRMED */
 };
+
+/* ── CONFIRMED R64 UPSETS ────────────────────────────────────
+   Full R64 upset leaderboard — hardcoded since ESPN matching
+   can miss games with combined/alternate team names.
+   R32+ upsets are added dynamically from ESPN data.
+─────────────────────────────────────────────────────────── */
+var CONFIRMED_R64_UPSETS = [
+  {winner:'High Point',   wSeed:12, loser:'Wisconsin',   lSeed:5, diff:7, round:'R64'},
+  {winner:'VCU',          wSeed:11, loser:'UNC',          lSeed:6, diff:5, round:'R64'},
+  {winner:'Texas',        wSeed:11, loser:'BYU',          lSeed:6, diff:5, round:'R64'},
+  {winner:'Texas A&M',   wSeed:10, loser:"Saint Mary's", lSeed:7, diff:3, round:'R64'},
+  {winner:'Iowa',         wSeed:9,  loser:'Clemson',      lSeed:8, diff:1, round:'R64'},
+  {winner:'Saint Louis',  wSeed:9,  loser:'Georgia',      lSeed:8, diff:1, round:'R64'},
+  {winner:'TCU',          wSeed:9,  loser:'Ohio State',   lSeed:8, diff:1, round:'R64'},
+  {winner:'Utah State',   wSeed:9,  loser:'Villanova',    lSeed:8, diff:1, round:'R64'},
+];
 
 TEAMS.forEach(function(t) {
   if (CONFIRMED_LOST.indexOf(t.name) > -1)    t.status = 'lost';
@@ -597,22 +613,40 @@ function computeSidePots() {
   blossEntries.forEach(function(e){ if(e.loser.matched){ lossWinners.push(e.loser.matched.owner); lossTeams.push(e.loser.matched.name); }});
 
   /* ── BIGGEST UPSET ─────────────────────────────────────── */
-  var bupsetDiff=-1, bupsetTopSeed=-1, bupsetEntries=[], allUpsets=[];
+  var bupsetDiff=-1, bupsetTopSeed=-1, bupsetEntries=[];
+
+  /* Step 1: seed allUpsets from confirmed R64 data (always accurate) */
+  var allUpsets = CONFIRMED_R64_UPSETS.map(function(u){
+    var wt=TEAMS.find(function(t){return t.name===u.winner;})||{};
+    var lt=TEAMS.find(function(t){return t.name===u.loser;})||{};
+    return {
+      winner:{matched:{name:u.winner,seed:u.wSeed,owner:wt.owner||''}},
+      loser: {matched:{name:u.loser, seed:u.lSeed,owner:lt.owner||''}},
+      diff:u.diff, round:u.round, confirmed:true
+    };
+  });
+
+  /* Step 2: add ESPN-detected upsets from R32+ (exclude R64 to avoid double-counting) */
   completedGames.forEach(function(g){
+    if(g.round==='R64') return;
     var w=g.t1.winner?g.t1:g.t2, l=g.t1.winner?g.t2:g.t1;
     if(!w||!l||!w.matched||!l.matched) return;
     var diff=w.matched.seed-l.matched.seed;
     if(diff<=0) return;
-    var wseed=w.matched.seed;
-    allUpsets.push({winner:w,loser:l,diff:diff,round:g.round}); /* full leaderboard */
+    allUpsets.push({winner:w,loser:l,diff:diff,round:g.round});
+  });
+
+  /* Step 3: determine winner */
+  allUpsets.forEach(function(e){
+    var diff=e.diff, wseed=e.winner.matched.seed;
     if(diff>bupsetDiff){
-      bupsetDiff=diff; bupsetTopSeed=wseed; bupsetEntries=[{winner:w,loser:l,diff:diff,round:g.round}];
+      bupsetDiff=diff; bupsetTopSeed=wseed; bupsetEntries=[e];
     } else if(diff===bupsetDiff){
-      if(wseed>bupsetTopSeed){ bupsetTopSeed=wseed; bupsetEntries=[{winner:w,loser:l,diff:diff,round:g.round}]; }
-      else if(wseed===bupsetTopSeed){ bupsetEntries.push({winner:w,loser:l,diff:diff,round:g.round}); } /* split */
+      if(wseed>bupsetTopSeed){ bupsetTopSeed=wseed; bupsetEntries=[e]; }
+      else if(wseed===bupsetTopSeed){ bupsetEntries.push(e); }
     }
   });
-  allUpsets.sort(function(a,b){ return b.diff-a.diff||b.winner.matched.seed-a.winner.matched.seed; });
+
   var upsetWinners=[], upsetTeams=[];
   bupsetEntries.forEach(function(e){ if(e.winner.matched){ upsetWinners.push(e.winner.matched.owner); upsetTeams.push(e.winner.matched.name); }});
 
@@ -670,7 +704,7 @@ function computeSidePots() {
 
     /* raw data for payouts display */
     blossEntries:blossEntries,  blossMargin:blossMargin,
-    bupsetEntries:bupsetEntries, bupsetDiff:bupsetDiff, allUpsets:allUpsets,
+    bupsetEntries:bupsetEntries, bupsetDiff:bupsetDiff,
     seed15Data:seed15Data,
 
     alive1516:alive1516, r64Done:r64Done, all1516Done:all1516Done
@@ -1338,16 +1372,29 @@ function renderPayouts() {
   } else {
     bupsetWinner='<div class="pcard-tbd">Largest seed differential — any round</div>';
   }
-  var upsetRows = sp.allUpsets.map(function(e){
-    var wm=e.winner.matched, lm=e.loser.matched;
-    var isWinner = sp.upsetTeams.indexOf(wm.name)>-1;
-    var rl = e.round==='R64'?'R1':e.round;
+  /* Build full upset leaderboard fresh each render (bypasses cache) */
+  var allUpsetDisplay = CONFIRMED_R64_UPSETS.map(function(u){
+    var wt=TEAMS.find(function(t){return t.name===u.winner;})||{};
+    var lt=TEAMS.find(function(t){return t.name===u.loser;})||{};
+    return {wName:u.winner,wSeed:u.wSeed,wOwner:wt.owner||'',lName:u.loser,lSeed:u.lSeed,diff:u.diff,round:'R1'};
+  });
+  completedGames.forEach(function(g){
+    if(g.round==='R64') return;
+    var w=g.t1.winner?g.t1:g.t2, l=g.t1.winner?g.t2:g.t1;
+    if(!w||!l||!w.matched||!l.matched) return;
+    var diff=w.matched.seed-l.matched.seed;
+    if(diff<=0) return;
+    allUpsetDisplay.push({wName:w.matched.name,wSeed:w.matched.seed,wOwner:w.matched.owner,lName:l.matched.name,lSeed:l.matched.seed,diff:diff,round:g.round});
+  });
+  allUpsetDisplay.sort(function(a,b){ return b.diff-a.diff||b.wSeed-a.wSeed; });
+  var upsetRows = allUpsetDisplay.slice(0,8).map(function(e){
+    var isWinner = sp.upsetTeams.indexOf(e.wName)>-1;
     return '<tr'+(isWinner?' class="sp-win"':'')+'>'
-      +'<td>'+wm.name+'</td><td>#'+wm.seed+'</td>'
-      +'<td>'+lm.name+'</td><td>#'+lm.seed+'</td>'
+      +'<td>'+(isWinner?'<b>':'')+e.wName+(isWinner?'</b>':'')+'</td><td>#'+e.wSeed+'</td>'
+      +'<td>'+e.lName+'</td><td>#'+e.lSeed+'</td>'
       +'<td class="'+(isWinner?'sp-w ':'')+'sp-margin">+'+e.diff+'</td>'
-      +'<td>'+rl+'</td>'
-      +'<td>'+tblOwner(wm.owner)+'</td>'
+      +'<td>'+e.round+'</td>'
+      +'<td>'+tblOwner(e.wOwner)+'</td>'
     +'</tr>';
   }).join('');
   var upsetDropdown = '<details class="pcard-details"><summary></summary>'
