@@ -708,17 +708,16 @@ var TEAMS = [
   {seed:16,region:'East', name:'Siena',        owner:'stark', price:380, status:'alive',r1eligible:true, top3:false,espn:['siena']}
 ];
 
+/* Play-In teams — used to prevent wonR1 counting for Play-In phantom winners */
+var PLAYIN_TEAMS = ['Prairie View/Lehigh','UMBC/Howard','SMU/Miami OH'];
+
 /* Confirmed results */
 var CONFIRMED_R1 = ['VCU','Texas A&M','Saint Louis','High Point','TCU','Texas','Iowa','Utah State'];
 var CONFIRMED_ADV_TOP = [
-  'Michigan St.','Gonzaga','Texas Tech','Kentucky',
-  'Florida','Michigan','Arizona','Duke',
-  'Houston','Iowa State','Purdue','UConn',
-  'Illinois','Virginia',
-  'Nebraska','Alabama','Arkansas','Kansas',
-  'Vanderbilt',"St. John's",
-  'Tennessee','Louisville',
-  'UCLA','Miami'
+  'Duke','UConn','Michigan St.',
+  'Arizona','Purdue',
+  'Illinois','Houston',
+  'Michigan','Iowa State'
 ];
 var CONFIRMED_LOST = [
   /* R64 losers */
@@ -727,7 +726,10 @@ var CONFIRMED_LOST = [
   'SMU/Miami OH','Wright State','Santa Clara','Tennessee St.','UMBC/Howard',
   'Villanova','Hawaii','Missouri','Queens','Long Island',
   'Northern Iowa','CA Baptist','S. Florida','UCF','Furman','Siena',
-  /* R32 losers — fill in once R32 is complete */
+  /* R32 losers */
+  'Florida','Gonzaga','Virginia',
+  'Vanderbilt','Kansas','Louisville','UCLA','Texas Tech','Kentucky','Miami',
+  'VCU','Texas A&M','TCU','Utah State','High Point','Saint Louis',
 ];
 
 /* Seeds 4-16 that WON Round of 32 → earn the S16 payout.
@@ -735,7 +737,9 @@ var CONFIRMED_LOST = [
    Fill this in once R32 results are confirmed; ESPN auto-detects but this
    ensures correct payouts even before ESPN data loads. */
 var CONFIRMED_R32 = [
-  /* e.g. 'Nebraska','Vanderbilt','Kentucky','Miami' */
+  'Iowa','Nebraska',
+  "St. John's",'Arkansas','Texas',
+  'Alabama','Tennessee'
 ];
 
 /* ── CONFIRMED SIDE POT RESULTS ────────────────────────────
@@ -777,7 +781,10 @@ TEAMS.forEach(function(t) {
    CALCULATIONS
 ═══════════════════════════════════════════════════════ */
 
-function getR1Winners() { return TEAMS.filter(function(t){ return t.r1eligible && t.wonR1; }); }
+/* Exclude PLAYIN_TEAMS — Play-In game winners (Prairie View/Lehigh, UMBC/Howard, SMU/Miami OH)
+   both match our combined team entries and incorrectly get wonR1=true from ESPN Play-In data,
+   even though some then lost in R64. Use PLAYIN_TEAMS to avoid blocking real R32 losers. */
+function getR1Winners() { return TEAMS.filter(function(t){ return t.r1eligible && t.wonR1 && PLAYIN_TEAMS.indexOf(t.name)===-1; }); }
 function getR1PerTeam() { var w=getR1Winners().length; return w>0?Math.ceil(POTS.r1/w):0; }
 
 /* Currency formatter — whole dollars with commas, no decimals */
@@ -1083,7 +1090,7 @@ function processESPN(data) {
         t.matched.status='live';
       } else if(state==='post'){
         if(t.winner){
-          if(gameRound==='R64'&&t.matched.r1eligible) t.matched.wonR1=true;
+          if(gameRound==='R64'&&t.matched.r1eligible&&PLAYIN_TEAMS.indexOf(t.matched.name)===-1) t.matched.wonR1=true;
           if(gameRound==='R32') t.matched.wonR32=true;
           if(gameRound==='S16') t.matched.wonS16=true;
           if(gameRound==='E8')  t.matched.wonE8=true;
