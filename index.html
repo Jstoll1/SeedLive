@@ -1978,20 +1978,22 @@ function showSplash() {
             } catch(e){}
           }
           var detail = g.detail || timeStr;
-          function ownerDot(t) {
+          function ownerCap(t) {
             var o = t.matched && OWNERS[t.matched.owner];
-            return o ? '<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:'+o.color+';flex-shrink:0"></span>' : '';
+            return o ? '<span style="background:'+o.color+';color:#000;font-size:7px;font-weight:700;padding:1px 5px;border-radius:20px;letter-spacing:.2px;white-space:nowrap">'+o.name+'</span>' : '';
           }
           return '<div class="splash-game-pair">'
             + '<div class="splash-game-row">'
-              + '<div style="display:flex;flex-direction:column;align-items:center;gap:2px">'+logoEl(g.t1)+ownerDot(g.t1)+'</div>'
+              + '<div style="display:flex;flex-direction:column;align-items:center;gap:3px">'+logoEl(g.t1)+ownerCap(g.t1)+'</div>'
               + '<span class="splash-vs">vs</span>'
-              + '<div style="display:flex;flex-direction:column;align-items:center;gap:2px">'+logoEl(g.t2)+ownerDot(g.t2)+'</div>'
+              + '<div style="display:flex;flex-direction:column;align-items:center;gap:3px">'+logoEl(g.t2)+ownerCap(g.t2)+'</div>'
             + '</div>'
             + (detail?'<div class="splash-game-detail">'+detail+'</div>':'')
           + '</div>';
         }).join('')
-    + '</div></div>';
+    + '</div>'
+    + '<div style="margin-top:10px;text-align:center;font-size:9px;font-weight:600;letter-spacing:.4px;color:#22c55e">✓ Sweet 16 Official · Payouts All Updated</div>'
+    + '</div>';
   }
 
   var statusLine = isLive
