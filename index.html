@@ -1952,7 +1952,7 @@ function showSplash() {
         s16Start = ' · starts '+months[parseInt(p[1],10)-1]+' '+parseInt(p[2],10);
       }
     }
-    alertHtml = '<div class="splash-alert" style="background:rgba(59,130,246,.07);border-color:rgba(59,130,246,.2);color:#3b82f6"><div class="splash-alert-dot" style="background:#3b82f6;animation:none"></div>Round of 32 complete — Sweet 16'+s16Start+'</div>';
+    alertHtml = '<div class="splash-alert" style="background:rgba(34,197,94,.07);border-color:rgba(34,197,94,.2);color:#22c55e;flex-direction:column;align-items:center;gap:2px;text-align:center"><b>✓ Sweet 16 Official · Payouts All Updated</b><div style="font-size:9px;color:#3a5a3a">Next Round starts Thursday, Mar 26</div></div>';
   }
 
   /* Upcoming S16 games section (shown when not live) */
@@ -1992,7 +1992,6 @@ function showSplash() {
           + '</div>';
         }).join('')
     + '</div>'
-    + '<div style="margin-top:10px;text-align:center;font-size:9px;font-weight:600;letter-spacing:.4px;color:#22c55e">✓ Sweet 16 Official · Payouts All Updated</div>'
     + '</div>';
   }
 
