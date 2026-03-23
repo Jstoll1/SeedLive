@@ -766,7 +766,6 @@ var SIDE_POT_MANUAL = {
 /* ── CONFIRMED R64 UPSETS ────────────────────────────────────
    Full R64 upset leaderboard — hardcoded since ESPN matching
    can miss games with combined/alternate team names.
-   R32+ upsets are added dynamically from ESPN data.
 ─────────────────────────────────────────────────────────── */
 var CONFIRMED_R64_UPSETS = [
   {winner:'High Point',   wSeed:12, loser:'Wisconsin',   lSeed:5, diff:7, round:'R64'},
@@ -779,11 +778,24 @@ var CONFIRMED_R64_UPSETS = [
   {winner:'Utah State',   wSeed:9,  loser:'Villanova',    lSeed:8, diff:1, round:'R64'},
 ];
 
+/* ── CONFIRMED R32 UPSETS ────────────────────────────────────
+   Hardcoded for same reliability reason — ESPN can miss these
+   once the R32 date window scrolls out of range.
+─────────────────────────────────────────────────────────── */
+var CONFIRMED_R32_UPSETS = [
+  {winner:'Iowa',         wSeed:9,  loser:'Florida',      lSeed:1, diff:8, round:'R32'},
+  {winner:'Texas',        wSeed:11, loser:'Gonzaga',      lSeed:3, diff:8, round:'R32'},
+  {winner:'Tennessee',    wSeed:6,  loser:'Virginia',     lSeed:3, diff:3, round:'R32'},
+  {winner:"St. John's",  wSeed:5,  loser:'Kansas',       lSeed:4, diff:1, round:'R32'},
+];
+
 TEAMS.forEach(function(t) {
-  if (CONFIRMED_LOST.indexOf(t.name) > -1)    t.status = 'lost';
-  if (CONFIRMED_R1.indexOf(t.name) > -1)      { t.status = 'won'; t.wonR1 = true; }
+  /* Set win flags first (don't touch status yet) */
+  if (CONFIRMED_R1.indexOf(t.name) > -1)      t.wonR1 = true;
+  /* Apply status — CONFIRMED_LOST runs last so it always wins over any won state */
   if (CONFIRMED_ADV_TOP.indexOf(t.name) > -1) t.status = 'won';
   if (CONFIRMED_R32.indexOf(t.name) > -1)     { t.status = 'won'; t.wonR32 = true; }
+  if (CONFIRMED_LOST.indexOf(t.name) > -1)    t.status = 'lost'; /* must be last */
 });
 
 /* ═══════════════════════════════════════════════════════
@@ -878,8 +890,8 @@ function computeSidePots() {
   /* ── BIGGEST UPSET ─────────────────────────────────────── */
   var bupsetDiff=-1, bupsetTopSeed=-1, bupsetEntries=[];
 
-  /* Step 1: seed allUpsets from confirmed R64 data (always accurate) */
-  var allUpsets = CONFIRMED_R64_UPSETS.map(function(u){
+  /* Step 1: seed allUpsets from confirmed hardcoded data (R64 + R32) */
+  var allUpsets = CONFIRMED_R64_UPSETS.concat(CONFIRMED_R32_UPSETS).map(function(u){
     var wt=TEAMS.find(function(t){return t.name===u.winner;})||{};
     var lt=TEAMS.find(function(t){return t.name===u.loser;})||{};
     return {
@@ -889,9 +901,9 @@ function computeSidePots() {
     };
   });
 
-  /* Step 2: add ESPN-detected upsets from R32+ (exclude R64 to avoid double-counting) */
+  /* Step 2: add ESPN-detected upsets from S16+ (R64+R32 already covered above) */
   completedGames.forEach(function(g){
-    if(g.round==='R64') return;
+    if(g.round==='R64'||g.round==='R32') return;
     var w=g.t1.winner?g.t1:g.t2, l=g.t1.winner?g.t2:g.t1;
     if(!w||!l||!w.matched||!l.matched) return;
     var diff=w.matched.seed-l.matched.seed;
@@ -1788,13 +1800,14 @@ function renderPayouts() {
     bupsetWinner='<div class="pcard-tbd">Largest seed differential — any round</div>';
   }
   /* Build full upset leaderboard fresh each render (bypasses cache) */
-  var allUpsetDisplay = CONFIRMED_R64_UPSETS.map(function(u){
+  var allUpsetDisplay = CONFIRMED_R64_UPSETS.concat(CONFIRMED_R32_UPSETS).map(function(u){
     var wt=TEAMS.find(function(t){return t.name===u.winner;})||{};
     var lt=TEAMS.find(function(t){return t.name===u.loser;})||{};
-    return {wName:u.winner,wSeed:u.wSeed,wOwner:wt.owner||'',lName:u.loser,lSeed:u.lSeed,diff:u.diff,round:'R1'};
+    var rl=u.round==='R64'?'R1':u.round;
+    return {wName:u.winner,wSeed:u.wSeed,wOwner:wt.owner||'',lName:u.loser,lSeed:u.lSeed,diff:u.diff,round:rl};
   });
   completedGames.forEach(function(g){
-    if(g.round==='R64') return;
+    if(g.round==='R64'||g.round==='R32') return;
     var w=g.t1.winner?g.t1:g.t2, l=g.t1.winner?g.t2:g.t1;
     if(!w||!l||!w.matched||!l.matched) return;
     var diff=w.matched.seed-l.matched.seed;
