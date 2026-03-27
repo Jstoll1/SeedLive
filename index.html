@@ -1558,15 +1558,16 @@ function renderGames() {
   var s16NoteHtml = (!_gr32Done && s16pp>0) ? '<span style="margin-left:auto;display:inline-block;text-align:right;font-weight:500;letter-spacing:.2px;text-transform:none;font-size:9px;line-height:1.5;color:#7070aa;background:rgba(112,112,170,.1);border:1px solid rgba(112,112,170,.2);border-radius:6px;padding:2px 7px">* S16 rate pending R32</span>' : '';
   var s16NoteShown = false; /* only show once — in the first R32 section */
 
+  /* E8 banner — show at top of games page whenever E8 is the active round */
+  if(_gcr==='E8') {
+    html += '<div class="e8-live-banner" style="margin-bottom:12px"><span class="live-dot"></span>E8 Games Live &nbsp;·&nbsp; Payouts Subject to Change</div>';
+  }
+
   /* LIVE */
   if(liveGames.length) {
     var liveHasR32 = liveGames.some(function(g){return g.round==='R32';});
-    var liveHasE8  = liveGames.some(function(g){return g.round==='E8';});
     var liveNote = (liveHasR32 && !s16NoteShown) ? (s16NoteShown=true, s16NoteHtml) : '';
-    var e8LiveBanner = liveHasE8
-      ? '<div class="e8-live-banner"><span class="live-dot"></span>E8 Games Live &nbsp;·&nbsp; Payouts Subject to Change</div>'
-      : '';
-    html += '<div class="games-section">'+e8LiveBanner+'<div class="game-list">';
+    html += '<div class="games-section"><div class="game-list">';
     liveGames.forEach(function(g){
       var t1=g.t1, t2=g.t2;
       html += '<div class="mcard live">'
