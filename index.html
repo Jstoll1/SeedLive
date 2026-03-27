@@ -751,6 +751,15 @@ var CONFIRMED_R32 = [
   'Alabama','Tennessee'
 ];
 
+/* ── CONFIRMED S16 WINNERS ───────────────────────────────
+   Teams that won their Sweet Sixteen game (→ made Elite 8).
+   Fill in as results come in — ensures E8 payout estimate is
+   accurate even if ESPN data hasn't loaded.
+─────────────────────────────────────────────────────────── */
+var CONFIRMED_S16 = [
+  /* e.g. 'Duke',"St. John's",'Michigan St.' — add as games complete */
+];
+
 /* ── CONFIRMED SIDE POT RESULTS ────────────────────────────
    Hardcoded from R1 audit so badges show before ESPN loads.
    upsetTeam is a MOVING TARGET — update each round if a new
@@ -795,6 +804,7 @@ TEAMS.forEach(function(t) {
   /* Apply status — CONFIRMED_LOST runs last so it always wins over any won state */
   if (CONFIRMED_ADV_TOP.indexOf(t.name) > -1) t.status = 'won';
   if (CONFIRMED_R32.indexOf(t.name) > -1)     { t.status = 'won'; t.wonR32 = true; }
+  if (CONFIRMED_S16.indexOf(t.name) > -1)     { t.status = 'won'; t.wonS16 = true; }
   if (CONFIRMED_LOST.indexOf(t.name) > -1)    t.status = 'lost'; /* must be last */
 });
 
@@ -829,18 +839,33 @@ function computeS16PerTeam() {
 }
 
 /* E8 pot: split among seeds 1-3 who won S16 (made Elite 8).
-   Same pattern: lock to actuals only once S16 is over. */
+   Lock to actuals once S16 is over; during/before S16 use bracket-aware projection. */
 function getE8Winners() { return TEAMS.filter(function(t){ return t.top3 && t.wonS16; }); }
+function computeE8Projected() {
+  /* Confirmed: top-3 seeds that have already won their S16 game */
+  var confirmed = TEAMS.filter(function(t){ return t.top3 && t.wonS16; }).length;
+  /* Per undecided S16 game: top3-vs-top3 guarantees exactly 1 qualifier;
+     top3-vs-other is optimistically 1; neither top3 contributes 0.
+     This correctly handles e.g. Michigan St.(3) vs UConn(2) — one WILL be
+     eliminated — whereas a naive alive-team count would double-count the pair. */
+  var stillPlayable = 0;
+  BRACKET_REGIONS.forEach(function(reg) {
+    reg.s16.forEach(function(pair) {
+      var t1 = bktTeam(pair.top), t2 = bktTeam(pair.bot);
+      var t1alive = !!(t1 && !t1.wonS16 && t1.status!=='lost');
+      var t2alive = !!(t2 && !t2.wonS16 && t2.status!=='lost');
+      if(!t1alive && !t2alive) return; /* game already decided — skip */
+      var top3 = (t1alive && t1&&t1.top3 ? 1 : 0) + (t2alive && t2&&t2.top3 ? 1 : 0);
+      if(top3 >= 1) stillPlayable += 1; /* at most 1 top-3 can emerge per game */
+    });
+  });
+  return confirmed + stillPlayable;
+}
 function computeE8PerTeam() {
-  var cr = getCurrentRound();
-  var s16Done = (cr==='E8'||cr==='F4'||cr==='NCG');
-  if(s16Done) {
-    var winners = getE8Winners();
-    if(winners.length>0) return Math.ceil(POTS.e8/winners.length);
-  }
-  /* During/before S16: project from all top-3 seeds still alive, capped at 8 */
-  var eligible = TEAMS.filter(function(t){ return t.top3 && t.status!=='lost'; });
-  var projected = Math.min(eligible.length, 8);
+  /* Always use bracket-aware projection — handles pre/mid/post S16 correctly.
+     confirmed = top-3 seeds with wonS16; stillPlayable = undecided games with ≥1 top-3.
+     Post-S16: stillPlayable→0 so result equals actual winner count automatically. */
+  var projected = computeE8Projected();
   return projected>0 ? Math.ceil(POTS.e8/projected) : 0;
 }
 
