@@ -2123,12 +2123,18 @@ function renderBracket() {
 
 var ROUND_ORDER=['R64','R32','S16','E8','F4','NCG'];
 function getCurrentRound() {
-  var allGames=[].concat(liveGames,upcomingGames,completedGames);
-  var current='R64';
-  ROUND_ORDER.forEach(function(r){
-    if(allGames.some(function(g){return g.round===r;})) current=r;
-  });
-  return current;
+  /* Prioritise live games, then upcoming, then completed —
+     so the badge reflects the round actually in progress,
+     not a future round ESPN already lists. */
+  var pools=[liveGames,upcomingGames,completedGames];
+  for(var p=0;p<pools.length;p++){
+    var best='';
+    ROUND_ORDER.forEach(function(r){
+      if(pools[p].some(function(g){return g.round===r;})) best=r;
+    });
+    if(best) return best;
+  }
+  return 'R64';
 }
 
 /* ── SPLASH ───────────────────────────────────────────── */
