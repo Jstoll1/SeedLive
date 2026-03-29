@@ -2093,7 +2093,6 @@ var BKT_LINE=
 
 function renderBracket() {
   var el=document.getElementById('bracket-content'); if(!el) return;
-  var html='<div style="padding-top:4px">';
 
   /* helper: S16 winner from a pairing */
   function s16W(p){
@@ -2103,56 +2102,60 @@ function renderBracket() {
     return null;
   }
 
-  /* ══ SWEET 16 — 4 regions, 2 games each ══════════════ */
-  html+='<div style="font-size:10px;font-weight:600;letter-spacing:2px;color:#3a3a55;text-transform:uppercase;margin-bottom:10px;padding-left:2px">Sweet 16</div>';
-
+  /* Build region lookup: name → {w1, w2, color, f4Adv} */
+  var regData={};
   BRACKET_REGIONS.forEach(function(reg){
     var w1=s16W(reg.s16[0]), w2=s16W(reg.s16[1]);
-    var advLabel=w1&&w2?'E8':'E8';
-    var advTeam=w1&&w2?null:null; /* just show E8 label in S16 section */
+    regData[reg.name]={
+      w1:w1, w2:w2, color:reg.color,
+      f4Adv:bktRegAdv(reg.name,'wonE8')
+    };
+  });
 
-    html+='<div style="margin-bottom:18px">'
-      +'<div style="font-size:10px;font-weight:700;color:'+reg.color+';letter-spacing:3px;text-transform:uppercase;margin-bottom:8px;padding-left:2px">'+reg.name+'</div>'
+  var html='<div style="padding-top:4px">';
+  html+='<div style="font-size:10px;font-weight:600;letter-spacing:2px;color:#3a3a55;text-transform:uppercase;margin-bottom:12px;padding-left:2px">Elite 8 → Final Four</div>';
+
+  /* ══ Two F4 pairings, each with 2 E8 games → 1 F4 slot ══ */
+  F4_PAIRINGS.forEach(function(pair){
+    var rA=regData[pair.a], rB=regData[pair.b];
+    var regA=BRACKET_REGIONS.find(function(r){return r.name===pair.a;});
+    var regB=BRACKET_REGIONS.find(function(r){return r.name===pair.b;});
+
+    /* E8 game cards (or TBD) */
+    var cardA=(rA.w1&&rA.w2)?bktCard(rA.w1,rA.w2,'E8'):bktTBDSlot(pair.a+' E8');
+    var cardB=(rB.w1&&rB.w2)?bktCard(rB.w1,rB.w2,'E8'):bktTBDSlot(pair.b+' E8');
+
+    /* F4 advancement: who won E8 in each region */
+    var f4a=rA.f4Adv, f4b=rB.f4Adv;
+    var f4SlotHtml;
+    if(f4a&&f4b){
+      /* Both E8 done — show F4 game card */
+      f4SlotHtml='<div style="flex:1;display:flex;align-items:center">'+bktCard(f4a.name,f4b.name,'F4')+'</div>';
+    } else {
+      f4SlotHtml='<div style="width:68px;flex-shrink:0;display:flex;align-items:center">'
+        +bktAdvSlot(null,'F4')
+      +'</div>';
+    }
+
+    html+='<div style="margin-bottom:20px">'
+      /* Region labels */
+      +'<div style="display:flex;gap:8px;margin-bottom:8px;padding-left:2px">'
+        +'<span style="font-size:10px;font-weight:700;color:'+rA.color+';letter-spacing:2px;text-transform:uppercase">'+pair.a+'</span>'
+        +'<span style="font-size:10px;color:#2a2a3a">×</span>'
+        +'<span style="font-size:10px;font-weight:700;color:'+rB.color+';letter-spacing:2px;text-transform:uppercase">'+pair.b+'</span>'
+      +'</div>'
       +'<div style="display:flex;align-items:stretch;gap:0">'
         +'<div style="flex:1;display:flex;flex-direction:column;gap:4px">'
-          +bktCard(reg.s16[0].top, reg.s16[0].bot, 'S16')
-          +bktCard(reg.s16[1].top, reg.s16[1].bot, 'S16')
+          +cardA
+          +cardB
         +'</div>'
         +BKT_CONNECTOR
-        +'<div style="width:68px;flex-shrink:0;display:flex;align-items:center">'
-          +(w1&&w2?bktAdvSlot(null,'E8 →'):bktAdvSlot(null,'E8'))
-        +'</div>'
+        +f4SlotHtml
       +'</div>'
     +'</div>';
   });
 
-  /* ══ ELITE 8 — 4 regions, 1 game each ══════════════ */
-  var anyE8=BRACKET_REGIONS.some(function(reg){
-    return !!(s16W(reg.s16[0])&&s16W(reg.s16[1]));
-  });
-
-  if(anyE8){
-    html+='<div style="font-size:10px;font-weight:600;letter-spacing:2px;color:#3a3a55;text-transform:uppercase;margin:8px 0 10px;padding-left:2px">Elite 8</div>';
-
-    BRACKET_REGIONS.forEach(function(reg){
-      var w1=s16W(reg.s16[0]), w2=s16W(reg.s16[1]);
-      if(!w1||!w2) return;
-      var f4Adv=bktRegAdv(reg.name,'wonE8');
-
-      html+='<div style="margin-bottom:14px">'
-        +'<div style="font-size:10px;font-weight:700;color:'+reg.color+';letter-spacing:3px;text-transform:uppercase;margin-bottom:8px;padding-left:2px">'+reg.name+'</div>'
-        +'<div style="display:flex;align-items:stretch;gap:0">'
-          +'<div style="flex:1">'+bktCard(w1,w2,'E8')+'</div>'
-          +BKT_LINE
-          +'<div style="width:68px;flex-shrink:0;display:flex;align-items:center">'
-            +(f4Adv?bktAdvSlot(f4Adv.name,'→ F4'):bktAdvSlot(null,'F4'))
-          +'</div>'
-        +'</div>'
-      +'</div>';
-    });
-  }
-
-  html+='</div>'; /* close outer wrapper */
+  html+='</div>';
   el.innerHTML=html;
 }
 
