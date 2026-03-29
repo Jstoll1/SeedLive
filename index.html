@@ -2165,18 +2165,26 @@ function renderBracket() {
 
 var ROUND_ORDER=['R64','R32','S16','E8','F4','NCG'];
 function getCurrentRound() {
-  /* Prioritise live games, then upcoming, then completed —
-     so the badge reflects the round actually in progress,
-     not a future round ESPN already lists. */
-  var pools=[liveGames,upcomingGames,completedGames];
-  for(var p=0;p<pools.length;p++){
-    var best='';
-    ROUND_ORDER.forEach(function(r){
-      if(pools[p].some(function(g){return g.round===r;})) best=r;
-    });
-    if(best) return best;
+  /* Live games → lowest round (E8 before F4).
+     Upcoming   → lowest round (still in E8 if E8 upcoming).
+     Completed  → highest round (show latest finished round). */
+  var i,r;
+  /* live: pick lowest */
+  for(i=0;i<ROUND_ORDER.length;i++){
+    r=ROUND_ORDER[i];
+    if(liveGames.some(function(g){return g.round===r;})) return r;
   }
-  return 'R64';
+  /* upcoming: pick lowest */
+  for(i=0;i<ROUND_ORDER.length;i++){
+    r=ROUND_ORDER[i];
+    if(upcomingGames.some(function(g){return g.round===r;})) return r;
+  }
+  /* completed: pick highest */
+  var best='R64';
+  ROUND_ORDER.forEach(function(r){
+    if(completedGames.some(function(g){return g.round===r;})) best=r;
+  });
+  return best;
 }
 
 /* ── SPLASH ───────────────────────────────────────────── */
