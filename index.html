@@ -1504,9 +1504,10 @@ function renderGames() {
         var e8pp=computeE8PerTeam();
         if(e8pp>0) earn = '<div class="mcard-earn s16">+$'+c(e8pp)+' E8</div>';
       }
-      if(round==='E8' && tm.top3) {
-        var _e8pp=computeE8PerTeam();
-        if(_e8pp>0) earn = '<div class="mcard-earn s16">+$'+c(_e8pp)+' E8</div>';
+      /* E8 game: team has wonS16 so any upcoming/live game = E8.
+         Show F4 fixed payout — what they earn by winning this game. */
+      if(tm.wonS16) {
+        earn = '<div class="mcard-earn s16">+$'+c(POTS.f4)+' F4</div>';
       }
     }
 
@@ -1573,24 +1574,12 @@ function renderGames() {
   var s16NoteHtml = (!_gr32Done && s16pp>0) ? '<span style="margin-left:auto;display:inline-block;text-align:right;font-weight:500;letter-spacing:.2px;text-transform:none;font-size:9px;line-height:1.5;color:#7070aa;background:rgba(112,112,170,.1);border:1px solid rgba(112,112,170,.2);border-radius:6px;padding:2px 7px">* S16 rate pending R32</span>' : '';
   var s16NoteShown = false; /* only show once — in the first R32 section */
 
-  /* E8 banner + payout card — show at top of games page whenever E8 is the active round */
+  /* E8 banner — show at top of games page whenever E8 is the active round */
   if(_gcr==='E8') {
     var _e8Live = liveGames.some(function(g){return g.round==='E8';});
     var _e8BannerTxt = _e8Live ? 'E8 Games Live. Final 4 Payouts Are Fixed' : 'E8 Games Today. Final 4 Payouts Are Fixed';
     var _e8DotHtml = _e8Live ? '<span class="live-dot"></span>' : '';
-    html += '<div class="e8-live-banner" style="margin-bottom:8px">'+_e8DotHtml+_e8BannerTxt+'</div>';
-
-    /* Payout breakdown card */
-    var _e8pp2 = computeE8PerTeam();
-    html += '<div style="background:#111119;border:1px solid #1a1a27;border-radius:9px;padding:10px 12px;margin-bottom:14px;font-size:11px">'
-      + '<div style="font-size:9px;font-weight:700;letter-spacing:2px;color:#3a3a55;text-transform:uppercase;margin-bottom:8px">Remaining Payouts</div>'
-      + '<div style="display:flex;flex-direction:column;gap:5px">'
-        + '<div style="display:flex;justify-content:space-between;color:#8888a8"><span>E8 (seeds 1–3 only)</span><span style="color:#818cf8;font-weight:700">$'+c(_e8pp2)+'/team</span></div>'
-        + '<div style="display:flex;justify-content:space-between;color:#8888a8"><span>Final Four (per team)</span><span style="color:#818cf8;font-weight:700">$'+c(POTS.f4)+'</span></div>'
-        + '<div style="display:flex;justify-content:space-between;color:#8888a8"><span>Finals (per finalist)</span><span style="color:#818cf8;font-weight:700">$'+c(POTS.finals)+'</span></div>'
-        + '<div style="display:flex;justify-content:space-between;color:#8888a8"><span>National Champion</span><span style="color:#22c55e;font-weight:700">$'+c(POTS.champ)+'</span></div>'
-      + '</div>'
-    + '</div>';
+    html += '<div class="e8-live-banner" style="margin-bottom:12px">'+_e8DotHtml+_e8BannerTxt+'</div>';
   }
 
   /* LIVE */
