@@ -597,9 +597,9 @@ var TOTAL_POT = 27160;
 /* ── CHANGELOG — update manually, newest first, max 3 shown ──
    These appear in the splash modal under "Recent Updates".      */
 var CHANGELOG = [
-  'Sweet 16 complete — Elite 8 matchups set (Mar 28-29)',
-  'S16 payouts locked — E8 per-team rate now confirmed',
-  'Big Ten dominates E8: Michigan, Purdue, Illinois, Iowa all advance',
+  'Elite 8 complete — Final Four set: Arizona, Michigan, Illinois, UConn',
+  'E8 payouts locked — F4 per-team rate confirmed at $1,901',
+  'UConn stuns Duke 73-72 on half-court buzzer beater by Mullins',
 ];
 
 var POTS = {
@@ -747,6 +747,8 @@ var CONFIRMED_LOST = [
   /* S16 losers */
   'Houston','Nebraska','Arkansas','Texas',
   "St. John's",'Michigan St.','Alabama','Iowa State',
+  /* E8 losers */
+  'Iowa','Purdue','Duke','Tennessee',
 ];
 
 /* Seeds 4-16 that WON Round of 32 → earn the S16 payout.
@@ -769,6 +771,16 @@ var CONFIRMED_S16 = [
   'Arizona','Purdue',        /* West */
   'Duke','UConn',            /* East */
   'Michigan','Tennessee'     /* Midwest */
+];
+
+/* ── CONFIRMED E8 WINNERS ───────────────────────────────
+   Teams that won their Elite 8 game (→ made Final Four).
+─────────────────────────────────────────────────────────── */
+var CONFIRMED_E8 = [
+  'Illinois',   /* South: beat Iowa 71-59 */
+  'Arizona',    /* West: beat Purdue 79-64 */
+  'UConn',      /* East: beat Duke 73-72 */
+  'Michigan'    /* Midwest: beat Tennessee 95-62 */
 ];
 
 /* ── CONFIRMED SIDE POT RESULTS ────────────────────────────
@@ -821,6 +833,7 @@ TEAMS.forEach(function(t) {
   if (CONFIRMED_ADV_TOP.indexOf(t.name) > -1) t.status = 'won';
   if (CONFIRMED_R32.indexOf(t.name) > -1)     { t.status = 'won'; t.wonR32 = true; }
   if (CONFIRMED_S16.indexOf(t.name) > -1)     { t.status = 'won'; t.wonS16 = true; }
+  if (CONFIRMED_E8.indexOf(t.name) > -1)      { t.status = 'won'; t.wonE8 = true; }
   if (CONFIRMED_LOST.indexOf(t.name) > -1)    t.status = 'lost'; /* must be last */
 });
 
