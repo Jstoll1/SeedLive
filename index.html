@@ -1504,9 +1504,12 @@ function renderGames() {
         var e8pp=computeE8PerTeam();
         if(e8pp>0) earn = '<div class="mcard-earn s16">+$'+c(e8pp)+' E8</div>';
       }
-      /* E8 game: team has wonS16 so any upcoming/live game = E8.
-         Show F4 fixed payout — what they earn by winning this game. */
-      if(tm.wonS16) {
+      /* E8→F4→Finals→Champ progression: show the NEXT payout the team earns by winning */
+      if(tm.wonE8 && !tm.wonF4) {
+        earn = '<div class="mcard-earn s16">+$'+c(POTS.finals)+' Finals</div>';
+      } else if(tm.wonF4 && !tm.wonNCG) {
+        earn = '<div class="mcard-earn s16">+$'+c(POTS.champ)+' Champ</div>';
+      } else if(tm.wonS16 && !tm.wonE8) {
         earn = '<div class="mcard-earn s16">+$'+c(POTS.f4)+' F4</div>';
       }
     }
